@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+
+# Virtual environments (this project's venv lives OUTSIDE the repo at
+# C:\Users\nahla\venvs\bcpg -- see README.md "Windows long-path note")
+.venv/
+venv/
+env/
+
+# Data: raw/processed rasters and large downloads are reproducible via
+# src/data_pipeline/fetch_*.py + data/README.md -- do not commit them.
+data/raw/**
+data/processed/**
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/raw/README.md
+
+# Keep small provenance/metadata files that are cheap to diff and useful
+# to have in history (STAC item index, tide CSVs) -- uncomment if desired:
+# !data/raw/sentinel2/*.json
+# !data/raw/tides/*.csv
+
+# Experiment outputs
+experiments/logs/*
+!experiments/logs/.gitkeep
+*.ckpt
+*.pt
+*.pth
+
+# Paper build artifacts
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.bbl
+paper/*.blg
+paper/*.synctex.gz
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
