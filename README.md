@@ -1,4 +1,4 @@
-# Physics-Informed Graph Neural Networks with Uncertainty Quantification for Dynamic Valuation of Blue Carbon Assets
+# Physics-Informed Graph Neural Networks with Uncertainty Quantification for Data-Driven Valuation and Risk Assessment of Blue Carbon Assets
 
 5-page IEEE conference paper project (target track: "Artificial Intelligence
 for Business and Industry" — see `PLAN.md` for the venue/deadline note).
