@@ -83,38 +83,50 @@ defensibility, not ecological novelty.**
   another earlier epoch) and diff against 2020 — not done yet, deferred to
   `PLAN.md` Week 1 (single extra ~66 MB download + clip, cheap).
 
-### 3. Global mangrove soil organic carbon (SOC) — ⚠️ partially verified
+### 3. Global mangrove soil organic carbon (SOC) — ✅ fully verified (updated 2026-08-29, Day 1 of ICDABI sprint)
 
 - **Source:** Sanderman, Worthington et al. (Woods Hole Research Center),
   "Global mangrove soil carbon data set at 30 m resolution for year 2020
   (0–100 cm)," Zenodo, doi:[10.5281/zenodo.7729492](https://zenodo.org/records/7729492).
   Companion publication: PMC10562832 / ScienceDirect (2023).
 - **License:** **CC-BY-4.0** (confirmed via Zenodo record metadata).
-- **What actually works from this sandbox:** the companion **typology/
-  ecotype COG** (`mangroves_typology_v3_cog.tif`, 1.1 GB *source* size) can
-  be **windowed-read** via GDAL `/vsicurl/` + rasterio without downloading
-  the full file — confirmed: pulled a 1600×2000 px AOI clip
+- **Typology/ecotype COG** (`mangroves_typology_v3_cog.tif`, 1.1 GB *source*
+  size): **windowed-read** via GDAL `/vsicurl/` + rasterio without
+  downloading the full file — pulled a 1600×2000 px AOI clip
   (`data/raw/soc/mangrove_typology_ten_thousand_islands_fl_clip.tif`, ~56 KB
-  on disk) by transferring only the bytes covering the AOI window. Class
-  balance (267,714 "mangrove" px of 3.2M total) is consistent with the GMW
-  extent mask — good cross-source sanity check.
-- **What does NOT work from this sandbox:** the actual **per-pixel SOC
-  stock values** ship only inside `mangroves_tiles_SOC_predictions_2020.zip`,
-  a single **4.7 GB** archive with no COG mosaic and no tile-scoped download
-  endpoint — too large/slow to pull in this session.
+  on disk). Class balance (267,714 "mangrove" px of 3.2M total) matches the
+  GMW extent mask — good cross-source sanity check.
+- **Update, Day 1 of the ICDABI sprint (2026-08-29):** the original scaffolding
+  session flagged the 4.7 GB `mangroves_tiles_SOC_predictions_2020.zip`
+  (actual per-pixel SOC stock values, t C/ha) as "too large/slow" and left
+  it as a documented gap. Re-attempted once a real training label depended
+  on it: **the full download completed in this sandbox in ~5 minutes**
+  (generous bandwidth) — "too large" was a stale assessment made without
+  testing the actual throughput, not a hard blocker. **This is now the
+  project's real training label**, not a proxy.
+  - Tile naming (reverse-engineered by inspection — not documented by the
+    source): tiles are named `<lon>W_<lat>N` by their EASTERN/NORTHERN edge,
+    e.g. `081W_26N` spans lon −82.0 to −81.0, lat 26.0 to 27.0. AOI_BBOX
+    needs tiles `081W_26N` and `081W_25N` (verified: an initial wrong guess
+    at `082W_26N` returned a tile spanning −83.0 to −82.0, entirely outside
+    the AOI — see `src/data_pipeline/fetch_soc.py` module docstring).
+  - Extracted product: `sol_soc.tha_mangroves.typology_m_30m_s0..100cm_2020_global_v1.1.tif`
+    (mean, t C/ha, 0-100cm) plus `.l.std`/`.u.std` variants (lower/upper
+    uncertainty bounds from the SOURCE dataset itself — independent of any
+    UQ this project computes).
+  - AOI-wide plausibility check (not per-pixel validation): mean SOC over
+    267,714 nonzero pixels = 421.6 t/ha, vs. Radabaugh et al. (2023)
+    Ten Thousand Islands belowground C stock = 383.6 ± 87.7 Mg C ha⁻¹
+    (source #6 below) — same ballpark, not identical metric (SOC-only vs.
+    belowground incl. live/dead roots) — see `paper/NUMBER_SOURCE_LOG.md` #5.
 - **Script:** [`src/data_pipeline/fetch_soc.py`](../src/data_pipeline/fetch_soc.py)
-  (typology clip — done) — prints the exact local command for the SOC zip.
-- **Local step needed (run outside this sandbox, on your machine, once):**
-  ```bash
-  curl -L -o mangroves_tiles_SOC_predictions_2020.zip \
-    https://zenodo.org/api/records/7729492/files/mangroves_tiles_SOC_predictions_2020.zip/content
-  # then extract only the tile(s) intersecting AOI_BBOX (see aoi.py) —
-  # inspect the archive's internal tile naming first with:
-  unzip -l mangroves_tiles_SOC_predictions_2020.zip | less
-  ```
-  This is a one-time ~4.7 GB download; do it on a machine/connection where
-  that's cheap, then copy just the extracted AOI tile(s) back into
-  `data/raw/soc/`.
+  — typology clip + full SOC tile extraction/mosaic/clip, both implemented
+  and run.
+- **What's on disk now:** `data/raw/soc/soc_tha_0_100cm_{mean,lower_std,upper_std}_ten_thousand_islands_fl_clip.tif`
+  — real per-pixel SOC values for the full AOI. (The intermediate 4.7GB zip
+  and its extracted tiles live under `data/raw/soc/_bg_download/` and
+  `_extracted/`, gitignored — re-run the script to regenerate rather than
+  committing them.)
 
 ### 4. NOAA tide gauge (hydrological driver for the mass-balance term) — ✅ verified, keyless
 
@@ -157,38 +169,58 @@ defensibility, not ecological novelty.**
   regionally-specific AGB numbers for sanity-checking model output even
   without the Simard raster.
 
-### 6. Radabaugh et al. (2023) field-plot blue carbon stock model — 🔴 data availability unconfirmed
+### 6. Radabaugh et al. (2023) field-plot blue carbon stock model — ✅ scalar validation number sourced (2026-08-29); 🔴 raster still unconfirmed
 
 - Our strongest regional validation reference (see `literature_notes.md`
-  §2), but we only confirmed the **publication** (Estuaries and Coasts,
-  doi:10.1007/s12237-023-01217-7), not a public download link for the
-  underlying 30 m raster carbon-stock layers themselves. FWC/FWRI publishes
-  a GIS open-data portal (`geodata.myfwc.com`) that plausibly hosts it, but
-  this was not confirmed by a working URL in this session.
-- **Local step needed:** browse <https://geodata.myfwc.com/pages/marine> and
+  §2). **Update, Day 1 of the ICDABI sprint:** the full PDF was read
+  directly (`data/raw/validation_refs/Radabaugh_et_al_2023_SWFL_blue_carbon.pdf`,
+  saved to the repo as the primary source), not just search-engine
+  summaries. The paper reports results broken down by **four named SW
+  Florida sub-regions in its own Table 1 — one of which is literally
+  "Ten Thousand Islands,"** matching this project's AOI almost exactly
+  (their Fig. 7c map spans ~25.8–26.2°N, 81.5–81.8°W). Used **434.6 ± 96.8
+  Mg C ha⁻¹** (mangrove, total C stock, Ten Thousand Islands row) as the
+  region-matched validation reference — see `paper/NUMBER_SOURCE_LOG.md` #2
+  for the exact table/column citation — in place of the coarser whole-SWFL
+  average (393.9 ± 107.1) used in the original scaffolding session.
+- **Still unconfirmed:** a public download link for the underlying 30 m
+  raster carbon-stock layers themselves (only the published Table 1
+  scalars were sourced, not per-pixel data). The paper states model results
+  are viewable/downloadable at
+  <https://gis.myfwc.com/SWFLCarbonStocksMap/> — confirmed this is a live
+  ArcGIS Experience Builder app (HTTP 200), but its underlying data-service
+  URL was not discoverable within a short, timeboxed search (no
+  `config.json` at the obvious paths, no bare ArcGIS REST catalog at the
+  guessed base URL) — this was intentionally not chased further per the
+  sprint's timebox-then-move-on rule, since the Table 1 scalar already
+  gives a real, precisely-cited validation number.
+- **Local step needed (optional, only if per-pixel raster validation is
+  wanted later):** browse <https://geodata.myfwc.com/pages/marine> and
   <https://myfwc.com/research/gis/maps-data/> by hand for the specific
   layer, or email the corresponding author for the raster outputs (common
   and normal for a state-agency-affiliated study). Until then, treat the
-  paper's **reported summary statistics** (393.9 ± 107.1 Mg C ha⁻¹
-  above+belowground) as a scalar sanity check, not a per-pixel validation
-  raster.
+  Table 1 Ten Thousand Islands scalar (434.6 ± 96.8 Mg C ha⁻¹, mangrove,
+  total C stock) as a region-matched scalar sanity check, not a per-pixel
+  validation raster.
 
 ## Summary: what's real and on disk right now vs. blocked
+
+*Updated 2026-08-29, Day 1 of the ICDABI sprint (see `DAY1_STATUS.md`).*
 
 | Layer | Status | Blocker |
 |---|---|---|
 | Sentinel-2 imagery | ✅ real sample on disk | none |
 | GMW mangrove extent | ✅ real, full AOI, on disk | none |
-| SOC typology (proxy) | ✅ real, windowed sample, on disk | none |
-| SOC stock values (actual carbon numbers) | 🔶 documented, not pulled | 4.7 GB file, needs local run |
+| SOC typology | ✅ real, windowed sample, on disk | none |
+| **SOC stock values (actual carbon numbers, our training label)** | ✅ **real, full AOI, on disk** — was flagged 🔶 last session, unblocked today (4.7GB download completed in ~5 min; "too large" was untested, not true) | none |
 | NOAA tide gauge | ✅ real, on disk | none |
+| Radabaugh 2023 Table 1 scalar (region-matched validation number) | ✅ real, sourced from primary-source PDF | none |
 | Simard 2019 AGB (global standard) | 🔴 blocked | needs free NASA Earthdata login |
-| Radabaugh 2023 raster (best regional validation) | 🔴 blocked | download link not confirmed, needs manual portal search or author contact |
+| Radabaugh 2023 raster (per-pixel validation) | 🔴 blocked | FWC ArcGIS data-service URL not discoverable in a timeboxed search; Table 1 scalar used instead |
 
-**Net assessment:** the pipeline can be built and tested end-to-end today on
-real (not synthetic) imagery, extent, tide, and typology data. The two
-gaps that need a human in the loop before the *quantitative validation*
-claims of the paper are solid are (a) the SOC zip and (b) either Simard
-2019 or a confirmed Radabaugh raster — both are one-time local steps, not
-recurring blockers, and both have a scalar/proxy fallback already
-documented above so the pipeline is not stalled waiting on them.
+**Net assessment:** every data layer needed for real (non-synthetic,
+non-proxy) supervised training on the pilot AOI is now on disk, including
+a genuine, independently-sourced regression label (SOC t C/ha) — the two
+remaining gaps (Simard raster, Radabaugh raster) are both *additional*
+validation sources, not blockers to training itself, and both still have
+the scalar/proxy fallback documented above.

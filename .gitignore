@@ -10,13 +10,19 @@ __pycache__/
 venv/
 env/
 
-# Data: raw/processed rasters and large downloads are reproducible via
+# Data: raw rasters/imagery and large downloads are reproducible via
 # src/data_pipeline/fetch_*.py + data/README.md -- do not commit them.
 data/raw/**
-data/processed/**
 !data/raw/.gitkeep
-!data/processed/.gitkeep
 !data/raw/README.md
+# data/processed/graph_{nodes,edges} ARE committed (small, ~1MB each) --
+# they're the exact input every results/ metric traces back to
+# (see paper/NUMBER_SOURCE_LOG.md), and pinning them means results are
+# inspectable without re-running the full data pipeline + graph build.
+data/processed/*
+!data/processed/.gitkeep
+!data/processed/graph_nodes.csv
+!data/processed/graph_edges.npy
 
 # Keep small provenance/metadata files that are cheap to diff and useful
 # to have in history (STAC item index, tide CSVs) -- uncomment if desired:
@@ -29,6 +35,11 @@ experiments/logs/*
 *.ckpt
 *.pt
 *.pth
+# ...except small trained-model checkpoints explicitly saved under
+# results/ (same convention as conformal-coverage-geohazard's
+# results/*.joblib) -- these are cheap (single trained baseline, ~7KB) and
+# make results/ self-contained.
+!results/*.pt
 
 # Paper build artifacts
 paper/*.aux
