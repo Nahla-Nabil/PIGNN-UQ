@@ -83,6 +83,38 @@ Recorded honestly as the Day 1 checkpoint result in `DAY1_STATUS.md`.
 
 ---
 
+---
+
+## Day 2 (2026-08-29 continued): three-way model comparison + CQR
+
+Per-model regression metrics, full precision in
+`results/{linear_baseline,baseline_gnn,physics_gnn}_metrics.csv`; the
+combined table (metrics + plausibility together) is
+`results/day2_model_comparison.csv`. All three models share the identical
+graph, features, seed=42, and train/val/test split (`data/processed/graph_nodes.csv`)
+— only the model/loss differs.
+
+| # | Number | Exact source | Note |
+|---|---|---|---|
+| 16 | Linear regression: test R²=0.031, RMSE=96.0, MAE=72.9, n=2,236 | `results/linear_baseline_metrics.csv`, row `split=test_spatial_block` | Formalized version of Day 1's ad hoc diagnostic (#13) — same split, same numbers, now a first-class saved result |
+| 17 | Baseline GNN (no physics): test R²=−0.383, RMSE=114.7, MAE=89.7 | `results/baseline_gnn_metrics.csv`, row `split=test_spatial_block` | Same as Day 1 entry #12 — unchanged, re-confirmed on this exact graph |
+| 18 | **Physics-informed GNN: test R²=−0.219, RMSE=107.7, MAE=85.1, n=2,236** | `results/physics_gnn_metrics.csv`, row `split=test_spatial_block`; `w_prior=0.3`, `w_nonneg=0.1`, `best_epoch=57` | **Physics term improves test R² over the no-physics baseline by +0.165 (−0.383 → −0.219), and improves val R² by +0.064 (0.137 → 0.201, `split=val` rows in the same two files) — but does NOT close the gap to linear regression's +0.031.** This is the Day 2 hard-checkpoint trigger — see DAY2_STATUS.md. |
+| 19 | Physical-consistency correlation (test, vs. mass-balance proxy): linear=−0.060, baseline GNN=+0.048, **physics GNN=+0.645** | `results/day2_model_comparison.csv`, column `physical_consistency_corr_test`, all three model rows | The physics term's clearest, largest effect: an order-of-magnitude jump in how consistent predictions stay with the physical prior under spatial holdout, vs. either non-physics-informed model |
+| 20 | Edge-incoherence rate (test): linear=0.00031, baseline GNN=0.0, physics GNN=0.0 | `results/day2_model_comparison.csv`, column `edge_incoherence_rate_test`; threshold=102.6 t/ha computed by `train_edge_jump_threshold()` (95th pct of real train-side neighbor differences, `src/eval/plausibility.py`) | Does NOT differentiate the two GNN variants (both 0.0) — this metric mainly separates "has graph smoothing" (both GNNs) from "doesn't" (linear), not baseline-vs-physics specifically. Reported as-is, not spun as a physics-term win. |
+| 21 | Negative-prediction rate (test): 0.0 for all three models | `results/day2_model_comparison.csv`, column `neg_rate_test` | No model violates non-negativity on this data even without the constraint — the non-negativity term (part of the physics loss) had nothing to visibly fix here; reported honestly as a non-differentiating metric, not omitted |
+| 22 | CQR empirical coverage: 85.7% at 90% nominal, 90.2% at 95% nominal | `results/cqr_coverage.csv`, `empirical_coverage_test` column, rows `nominal_level=0.90` and `0.95` | Both undershoot nominal by ~4.3-4.8pp — calibrated on val (n=2,424), evaluated once on test (n=2,236, same split as all other Day 2 results). Consistent with the spatial-exchangeability caveat already flagged in `uq_decision.md` before any experiment was run |
+| 23 | CQR mean interval width: 261.9 t/ha (90%), 310.0 t/ha (95%) | `results/cqr_coverage.csv`, column `mean_interval_width_tha` | For reference, SOC label std is 103.4 t/ha (`NUMBER_SOURCE_LOG.md` #6) — intervals are ~2.5-3x the label's std, i.e. genuinely wide, not falsely confident, consistent with the weak point-prediction skill found in #16-18 |
+| 24 | Conformal correction Q: −3.99 (90%), −5.31 (95%) | `results/cqr_coverage.csv`, column `conformal_correction_Q` | Negative correction means the base pinball-loss quantile regressor was already slightly conservative (wide) on the calibration set — CQR tightened rather than widened here. Legitimate CQR behavior (Romano et al. 2019 designed the method to correct in either direction), not a bug. Test undercoverage despite this tightening reinforces that calibration-set (val) and evaluation-set (test) residual distributions genuinely differ. |
+
+**Hard-checkpoint verdict (per the user's Day 2 instructions):** physics-GNN
+test R² (−0.219, #18) is still below linear regression's test R² (+0.031,
+#16). **The reframe is required and has been applied** — see
+`DAY2_STATUS.md` for the explicit statement. Entry #19 (physical
+consistency correlation) is the number that substantiates the reframed
+claim.
+
+---
+
 ## Superseded/rejected numbers (kept for the audit trail, not for the paper)
 
 | # | Number | Why rejected |

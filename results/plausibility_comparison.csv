@@ -1,0 +1,4 @@
+model,neg_rate_test,edge_incoherence_rate_test,edge_jump_threshold_tha,physical_consistency_corr_test
+linear_regression,0.0,0.00031191515907673113,102.59149399999994,-0.06009899321548376
+baseline_gnn_no_physics,0.0,0.0,102.59149399999994,0.047980552588694436
+physics_gnn,0.0,0.0,102.59149399999994,0.6445233685131208
