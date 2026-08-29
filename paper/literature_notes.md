@@ -161,6 +161,17 @@ fill, validated against Radabaugh et al. (2023) as regional ground truth.
   layer.
   [verra.org/methodologies/vm0033-methodology-for-tidal-wetland-and-seagrass-restoration-v2-1](https://verra.org/methodologies/vm0033-methodology-for-tidal-wetland-and-seagrass-restoration-v2-1/)
 
+- **Verra, VM0033 and VM0007 official methodology pages** — verified live
+  on verra.org (checked by user against primary source, 2026-08-29).
+  Confirms both methodology pages are current/active and both sit under
+  the same VCS AFOLU Non-Permanence Risk Tool framework described below,
+  i.e. the flat-buffer critique applies to both, not only VM0033.
+  [note: the VM0033 URL above was independently confirmed live earlier
+  this session; the exact VM0007 page URL was not separately re-verified
+  in this session and is not linked here to avoid citing an unconfirmed
+  address — locate via verra.org's methodology index if a direct link is
+  needed for the paper.]
+
 - **VCS AFOLU Non-Permanence Risk Tool** (used by both VM0033 and VM0007).
   The actual scoring rubric: a checklist-based risk score (project
   management, financial, legal, social, natural risks) maps to a fixed
@@ -174,6 +185,20 @@ fill, validated against Radabaugh et al. (2023) as regional ground truth.
   monitoring in between. Same structural pattern as VCS: static,
   infrequently updated, not resolved at sub-project spatial granularity.
   [planvivo.org/buffer](https://www.planvivo.org/buffer)
+
+- **Plan Vivo Foundation (2022), "Plan Vivo Standard V5.0."** Official
+  standard, current version (supersedes v4.0 above): a flat **20%**
+  non-permanence buffer requirement — not a 15–20% range. **Action
+  needed:** `main.tex`'s abstract and pricing section currently cite
+  "15–20%" (sourced from the older v4.0 page) and use a 17.5% midpoint in
+  the pricing proof-of-concept's flat-buffer comparator
+  (`src/pricing/pricing_poc.py`, `FLAT_BUFFER_PCT=17.5`). Now that V5.0 is
+  confirmed current, this should be reconciled — either cite V5.0's flat
+  20% directly, or explicitly note the paper is drawing on the range
+  spanned by two Plan Vivo versions (v4.0 and V5.0) plus Verra's own
+  scored range rather than one single current number. Not resolved in this
+  edit — flagging for the next paper revision pass, not silently
+  reconciling it here.
 
 - **Plan Vivo FAQ**, "How are risks to permanence minimised?" — plain-
   language description of the pooled-buffer mechanism, useful for the
@@ -220,6 +245,15 @@ standards currently apply uniformly.
   training M full models.
   [arXiv:1612.01474](https://arxiv.org/pdf/1612.01474)
 
+- **González-Abad, J. & Baño-Medina, J. (2023)**, "Deep Ensembles to
+  Improve Uncertainty Quantification of Statistical Downscaling Models
+  under Climate Change Conditions," Climate Change AI workshop, ICLR 2023.
+  Domain-relevant precedent for deep ensembles specifically in a
+  geospatial/climate-downscaling setting (not a generic benchmark task),
+  strengthening the ensembles-as-ablation case in `uq_decision.md` beyond
+  the original Lakshminarayanan et al. paper alone.
+  [arXiv:2305.00975](https://arxiv.org/abs/2305.00975)
+
 - **Romano, Patterson & Candès (2019)**, "Conformalized Quantile
   Regression," *NeurIPS 2019*. CQR: wraps any quantile regressor with
   split-conformal calibration for **finite-sample, distribution-free
@@ -255,6 +289,19 @@ standards currently apply uniformly.
   random split, or our coverage guarantee is not actually valid — flag this
   explicitly as a methodological requirement, not an optional refinement.
   [researchgate.net/publication/390691348](https://www.researchgate.net/publication/390691348_Spatial-Aware_Conformal_Prediction_for_Trustworthy_Hyperspectral_Image_Classification)
+
+- **Lou, X., Luo, P. & Meng, L. (2024/2025), "GeoConformal Prediction: A
+  Model-Agnostic Framework for Measuring the Uncertainty of Spatial
+  Prediction,"** *Annals of the American Association of Geographers*,
+  115(8), 1971–1998. A stronger, peer-reviewed, journal-published version
+  of the same point as the ResearchGate item above: a model-agnostic
+  conformal framework built specifically to handle spatial
+  autocorrelation/exchangeability violations in spatial prediction, rather
+  than a generic image-classification setting. This should be the primary
+  citation for our spatially-blocked calibration requirement in
+  `uq_decision.md`; the hyperspectral-classification item above is now the
+  secondary/supporting citation.
+  [arXiv:2412.08661](https://arxiv.org/abs/2412.08661)
 
 - **"Quantifying Uncertainty in Spatial Prediction for Nonstationary
   Spatial Processes"** (2026). Reinforces the same point from the

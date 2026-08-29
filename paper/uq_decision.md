@@ -82,4 +82,12 @@ potential weakness ("why the cheaper method") into a result.
 violates?"** Answer to state directly in the paper: yes — this is exactly
 why calibration uses spatially-blocked splits rather than random splits,
 and we report on that basis rather than claiming an unconditional
-guarantee we can't back.
+guarantee we can't back. Primary citation for this point: Lou, Luo & Meng
+(2024/2025), "GeoConformal Prediction: A Model-Agnostic Framework for
+Measuring the Uncertainty of Spatial Prediction," *Annals of the American
+Association of Geographers* 115(8):1971–1998 — a peer-reviewed,
+journal-published framework built specifically around this exact
+exchangeability-under-spatial-autocorrelation problem, added to
+`literature_notes.md` §4 2026-08-29 (verified against primary source by
+the user; supersedes the ResearchGate hyperspectral-classification item
+as the lead citation for this claim, which remains as secondary support).

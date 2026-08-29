@@ -147,14 +147,18 @@ pricing proof-of-concept (Section~V) compares against.
 Monte Carlo dropout \cite{gal2016dropout} is cheap but known to be poorly
 calibrated, particularly under distribution shift. Deep ensembles
 \cite{lakshminarayanan2017ensembles} are better calibrated empirically but
-require training multiple full models. Conformalized quantile regression
+require training multiple full models, including in geospatial
+climate-downscaling settings closer to ours than generic benchmarks
+\cite{gonzalezabad2023ensembles}. Conformalized quantile regression
 \cite{romano2019cqr} gives a finite-sample, distribution-free coverage
 guarantee under an exchangeability assumption, and has been validated for
-earth-observation regression tasks \cite{eo_conformal2024}. We adopt CQR
-as the primary method (full comparison in our project's
-\texttt{uq\_decision.md}), with the caveat, tested directly in
-Section~IV, that spatial autocorrelation can violate the exchangeability
-assumption conformal prediction relies on.
+earth-observation regression tasks \cite{eo_conformal2024}. That guarantee
+is conditional on exchangeability between calibration and evaluation data,
+an assumption spatial autocorrelation can violate; GeoConformal Prediction
+\cite{lou2024geoconformal} addresses this directly with a model-agnostic
+conformal framework for spatial prediction. We adopt CQR as the primary
+method (full comparison in our project's \texttt{uq\_decision.md}), with
+the same caveat, tested directly in Section~IV rather than only cited.
 
 \section{Method}
 
