@@ -24,15 +24,23 @@ gap to linear regression (+0.031). By the hard-checkpoint rule set for
 today, **this triggers the required reframe below** — not softened, not
 hidden.
 
-**On physical-consistency correlation: a large, clear effect.** The
-physics-informed model's test-set predictions correlate with the
-mass-balance proxy at **r=0.645** — versus 0.048 for the no-physics GNN
-and −0.060 for linear regression. This isn't a marginal difference; it's
-roughly an order of magnitude larger than either non-physics-informed
-model, and it holds on the held-out spatial block, not just on data the
-physics term was trained on. This is the real, measurable effect the
-physics constraint has, even though it's a different kind of effect than
-"beats the R² leaderboard."
+**On physical-consistency correlation: a large effect, but a
+prior-generalization check, not independent physical validation — this
+needs precise wording, corrected here after an initial pass overstated
+it (see `paper/method_notes.md`'s Result section for the fuller
+correction).** The physics-informed model's test-set predictions correlate
+with the mass-balance proxy at **r=0.645** — versus 0.048 for the
+no-physics GNN and −0.060 for linear regression. Because the proxy being
+correlated against is the exact quantity the physics loss trained the
+model toward, this number measures whether the constraint generalized
+from training nodes to spatially held-out ones, not whether the
+constraint is physically true. That generalization is still real and
+non-trivial — every other metric this sprint (R², CQR coverage) has shown
+this AOI generalizes poorly under spatial holdout, so a constraint
+transferring this cleanly was not a given. But it is evidence the
+constraint was *learned and carried forward*, not evidence it reflects
+actual carbon dynamics, which this AOI's single-date, flux-tower-free data
+cannot independently confirm either way.
 
 **On the other two plausibility metrics: no differentiation, reported
 honestly.** Negative-prediction rate is 0.0 for all three models (nothing
@@ -54,17 +62,20 @@ test R² (+0.031).** Per instruction, this is not softened in the writeup.
 constraint improves point-prediction accuracy."
 
 **New framing (what the evidence actually supports, and what the paper
-will now claim):** *the physics constraint improves prediction
-reliability/plausibility under spatial distribution shift — measured by
-consistency with a physically-motivated prior, not by R² — which is
-exactly the situation calibrated uncertainty quantification, not point
-accuracy, is designed to make defensible.* Same logic as the landslide
-paper's finding that a pooled metric can mask what's actually happening:
-here, R² alone hides the fact that the physics-informed model is doing
-something real and measurably different (staying consistent with a
-physical prior under exactly the kind of regional heterogeneity this AOI
-has shown throughout both days) that a bare accuracy number doesn't
-capture.
+will now claim):** *the physics-informed model's predictions generalize
+the imposed mass-balance-inspired prior to spatially held-out nodes, at a
+materially higher correlation (0.645) than either non-physics baseline
+(0.048, −0.060) — evidence the constraint is learned and transferred, not
+that it has been independently validated against ground-truth physical
+measurements, which this AOI's single-date, flux-tower-free data cannot
+provide.* Same logic as the landslide paper's finding that a pooled metric
+can mask what's actually happening: here, R² alone hides the fact that the
+physics-informed model is doing something real and measurably different
+(carrying the imposed prior forward under exactly the kind of regional
+heterogeneity this AOI has shown throughout both days) that a bare
+accuracy number doesn't capture — but "measurably different" is a claim
+about generalization of the constraint, not a claim that the constraint
+has been physically validated.
 
 This reframe is now load-bearing for the paper's Abstract/Intro/Discussion
 and needs to be stated explicitly there too, not just here — flagging for

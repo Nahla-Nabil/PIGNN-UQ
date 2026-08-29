@@ -65,10 +65,19 @@ residual added as an auxiliary loss term, not a full physics simulator.
 ## Result (see DAY2_STATUS.md for full numbers)
 
 The physics term improved test R² (−0.383 → −0.219) without closing the
-gap to a plain linear baseline (+0.031), but produced a large,
-independently measurable effect on physical-consistency correlation under
-spatial holdout (0.048 → 0.645) — the basis for this paper's reframed
-central claim: the constraint improves prediction *reliability/
-plausibility* under distribution shift, not necessarily point accuracy,
-which is the paper's actual motivation for pairing it with calibrated UQ
-rather than presenting it as an accuracy improvement on its own.
+gap to a plain linear baseline (+0.031). It also raised the correlation
+between test-node predictions and the mass-balance proxy itself (0.048 →
+0.645, both non-physics models near zero). **This correlation is a
+prior-generalization check, not independent physical validation:** the
+proxy being correlated against is the exact quantity the physics loss
+trained the model toward, so a high value shows the constraint was learned
+and carried forward to spatially held-out nodes rather than only fit on
+training nodes — real and non-trivial, since overfitting to train and
+failing to generalize the constraint was a live possibility given
+everything else in this AOI generalizes poorly (Day 1-2 findings) — but it
+is not evidence that the constraint reflects true carbon dynamics, since
+this AOI's single-date, flux-tower-free data cannot supply an independent
+measurement to validate against. The paper's central claim is worded
+accordingly: the constraint demonstrably generalizes to held-out nodes,
+which is what motivates pairing it with calibrated UQ rather than
+presenting it as a validated accuracy improvement.
