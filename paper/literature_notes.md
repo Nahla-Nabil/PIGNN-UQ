@@ -1,3 +1,52 @@
+# Phase 4 (journal-extension sprint, 2026-08-29): sharpened research gap statement
+
+**Superseded, generic version (not used in the paper):** "no one has
+combined PINN and GNN for blue carbon." Too generic to be a real
+contribution claim -- doesn't say what's actually missing or why it
+matters.
+
+**The specific gap statement, built only from already-verified sources
+(no new citations added):**
+
+> Existing blue-carbon buffer-pool methodologies apply a flat,
+> location-independent discount regardless of prediction confidence:
+> Verra's VM0033 scores a project-level risk category through a
+> checklist-based tool, and the Plan Vivo Standard V5.0 applies a single
+> fixed 20% non-permanence buffer to every credit in a project
+> [`verra_vm0033`, `planvivo_buffer`] -- neither resolves risk at
+> sub-project spatial granularity or conditions the discount on how
+> confident the underlying carbon-stock estimate is. Separately, existing
+> carbon-stock models for this exact ecosystem and region report point
+> estimates without a calibrated uncertainty interval: Radabaugh et al.'s
+> field-plot-calibrated spatial model for our pilot region
+> [`radabaugh2023bluecarbon`], Sanderman et al.'s global mangrove SOC
+> product (our own training label) [`sanderman2023soc`], and Simard et
+> al.'s global mangrove AGB/canopy-height product [`simard2019mangrove`]
+> all report a single predicted value per pixel/site, with no
+> per-prediction confidence measure a pricing rule could condition on.
+> Conformal prediction has been shown to give valid, distribution-free
+> uncertainty for earth-observation regression generally
+> [`eo_conformal2024`] and for spatial prediction specifically under the
+> exchangeability violations spatial autocorrelation causes
+> [`lou2024geoconformal`], and deep-ensemble UQ has been demonstrated in an
+> adjacent geospatial/climate-downscaling setting
+> [`gonzalezabad2023ensembles`] -- but neither literature pairs that
+> calibrated uncertainty with a physics-informed spatial predictor, and
+> neither couples it to a buffer-pool pricing mechanism. **This paper
+> combines a physics-informed spatial predictor with distribution-free
+> uncertainty calibration specifically to make the non-permanence discount
+> confidence-dependent** -- turning a flat, uniform buffer into a signal
+> that can differ between a well-characterized interior stand and a
+> poorly-characterized eroding fringe within the same project.
+
+This is the version used in `main.tex`'s Introduction (see the paragraph
+beginning "Existing blue-carbon buffer-pool methodologies apply a flat
+discount"). Every citation above was already verified in this project's
+existing literature scan (§1-4 below) or `NUMBER_SOURCE_LOG.md` before this
+sprint began; none is new.
+
+---
+
 # Literature & Baseline Scan
 
 Compiled 2026-08-29. Scope: enough to (a) place the paper against the closest
@@ -76,6 +125,22 @@ Not a full systematic review — this is a 5-page conference paper.
     Temperature in River Networks" (2020).
     [arXiv:2009.12575](https://arxiv.org/pdf/2009.12575)
 
+- **Willard, Jia, Xu, Steinbach & Kumar (2022/2023)**, "Integrating
+  Scientific Knowledge with Machine Learning for Engineering and
+  Environmental Systems," *ACM Computing Surveys* 55(4), Article 66,
+  doi:10.1145/3514228. Added 2026-08-29 (journal-extension sprint, verified
+  directly against the ACM DL/arXiv listing — DOI, author list, and
+  volume/issue confirmed, not taken from a search snippet alone; note the
+  paper was available online Nov 2022 but the formal ACM Computing Surveys
+  issue is dated 2023, cited here as 2023 to match the journal's own
+  bibliographic record). The general survey/taxonomy of physics-guided
+  machine learning (of which our physics-informed loss is one instance) —
+  cited as the broad motivating framework in `main.tex`'s Related Work,
+  not as environmental- or blue-carbon-specific prior art (see the
+  flood-forecasting items above for that).
+  [dl.acm.org/doi/10.1145/3514228](https://dl.acm.org/doi/10.1145/3514228) ·
+  [arXiv:2003.04919](https://arxiv.org/abs/2003.04919)
+
 **Our delta:** every PINN-GNN paper we found that uses a genuine
 conservation-law loss term operates on hydrology (flood/streamflow)
 networks. None target blue-carbon / mangrove biomass-soil carbon dynamics,
@@ -107,6 +172,26 @@ found, novel.
   This is our primary **field-validated regional reference** for sanity-
   checking predicted carbon stocks.
   [doi.org/10.1007/s12237-023-01217-7](https://doi.org/10.1007/s12237-023-01217-7)
+
+- **Roy, Pitumpe Arachchige, Watt et al. (2024)**, "Remote sensing-based
+  mangrove blue carbon assessment in the Asia-Pacific: A systematic
+  review," *Science of The Total Environment* 938:173270,
+  doi:10.1016/j.scitotenv.2024.173270. Added 2026-08-29 (journal-extension
+  sprint, verified directly -- DOI, journal, volume/article number, year,
+  and full author list confirmed against a mirror listing the publisher's
+  own citation record, not taken from a search snippet alone). A
+  systematic review of 105 remote-sensing-based mangrove blue-carbon
+  studies (1990–June 2023); its own stated finding is that
+  **belowground-carbon estimation and carbon-stock valuation are both
+  under-studied relative to aboveground biomass** -- independently
+  supplementing, not replacing, Radabaugh et al. above (our actual
+  regional reference) as evidence that the point-estimate-without-
+  valuation gap this paper's Introduction states is real and
+  field-recognized, not asserted from a single source. **Not** used to
+  broaden this paper's own scope: Roy et al.'s review identifies a
+  multi-region, multi-study research agenda; this paper's own gap
+  statement stays narrowly scoped to the single-region calibration
+  question it actually tested (see `main.tex` Introduction).
 
 - **Rovai, Twilley et al.**, "Global controls on carbon storage in mangrove
   soils" — coastal-ecosystem-setting model showing mangrove soil organic
@@ -309,6 +394,51 @@ standards currently apply uniformly.
   explicit handling, relevant given our AOI spans open water, dense
   interior mangrove, and eroding fringe in one graph.
   [tandfonline.com/doi/full/10.1080/24694452.2026.2639721](https://www.tandfonline.com/doi/full/10.1080/24694452.2026.2639721)
+
+- **Mao, H., Martin, R. & Reich, B.J. (2024), "Valid Model-Free Spatial
+  Prediction,"** *Journal of the American Statistical Association*,
+  119(546), 904–914, doi:10.1080/01621459.2022.2147531. Verified directly
+  (2026-08-29, journal-extension sprint Day 4): author list, volume/issue/
+  pages, and DOI confirmed against the arXiv abstract page (arXiv:2006.15640,
+  the preprint of this published version) rather than taken from a search
+  snippet alone. Formalizes when spatial conformal prediction is valid via
+  an *infill asymptotic* regime that requires sufficient calibration-point
+  density within each local region being calibrated for. Directly relevant
+  to our own localized (Mondrian) CQR result: our validation set (1,583
+  nodes) split across spatial blocks gave most blocks a calibration count
+  well under what this kind of local-density requirement implies is
+  needed for stable finite-sample quantiles — cited in `main.tex`'s
+  Discussion as the theoretical grounding for *why* localized calibration
+  underperformed global on our test set, not just an empirical observation
+  left unexplained.
+  [tandfonline.com/doi/abs/10.1080/01621459.2022.2147531](https://www.tandfonline.com/doi/abs/10.1080/01621459.2022.2147531) ·
+  [arXiv:2006.15640](https://arxiv.org/abs/2006.15640)
+
+- **Hjort, A., Hermansen, G.H., Pensar, J. & Williams, J.P. (2023),
+  "Uncertainty Quantification in Automated Valuation Models with
+  Spatially Weighted Conformal Prediction,"** arXiv:2312.06531. Verified
+  directly (2026-08-29): author list and abstract confirmed against the
+  arXiv abstract page. Applies spatially-weighted and Mondrian conformal
+  calibration to a real-estate automated-valuation-model (AVM) setting --
+  the closest asset-*pricing* precedent we found for localized conformal
+  calibration, not just a spatial-statistics or earth-observation one.
+  **Precise finding, not overstated:** their spatially-weighted (SCP) and
+  nearest-neighbor (NNCP) variants generally improved geographic coverage
+  consistency over a global baseline, but their own Mondrian-style
+  variant (MCP, calibrated on the same geographic subsets used for
+  evaluation) showed "little to no improvement" over global calibration
+  in at least one tested scenario, and their discussion explicitly cautions
+  that an apparent localization gain "can also be seen as an indication of
+  either a misspecified prediction model or a non-conformity score that
+  fails to adequately capture the spatial trends in the data" -- i.e.
+  gains from spatial localization in conformal calibration for an
+  asset-pricing domain were domain/setting-dependent in their own results,
+  not automatic. They do not report a systematic sensitivity analysis
+  against calibration-set size or local density (a gap, not a claim we
+  attribute to them). Cited in `main.tex`'s Discussion to situate our own
+  negative Mondrian-vs-global result within a known pattern in
+  asset-valuation UQ literature, not as an isolated failure -- worded to
+  match exactly what their paper reports, not a stronger claim.
 
 ---
 

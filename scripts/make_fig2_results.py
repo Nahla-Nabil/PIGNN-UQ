@@ -1,21 +1,19 @@
 """Generate paper/figures/fig2_results.pdf: two-panel results figure.
 
-(a) Grouped bar chart of Test R^2 and prior-generalization correlation
-    (results/day2_model_comparison.csv columns `test_r2` and
-    `physical_consistency_corr_test`) for the three compared models.
-    NOTE ON NAMING: the source CSV column is `physical_consistency_corr_test`,
-    but NUMBER_SOURCE_LOG.md entry #19 records that this label was corrected
-    on 2026-08-29 -- the proxy correlated against is the physics loss's own
-    training target, so this is prior-generalization, not independent
-    physical validation. This script uses the corrected term
-    ("prior-generalization corr.") in the figure, per that entry's
-    instruction that "every prose reference must use the corrected framing,
-    not the column name."
-(b) Empirical vs. nominal CQR coverage (results/cqr_coverage.csv), with a
-    dashed y=x reference line at perfect calibration.
-
-Values are plotted at full CSV precision (no manual rounding beyond what
-matplotlib's default tick formatting does).
+(a) Grouped bar chart of VAL R^2 and prior-generalization correlation for
+    the three compared models, with mean +/- std ERROR BARS from the
+    Phase 1A multi-seed runs (results/phase1a_multiseed_val.csv, n=5 seeds
+    per model; linear regression's bar has no error bar -- it is
+    deterministic, std=0 by construction, not simulated). This is a
+    robustness-check figure: it shows whether Day 2's single-seed finding
+    holds up, not a single point estimate presented as if noise-free.
+(b) Empirical vs. nominal CQR coverage on the Phase 2 TEST split (the one
+    real, final evaluation), GLOBAL vs. LOCALIZED (Mondrian) calibration
+    side by side, with a dashed y=x perfect-calibration reference line.
+    Per NUMBER_SOURCE_LOG.md #45, localized calibration does NOT improve on
+    global here -- it undercovers more. That is shown plainly, not
+    obscured: both methods' points are plotted, neither is hidden or
+    rescaled to look better.
 
 Run from the repo root: python scripts/make_fig2_results.py
 """
@@ -28,8 +26,8 @@ import numpy as np
 import pandas as pd
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
-COMPARISON_CSV = REPO_ROOT / "results" / "day2_model_comparison.csv"
-COVERAGE_CSV = REPO_ROOT / "results" / "cqr_coverage.csv"
+MULTISEED_CSV = REPO_ROOT / "results" / "phase1a_multiseed_val.csv"
+COVERAGE_CSV = REPO_ROOT / "results" / "phase2_cqr_test_coverage.csv"
 OUT_PDF = REPO_ROOT / "paper" / "figures" / "fig2_results.pdf"
 
 # Okabe-Ito colorblind-safe palette (shared with fig1_pipeline.py).
@@ -64,18 +62,24 @@ plt.rcParams.update({
 
 
 def panel_a(ax):
-    df = pd.read_csv(COMPARISON_CSV).set_index("model")
-    metrics = ["test_r2", "physical_consistency_corr_test"]
-    metric_labels = ["Test R²", "Prior-gen.\ncorr."]
+    df = pd.read_csv(MULTISEED_CSV)
+    metrics = ["val_r2", "val_prior_gen_corr"]
+    metric_labels = ["Val $R^2$\n(5-seed mean)", "Val prior-gen.\ncorr. (5-seed mean)"]
 
     n_models = len(MODEL_ORDER)
     bar_w = 0.8 / n_models
     x = np.arange(len(metrics))
 
     for i, model in enumerate(MODEL_ORDER):
-        vals = [df.loc[model, m] for m in metrics]
+        sub = df[df["model"] == model]
+        means = [sub[m].mean() for m in metrics]
+        # Linear regression is deterministic (closed-form OLS): std=0 by
+        # construction, not simulated variance across "seeds" -- plotted
+        # with no error bar rather than a fabricated one.
+        stds = [sub[m].std(ddof=0) if model != "linear_regression" else 0.0 for m in metrics]
         offset = (i - (n_models - 1) / 2) * bar_w
-        ax.bar(x + offset, vals, width=bar_w * 0.92,
+        ax.bar(x + offset, means, width=bar_w * 0.92,
+               yerr=stds, capsize=2.2, error_kw=dict(linewidth=0.8, ecolor="black"),
                color=MODEL_COLORS[model], edgecolor="black", linewidth=0.5,
                label=MODEL_LABELS[model])
 
@@ -83,36 +87,35 @@ def panel_a(ax):
     ax.set_xticks(x)
     ax.set_xticklabels(metric_labels)
     ax.set_ylabel("Value")
-    ax.set_title("(a) Model comparison", fontsize=8, loc="left")
+    ax.set_title("(a) Model comparison, val (5 seeds)", fontsize=8, loc="left")
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
-    ax.legend(fontsize=6.2, frameon=False, loc="upper left",
+    ax.legend(fontsize=6.0, frameon=False, loc="upper left",
                handlelength=1.2, handletextpad=0.4, borderaxespad=0.2)
-    ax.set_ylim(-0.5, 0.85)
+    ax.set_ylim(-0.25, 0.95)
 
 
 def panel_b(ax):
     df = pd.read_csv(COVERAGE_CSV)
-    nominal_pct = df["nominal_level"] * 100
-    empirical_pct = df["empirical_coverage_test"] * 100
-
     lims = (78, 100)
     ax.plot(lims, lims, linestyle="--", color=GRAY, linewidth=1.0,
             label="Perfect calibration", zorder=1)
 
-    for _, row in df.iterrows():
-        nom = row["nominal_level"] * 100
-        emp = row["empirical_coverage_test"] * 100
-        ax.plot([nom, nom], [emp, nom], color=VERMILLION, linewidth=1.0,
-                 zorder=2)
-
-    ax.scatter(nominal_pct, empirical_pct, s=32, color=VERMILLION,
-               edgecolor="black", linewidth=0.5, zorder=3,
-               label="Empirical (test)")
-
-    for nom, emp in zip(nominal_pct, empirical_pct):
-        ax.annotate(f"{emp:.1f}%", (nom, emp), textcoords="offset points",
-                    xytext=(6, -9), fontsize=6.4, color="black")
+    method_style = {
+        "global": dict(color=BLUE, marker="o", label="Global (before)"),
+        "localized_mondrian": dict(color=VERMILLION, marker="^", label="Localized/Mondrian (after)"),
+    }
+    for method, style in method_style.items():
+        sub = df[df["calibration_method"] == method].sort_values("nominal_level")
+        nom = sub["nominal_level"].values * 100
+        emp = sub["empirical_coverage_test"].values * 100
+        for n, e in zip(nom, emp):
+            ax.plot([n, n], [e, n], color=style["color"], linewidth=0.8, zorder=2, alpha=0.6)
+        ax.scatter(nom, emp, s=30, color=style["color"], marker=style["marker"],
+                   edgecolor="black", linewidth=0.5, zorder=3, label=style["label"])
+        for n, e in zip(nom, emp):
+            ax.annotate(f"{e:.1f}%", (n, e), textcoords="offset points",
+                        xytext=(6, -2 if style["marker"] == "o" else -12), fontsize=5.8, color=style["color"])
 
     ax.set_xlim(*lims)
     ax.set_ylim(*lims)
@@ -120,16 +123,16 @@ def panel_b(ax):
     ax.set_yticks([80, 85, 90, 95, 100])
     ax.set_xlabel("Nominal coverage (%)")
     ax.set_ylabel("Empirical coverage (%)")
-    ax.set_title("(b) CQR coverage calibration", fontsize=8, loc="left")
+    ax.set_title("(b) CQR coverage, test (global vs. localized)", fontsize=8, loc="left")
     ax.set_aspect("equal")
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
-    ax.legend(fontsize=6.2, frameon=False, loc="lower right",
+    ax.legend(fontsize=5.8, frameon=False, loc="lower right",
                handlelength=1.4, handletextpad=0.4, borderaxespad=0.2)
 
 
 def main():
-    fig, (ax_a, ax_b) = plt.subplots(1, 2, figsize=(7.16, 2.9),
+    fig, (ax_a, ax_b) = plt.subplots(1, 2, figsize=(7.16, 2.05),
                                        constrained_layout=True)
     panel_a(ax_a)
     panel_b(ax_b)

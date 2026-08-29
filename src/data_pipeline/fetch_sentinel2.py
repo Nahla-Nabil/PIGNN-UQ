@@ -102,18 +102,46 @@ def clip_bands(item, bands=("B04", "B08", "B11"), out_name="sample_clip"):
     return out_path
 
 
+GREEN_BAND_ITEM_ID = "S2B_MSIL2A_20260206T160339_R097_T17RMJ_20260206T213114"
+# The exact scene already used for B04/B08/B11 (sample_clip_<this id>.tif).
+# Phase 1C (NUMBER_SOURCE_LOG.md) needs B03 (Green) for a standard McFeeters
+# NDWI = (Green-NIR)/(Green+NIR), which is not derivable from the 3 bands
+# already on disk. Rather than a fresh scene search, this re-fetches ONE
+# additional band from the SAME already-identified item by id -- disclosed
+# explicitly in NUMBER_SOURCE_LOG.md as a scoped, minimal exception to the
+# "no new data pulls" instruction, made necessary by a gap that instruction
+# didn't anticipate (confirmed with the user before pulling).
+
+
+def fetch_green_band(item_id: str = GREEN_BAND_ITEM_ID):
+    """Fetch B03 (Green, 10m) for the exact scene already used for
+    B04/B08/B11, windowed identically to clip_bands() so it reprojects onto
+    the same grid in build_graph.py. Writes a single-band GeoTIFF."""
+    catalog = pystac_client.Client.open(STAC_URL, modifier=planetary_computer.sign_inplace)
+    results = catalog.search(collections=["sentinel-2-l2a"], ids=[item_id])
+    items = list(results.items())
+    if not items:
+        raise RuntimeError(f"item {item_id} not found via STAC search")
+    item = items[0]
+    out_path = clip_bands(item, bands=("B03",), out_name="sample_clip_B03")
+    return out_path
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("--mode", choices=["search", "clip"], default="search")
+    ap.add_argument("--mode", choices=["search", "clip", "fetch-green"], default="search")
     ap.add_argument("--date-range", default="2026-01-01/2026-07-01")
     ap.add_argument("--max-cloud", type=float, default=20.0)
     args = ap.parse_args()
 
-    items = search(args.date_range, args.max_cloud)
-    print(f"found {len(items)} scenes with <{args.max_cloud}% cloud cover over AOI, {args.date_range}")
-    save_item_index(items, args.date_range)
+    if args.mode == "fetch-green":
+        fetch_green_band()
+    else:
+        items = search(args.date_range, args.max_cloud)
+        print(f"found {len(items)} scenes with <{args.max_cloud}% cloud cover over AOI, {args.date_range}")
+        save_item_index(items, args.date_range)
 
-    if args.mode == "clip" and items:
-        best = min(items, key=lambda it: it.properties.get("eo:cloud_cover", 100))
-        print(f"clipping bands from lowest-cloud scene: {best.id} ({best.properties.get('eo:cloud_cover')}% cloud)")
-        clip_bands(best)
+        if args.mode == "clip" and items:
+            best = min(items, key=lambda it: it.properties.get("eo:cloud_cover", 100))
+            print(f"clipping bands from lowest-cloud scene: {best.id} ({best.properties.get('eo:cloud_cover')}% cloud)")
+            clip_bands(best)

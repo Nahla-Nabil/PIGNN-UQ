@@ -1,3 +1,56 @@
+# Method Notes: test-set protocol (Phase 0, journal-extension sprint)
+
+**Day 1-2's split was structurally three-way (train/val/test), but was
+used, in practice, like a two-way split for decision-making purposes:**
+val was correctly reserved for early stopping, but the test split's
+metrics were then directly inspected to make model-selection/narrative
+decisions -- most explicitly the "hard-checkpoint" comparison in
+`DAY2_STATUS.md`, which compares test $R^2$ across linear regression,
+baseline GNN, and physics GNN to decide what the paper's central claim
+would be. That is a real, if informal, use of test data to make a
+decision, on top of its intended role as a single untouched confirmation.
+Val's numbers were also cited once in a similar cross-model narrative
+point ("val $R^2$ improved similarly"). Continuing to treat either set as
+"held out" for the robustness/selection work below would bias the numbers
+reported as final.
+
+**Fix, applied before any Phase 1 experiment:** a fresh test block (and a
+fresh val block) was carved using ONLY the legacy-train superblocks --
+nodes that were only ever touched via gradient steps during training, never
+individually inspected to make a decision. Legacy val and legacy test were
+folded entirely into the new train pool (training on previously-seen data
+is always safe; evaluating on it again is what leaks). Full implementation:
+`src/data_pipeline/build_graph.py` (search `PHASE1_SPLIT_SEED`); full
+numbers: `paper/NUMBER_SOURCE_LOG.md` entries #30-32.
+
+**The operative protocol from Phase 0 onward, stated plainly for the
+paper's Method section:** every experiment in Phase 1 (multi-seed
+stability, the pre-registered lambda sweep, the feature ablation, CQR
+calibration-method comparison) is decided on **val only**, using rules
+fixed before results were seen. The new test split (2,076 nodes) is read
+by exactly one script (`scripts/run_phase2_test_eval.py`), exactly once,
+after every Phase-1 selection was already locked in. This two-stage
+protocol (val-based selection, single held-out test confirmation) is a
+methodological strength of the journal-extension version, not merely a
+fix -- it is what makes the "we tested X and selected Y by a pre-stated
+rule" sentence in the paper defensible to a reviewer, and it is stated as
+a strength in the Method section, not only as a correction of Day 1-2.
+
+**What changed as a result, reported plainly, not reframed to match the
+old narrative:** under the corrected split, the pre-registered lambda
+sweep selected $\lambda=0.1$ (not Day 2's ad hoc 0.3), the physics-informed
+GNN's test $R^2$ advantage over the no-physics baseline GNN did NOT
+replicate (the baseline GNN has the best test $R^2$ of the three models
+under this split/config), and the physics-informed model's
+prior-generalization correlation advantage, while still the largest of the
+three, is far smaller (test: 0.755 vs. 0.682/0.686) than Day 2's
+single-seed finding (0.645 vs. 0.048/-0.060) suggested. See
+`paper/NUMBER_SOURCE_LOG.md` entries #33-47 for the full trace. This is
+exactly what a proper val/test protocol and a multi-seed robustness check
+are supposed to surface, and it is reported as such.
+
+---
+
 # Method Notes: the physics-informed loss term
 
 Full implementation and reasoning: `src/models/physics_terms.py` (single
@@ -62,7 +115,7 @@ second model would. This mirrors the flood-forecasting PINN-GNN precedent
 in `literature_notes.md` §1: a discretized, simplified conservation-law
 residual added as an auxiliary loss term, not a full physics simulator.
 
-## Result (see DAY2_STATUS.md for full numbers)
+## Result — Day 2 pilot number (single seed 42, legacy split, λ=0.3 chosen ad hoc)
 
 The physics term improved test R² (−0.383 → −0.219) without closing the
 gap to a plain linear baseline (+0.031). It also raised the correlation
@@ -77,7 +130,26 @@ failing to generalize the constraint was a live possibility given
 everything else in this AOI generalizes poorly (Day 1-2 findings) — but it
 is not evidence that the constraint reflects true carbon dynamics, since
 this AOI's single-date, flux-tower-free data cannot supply an independent
-measurement to validate against. The paper's central claim is worded
-accordingly: the constraint demonstrably generalizes to held-out nodes,
-which is what motivates pairing it with calibrated UQ rather than
-presenting it as a validated accuracy improvement.
+measurement to validate against.
+
+## Result — journal-extension number (5-seed mean, corrected split, λ=0.1 pre-registered)
+
+**Superseded by the Phase 0-2 protocol above, not merely repeated with
+new numbers.** Under the corrected test-set protocol, a pre-registered
+5-value-x-5-seed lambda sweep (`paper/NUMBER_SOURCE_LOG.md` #36-38) selects
+$\lambda=0.1$, not Day 2's ad hoc 0.3. At that value, on the single final
+test evaluation (#44): baseline GNN test R²=−0.383 is now the BEST of the
+three models (physics GNN=−0.430, linear=−0.450) — the physics term's
+point-accuracy edge over the no-physics baseline, reported in Day 2, does
+**not** replicate under this split/seed-averaged protocol. The
+prior-generalization correlation result is directionally the same but far
+smaller in magnitude: physics GNN=0.755 vs. baseline GNN=0.682 and
+linear=0.686 (a 0.07-0.09 gap, not Day 2's 0.6-point gap). The
+multi-seed check (#33-35) shows why: averaged over 5 seeds, the physics
+GNN's mean val R² (−0.040) is already below the baseline GNN's (+0.005),
+and its prior-gen-corr advantage (0.632 vs. 0.544) is real but modest —
+Day 2's dramatic single-seed gap was not a stable phenomenon. **This is
+the number and the framing the paper now uses; the Day 2 number above is
+kept for audit, not restated as the headline result.** The
+prior-generalization framing itself (not independent physical validation)
+is unchanged and still applies with equal force to the smaller gap.

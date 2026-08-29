@@ -74,6 +74,11 @@ SOC_LOWER_PATH = DATA_RAW / "soc" / f"soc_tha_0_100cm_lower_std_{AOI_NAME}_clip.
 SOC_UPPER_PATH = DATA_RAW / "soc" / f"soc_tha_0_100cm_upper_std_{AOI_NAME}_clip.tif"
 GMW_PATH = DATA_RAW / "gmw" / f"gmw_v3_2020_{AOI_NAME}_clip.tif"
 S2_PATH = DATA_RAW / "sentinel2" / "sample_clip_S2B_MSIL2A_20260206T160339_R097_T17RMJ_20260206T213114.tif"
+S2_B03_PATH = DATA_RAW / "sentinel2" / "sample_clip_B03_S2B_MSIL2A_20260206T160339_R097_T17RMJ_20260206T213114.tif"
+# Same scene as S2_PATH, Green band only -- fetched separately (Phase 1,
+# NUMBER_SOURCE_LOG.md) specifically to support a standard McFeeters NDWI
+# feature ablation, which the original 3-band pull (B04/B08/B11) can't
+# produce. See fetch_sentinel2.py:fetch_green_band().
 
 BLOCK = 5  # 5x5 aggregation of native 30m SOC grid -> ~150m nodes
 SUPERBLOCK_GRID = 8  # 8x8 grid of superblocks over the AOI (~6.25km x ~5.5km each) --
@@ -82,7 +87,24 @@ SUPERBLOCK_GRID = 8  # 8x8 grid of superblocks over the AOI (~6.25km x ~5.5km ea
 # Day 1 entry); still far larger than the 150m node spacing.
 TEST_SUPERBLOCK_FRACTION = 0.2
 VAL_SUPERBLOCK_FRACTION = 0.15
-SPLIT_SEED = 42
+SPLIT_SEED = 42  # Day 1-2 split (kept: reproduces `split_legacy_day1_2`, the
+# split Day 1-2's results/paper numbers trace to -- audit trail only, no
+# script from Phase 0 onward reads this column.
+PHASE1_SPLIT_SEED = 20260829  # Phase 0 fix: seeds the *second-stage* redraw
+# of val/test described below. Distinct constant, not a reused "42", so it's
+# unambiguous in a diff/audit which seed produced which column.
+PHASE1_SUPERBLOCK_GRID = 20  # Finer regrid used ONLY for the Phase 0 redraw
+# (below), not the 8x8 grid above. The candidate pool for the redraw is just
+# the 10 legacy-train superblocks (5,464 nodes), and those 10 are extremely
+# uneven in size (one alone holds 1,347 nodes -- 25% of the pool) -- greedy
+# cumulative-node-fraction selection over only 10 such lumpy chunks
+# overshoots the 20%/15% targets by a large, unpredictable margin (verified
+# empirically: it consumed the entire pool). A 20x20 grid restricted to this
+# same pool gives 47 occupied cells, largest holding 307 nodes (5.6% of the
+# pool) -- fine enough for the greedy selection to land close to target,
+# while each cell (~2.5km x 2.2km) is still far larger than the 150m node
+# spacing, so the spatial-exchangeability requirement (uq_decision.md) still
+# holds.
 
 
 def _reproject_to_ref(src_path, ref_profile, resampling):
@@ -130,6 +152,8 @@ def build():
                 resampling=Resampling.bilinear,
             )
 
+    b03 = _reproject_to_ref(S2_B03_PATH, ref_profile, Resampling.bilinear)
+
     # --- aggregate into BLOCK x BLOCK nodes ---
     h_blocks, w_blocks = h // BLOCK, w // BLOCK
 
@@ -153,9 +177,24 @@ def build():
     b04_b = block_mean(b04)
     b08_b = block_mean(b08)
     b11_b = block_mean(b11)
+    b03_b = block_mean(b03)
     ndvi_b = (b08_b - b04_b) / (b08_b + b04_b + 1e-9)
+    # Phase 1C feature-ablation candidates (NOT in the base FEATURE_COLS --
+    # src/models/gnn_common.py's default -- added as extra columns here so
+    # experiment_runner.py can opt into either one without a second graph
+    # build). Both are standard 2-band normalized-difference indices, real
+    # Sentinel-2 reflectance, no fitted coefficients:
+    #   NDWI (McFeeters 1996): Green vs. NIR, water/moisture-at-surface.
+    #   NDMI (Gao 1996, a.k.a. "NDWI" in some vegetation-water-content
+    #     literature -- the OTHER common index sharing that name; we use the
+    #     McFeeters formula for "NDWI" and this one for "NDMI" to keep the
+    #     two Phase 1C configs non-degenerate, see NUMBER_SOURCE_LOG.md):
+    #     NIR vs. SWIR, vegetation/canopy moisture content.
+    ndwi_b = (b03_b - b08_b) / (b03_b + b08_b + 1e-9)
+    ndmi_b = (b08_b - b11_b) / (b08_b + b11_b + 1e-9)
 
-    keep = (gmw_frac_b > 0.5) & (soc_valid_frac > 0.5) & np.isfinite(soc_mean_b) & np.isfinite(ndvi_b) & np.isfinite(b11_b)
+    keep = (gmw_frac_b > 0.5) & (soc_valid_frac > 0.5) & np.isfinite(soc_mean_b) & np.isfinite(ndvi_b) & np.isfinite(b11_b) \
+        & np.isfinite(ndwi_b) & np.isfinite(ndmi_b)
     rows, cols = np.where(keep)
     print(f"grid: {h_blocks}x{w_blocks} blocks, kept nodes: {keep.sum()}")
 
@@ -172,6 +211,7 @@ def build():
     df = pd.DataFrame({
         "row": rows, "col": cols, "lon": xs, "lat": ys,
         "ndvi": ndvi_b[rows, cols], "b04": b04_b[rows, cols], "b08": b08_b[rows, cols], "b11": b11_b[rows, cols],
+        "b03": b03_b[rows, cols], "ndwi": ndwi_b[rows, cols], "ndmi": ndmi_b[rows, cols],
         "dist_to_tide_km": dist_to_tide_km,
         "soc_tha_mean": soc_mean_b[rows, cols],
         "soc_tha_lower_std": soc_lower_b[rows, cols],
@@ -228,7 +268,84 @@ def build():
             return "val"
         return "train"
 
-    df["split"] = df["superblock"].map(_assign)
+    df["split_legacy_day1_2"] = df["superblock"].map(_assign)
+
+    # ------------------------------------------------------------------
+    # Phase 0 (post Day 1-2) test-set integrity fix.
+    #
+    # The split above (`split_legacy_day1_2`) is what Day 1-2's results and
+    # paper numbers trace to -- kept verbatim here, unchanged, purely as an
+    # audit trail. It is NOT used by any script from this point on.
+    #
+    # Problem: Day 1-2 didn't just train on that split -- its 2,236 test
+    # nodes were directly inspected to make model-selection / narrative
+    # decisions (the baseline-vs-physics comparison, the "hard-checkpoint"
+    # reframe in DAY2_STATUS.md, which explicitly compares test R^2 across
+    # three model families to decide what the paper claims). Its 2,424 val
+    # nodes were also inspected for a cross-model narrative claim ("val R^2
+    # improved similarly, 0.137 -> 0.201"), on top of their expected use for
+    # early stopping. Reusing either set as "test" for Phase 1-2 would let
+    # information from an already-inspected evaluation leak into a number
+    # presented as untouched.
+    #
+    # Fix: carve a genuinely fresh test (and val) block using only
+    # superblocks that were legacy TRAIN -- i.e. only ever touched via
+    # gradient steps, never individually inspected to make a decision.
+    # Legacy val + legacy test are folded entirely into the new train pool
+    # (training on previously-seen data is always safe; it's evaluating on
+    # it again that leaks). This reuses the exact same superblock geometry
+    # (8x8 grid) and node-fraction selection logic as above -- only the
+    # candidate pool and the RNG seed change -- so it is a genuine
+    # three-way spatial split, not a fresh design.
+    # ------------------------------------------------------------------
+    pool_mask = df["split_legacy_day1_2"] == "train"
+    fine_sb_lon = np.clip(((df["lon"] - lon_min) / (lon_max - lon_min) * PHASE1_SUPERBLOCK_GRID).astype(int),
+                            0, PHASE1_SUPERBLOCK_GRID - 1)
+    fine_sb_lat = np.clip(((df["lat"] - lat_min) / (lat_max - lat_min) * PHASE1_SUPERBLOCK_GRID).astype(int),
+                            0, PHASE1_SUPERBLOCK_GRID - 1)
+    df["phase1_superblock"] = fine_sb_lat * PHASE1_SUPERBLOCK_GRID + fine_sb_lon
+
+    pool_sb_counts = df.loc[pool_mask, "phase1_superblock"].value_counts()
+    pool_occupied = pool_sb_counts.index.to_numpy()
+    rng2 = np.random.default_rng(PHASE1_SPLIT_SEED)
+    order2 = rng2.permutation(pool_occupied)
+    new_test_superblocks, new_val_superblocks = set(), set()
+    running = 0
+    for sb in order2:
+        if running >= target_n_test:
+            break
+        new_test_superblocks.add(int(sb))
+        running += int(pool_sb_counts.loc[sb])
+    running = 0
+    for sb in order2:
+        if int(sb) in new_test_superblocks:
+            continue
+        if running >= target_n_val:
+            break
+        new_val_superblocks.add(int(sb))
+        running += int(pool_sb_counts.loc[sb])
+
+    def _assign2(row):
+        if not pool_mask.loc[row.name]:
+            return "train"  # legacy val/test node: folded into new train (safe -- see comment block above)
+        sb = row["phase1_superblock"]
+        if sb in new_test_superblocks:
+            return "test"
+        if sb in new_val_superblocks:
+            return "val"
+        return "train"
+
+    # `split` is the OPERATIVE column -- every script from Phase 1 onward
+    # (src/models/*, src/eval/*, scripts/*) reads this column and only this
+    # one. `split_legacy_day1_2` stays for audit/reproducibility only.
+    df["split"] = df.apply(_assign2, axis=1)
+
+    new_test_mask = df["split"] == "test"
+    new_val_mask = df["split"] == "val"
+    assert not (new_test_mask & ~pool_mask).any(), \
+        "every new-test node must come from the legacy-train pool (never legacy val/test)"
+    assert not (new_val_mask & ~pool_mask).any(), \
+        "every new-val node must come from the legacy-train pool (never legacy val/test)"
 
     # 8-connectivity edges among kept nodes on the (row, col) block grid
     node_id = {(r, c): i for i, (r, c) in enumerate(zip(rows, cols))}
@@ -248,7 +365,16 @@ def build():
     np.save(DATA_PROCESSED / "graph_edges.npy", edges)
 
     print(f"nodes: {len(df)}, edges (directed): {edges.shape[1]}")
-    print(f"train: {(df['split']=='train').sum()}, val: {(df['split']=='val').sum()}, test: {(df['split']=='test').sum()}")
+    print(f"[OPERATIVE split, Phase 1 onward] "
+          f"train: {(df['split']=='train').sum()}, val: {(df['split']=='val').sum()}, test: {(df['split']=='test').sum()}")
+    print(f"  per-split SOC mean (t/ha): "
+          f"{df.groupby('split')['soc_tha_mean'].mean().to_dict()}")
+    print(f"[legacy Day 1-2 split, audit only, not read by any script] "
+          f"train: {(df['split_legacy_day1_2']=='train').sum()}, "
+          f"val: {(df['split_legacy_day1_2']=='val').sum()}, "
+          f"test: {(df['split_legacy_day1_2']=='test').sum()}")
+    overlap = ((df["split"] == "test") & (df["split_legacy_day1_2"] != "train")).sum()
+    print(f"  new-test nodes that were legacy val/test (must be 0): {overlap}")
     print(f"SOC label range: min={df.soc_tha_mean.min():.1f}, max={df.soc_tha_mean.max():.1f}, "
           f"mean={df.soc_tha_mean.mean():.1f}, std={df.soc_tha_mean.std():.1f}")
     print(f"wrote -> {DATA_PROCESSED / 'graph_nodes.csv'}, {DATA_PROCESSED / 'graph_edges.npy'}")

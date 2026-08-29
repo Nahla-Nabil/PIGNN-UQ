@@ -56,7 +56,7 @@ FLOW_BOXES = [
     ),
     dict(
         xy=(0.62, 0.36), w=0.155, h=0.42, color=BLUE,
-        lines=["CQR calibration", "split-conformal,", "calibrated on", "val split"],
+        lines=["Split-conformal CQR", "global + localized", "(Mondrian) compared,", "calibrated on val"],
     ),
     dict(
         xy=(0.81, 0.36), w=0.16, h=0.42, color=ORANGE,
@@ -115,7 +115,7 @@ def draw_inset_map(ax):
 
 
 def main():
-    fig = plt.figure(figsize=(7.16, 2.5))
+    fig = plt.figure(figsize=(7.16, 2.15))
     ax_flow = fig.add_axes([0.0, 0.0, 1.0, 1.0])
     ax_flow.set_xlim(0, 1)
     ax_flow.set_ylim(0, 1)

@@ -66,9 +66,35 @@ def compute_price_multiplier(interval_width: np.ndarray) -> np.ndarray:
 
 
 def main():
-    cqr = pd.read_csv(RESULTS_DIR / "cqr_predictions.csv")
+    # Phase 2b (post test-set-integrity fix, revised after the localized-
+    # vs-global reframe): sourced from the ONE test-set evaluation
+    # (phase2_cqr_test_predictions.csv), using the GLOBAL calibration
+    # columns. Changed from localized (Mondrian) -- Phase 1D's
+    # pre-registered carry-forward method -- because Phase 2's single test
+    # evaluation showed Mondrian undercovers MORE than global on the real
+    # test set (NUMBER_SOURCE_LOG.md #45), reversing the validation-internal
+    # comparison. The paper's Discussion states this plainly: global is the
+    # currently defensible choice for any near-term pricing deployment, so
+    # the illustrative pricing mechanism below is now built on global
+    # intervals to keep the paper internally consistent -- it would
+    # undercut the paper's own recommendation to illustrate deployment on
+    # the method the paper itself says not to deploy. Mondrian columns
+    # remain in phase2_cqr_test_predictions.csv for audit/comparison.
+    cqr = pd.read_csv(RESULTS_DIR / "phase2_cqr_test_predictions.csv")
     test = cqr[cqr["split"] == "test"].copy()
-    test["interval_width_90"] = test["hi_adj_0.9"] - test["lo_adj_0.9"]
+    test["interval_width_90"] = test["hi_adj_global_0.9"] - test["lo_adj_global_0.9"]
+    test = test.rename(columns={"lo_adj_global_0.9": "lo_adj_0.9", "hi_adj_global_0.9": "hi_adj_0.9"})
+
+    # Global calibration produced no inverted/degenerate intervals on this
+    # test set (n_degenerate_interval_test=0 for the global rows in
+    # phase2_cqr_test_coverage.csv) -- unlike the Mondrian variant, whose
+    # 1-node degenerate case motivated this same guard originally. Kept as
+    # a defensive check, not because it currently triggers.
+    n_degenerate = int((test["interval_width_90"] < 0).sum())
+    if n_degenerate:
+        print(f"excluding {n_degenerate} node(s) with an inverted (degenerate) interval "
+              f"from the representative pricing examples (coverage failure, not a narrow interval)")
+    test = test[test["interval_width_90"] >= 0].copy()
 
     multiplier, adj_pct = compute_price_multiplier(test["interval_width_90"].values)
     test["price_multiplier"] = multiplier
