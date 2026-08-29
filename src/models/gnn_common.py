@@ -33,17 +33,22 @@ def load_graph():
     return df, edges
 
 
-def make_pyg_data(df: pd.DataFrame, edges: np.ndarray):
+def make_pyg_data(df: pd.DataFrame, edges: np.ndarray, feature_cols=None):
     """Standardize features/target using TRAIN rows only (no test-set
     leakage into the scaler), return a PyG Data object plus the scaler
-    stats (needed to invert predictions back to t C/ha for reporting)."""
+    stats (needed to invert predictions back to t C/ha for reporting).
+
+    feature_cols defaults to the project's base FEATURE_COLS; Phase 1C
+    (feature ablation) passes an extended list (base + one derived index)
+    so the same function serves every config, not a copy per ablation."""
+    feature_cols = list(feature_cols) if feature_cols is not None else FEATURE_COLS
     train_mask = (df["split"] == "train").values
     val_mask = (df["split"] == "val").values
     test_mask = (df["split"] == "test").values
 
-    feat_mean = df.loc[train_mask, FEATURE_COLS].mean()
-    feat_std = df.loc[train_mask, FEATURE_COLS].std().replace(0, 1.0)
-    X = ((df[FEATURE_COLS] - feat_mean) / feat_std).values.astype(np.float32)
+    feat_mean = df.loc[train_mask, feature_cols].mean()
+    feat_std = df.loc[train_mask, feature_cols].std().replace(0, 1.0)
+    X = ((df[feature_cols] - feat_mean) / feat_std).values.astype(np.float32)
 
     y_mean = df.loc[train_mask, TARGET_COL].mean()
     y_std = df.loc[train_mask, TARGET_COL].std()

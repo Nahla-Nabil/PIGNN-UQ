@@ -53,6 +53,14 @@ defensibility, not ecological novelty.**
     3537×5022 px, ~58 MB, from the lowest-cloud scene (0.013% cloud,
     2026-02-06). Pulled via HTTP range requests (rasterio windowed read),
     **not** a full scene download.
+  - `data/raw/sentinel2/sample_clip_B03_S2B_MSIL2A_20260206T160339_R097_T17RMJ_20260206T213114.tif`
+    — added 2026-08-29 (journal-extension sprint, Phase 1C): B03 (Green)
+    for the **exact same scene** above, needed for a standard McFeeters
+    NDWI feature ablation the original 3-band pull couldn't produce. A
+    small, disclosed exception to that sprint's "no new data pulls"
+    instruction, confirmed with the user first — see
+    `paper/NUMBER_SOURCE_LOG.md` #32 and
+    `fetch_sentinel2.py:fetch_green_band()`.
 - **Gap / local step needed:** none for search+sample. A full multi-date
   time series for training (the real pipeline needs many dates, not one) is
   a longer batch job — reasonable to run from this sandbox too, just budget

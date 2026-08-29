@@ -1,0 +1,5 @@
+nominal_level,calibration_method,n_calibration,n_test,empirical_coverage_test,mean_interval_width_tha,n_degenerate_interval_test
+0.9,global,1583,2076,0.9113680154142582,335.55815250841573,0
+0.9,localized_mondrian,1583,2076,0.8338150289017341,317.48916738498554,1
+0.95,global,1583,2076,0.9638728323699421,382.64558028926047,0
+0.95,localized_mondrian,1583,2076,0.9238921001926782,358.8403651883683,1
