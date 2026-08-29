@@ -188,17 +188,17 @@ fill, validated against Radabaugh et al. (2023) as regional ground truth.
 
 - **Plan Vivo Foundation (2022), "Plan Vivo Standard V5.0."** Official
   standard, current version (supersedes v4.0 above): a flat **20%**
-  non-permanence buffer requirement — not a 15–20% range. **Action
-  needed:** `main.tex`'s abstract and pricing section currently cite
-  "15–20%" (sourced from the older v4.0 page) and use a 17.5% midpoint in
-  the pricing proof-of-concept's flat-buffer comparator
-  (`src/pricing/pricing_poc.py`, `FLAT_BUFFER_PCT=17.5`). Now that V5.0 is
-  confirmed current, this should be reconciled — either cite V5.0's flat
-  20% directly, or explicitly note the paper is drawing on the range
-  spanned by two Plan Vivo versions (v4.0 and V5.0) plus Verra's own
-  scored range rather than one single current number. Not resolved in this
-  edit — flagging for the next paper revision pass, not silently
-  reconciling it here.
+  non-permanence buffer requirement — not a 15–20% range. **Resolved
+  2026-08-29 (same day, later pass):** `src/pricing/pricing_poc.py`'s
+  `FLAT_BUFFER_PCT` was updated from 17.5 (the v4.0-range midpoint) to 20
+  (V5.0's stated value), `results/pricing_poc_examples.csv` regenerated,
+  and every "15–20%"/midpoint reference in `main.tex` updated to state the
+  flat 20% figure directly rather than an averaged range — see
+  `paper/NUMBER_SOURCE_LOG.md` #27 for the corrected number and the reason
+  it changed. `main.tex` still cites Verra VM0033's own AFOLU-tool-scored
+  range (which is genuinely project-specific, not a stand-in for an
+  unconfirmed number) separately from the Plan Vivo figure; the two are
+  not conflated.
 
 - **Plan Vivo FAQ**, "How are risks to permanence minimised?" — plain-
   language description of the pooled-buffer mechanism, useful for the

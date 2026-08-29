@@ -28,14 +28,21 @@ unlike a flat buffer -- not a calibrated, market-ready price.
 
 ## The comparator
 
-Verra VM0033 / Plan Vivo apply a FLAT, non-permanence-risk buffer of
-15-20% (paper/literature_notes.md §3) uniformly to every credit in a
-project, regardless of node-level uncertainty. FLAT_BUFFER_PCT=17.5 (the
-midpoint of that cited range) is used here as a single reference number
-against which every example node's multiplier is compared, to illustrate
-that our UQ-driven signal differentiates where a flat buffer cannot -- not
-to claim FLAT_BUFFER_PCT is the industry's precise number for every
-methodology or project.
+Plan Vivo Standard V5.0 (2022) -- the current version, verified against
+the primary source (paper/literature_notes.md §3) -- states a FLAT,
+non-permanence-risk buffer of 20%, applied uniformly to every credit in a
+project regardless of node-level uncertainty. FLAT_BUFFER_PCT=20 is that
+stated value directly, not an average. An earlier version of this script
+used 17.5, the midpoint of the older Plan Vivo v4.0's "15-20%" range;
+that was corrected once V5.0's single fixed number was confirmed as the
+current standard -- averaging a superseded version's range when the
+actual cited source gives one fixed number would itself be a defensible
+target for reviewer criticism, so it was fixed rather than left as a
+rounding convenience. FLAT_BUFFER_PCT is used here as a single reference
+number against which every example node's multiplier is compared, to
+illustrate that our UQ-driven signal differentiates where a flat buffer
+cannot -- not to claim it is the exact number every methodology or
+project uses (VM0033's own scored range can differ by project).
 
 Writes results/pricing_poc_examples.csv.
 """
@@ -48,7 +55,7 @@ RESULTS_DIR = pathlib.Path(__file__).resolve().parents[2] / "results"
 
 ALPHA = 1.0
 MAX_ADJ = 0.5  # clip price_adjustment_pct to +/-50%
-FLAT_BUFFER_PCT = 17.5  # midpoint of Verra/Plan Vivo's cited 15-20% flat buffer range
+FLAT_BUFFER_PCT = 20  # Plan Vivo Standard V5.0's stated flat non-permanence buffer (not an averaged range)
 N_EXAMPLES = 5
 
 
