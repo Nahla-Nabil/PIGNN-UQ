@@ -46,7 +46,7 @@ FLOW_BOXES = [
     ),
     dict(
         xy=(0.225, 0.36), w=0.155, h=0.42, color=GREEN,
-        lines=["Spatiotemporal graph", "10,124 nodes", "64,366 directed edges",
+        lines=["Spatial graph", "10,124 nodes", "64,366 directed edges",
                "pilot AOI: SW Florida"],
     ),
     dict(

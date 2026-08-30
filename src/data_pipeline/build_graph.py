@@ -46,14 +46,24 @@ decision that belongs in the paper's Method section, not just in code):
   al. 2023 Table 1 itself reports mangrove total C stock ranging 265-409
   Mg C/ha across their four SW Florida sub-regions), not a bug. Fixed by
   splitting the AOI into a 5x5 grid of superblocks (~10km x ~9km each --
-  far larger than the 150m node spacing, so no train/test pixel pair is
-  adjacent) and assigning a reproducible, seed-42-selected 20% of
-  superblocks (scattered, not edge-clustered) to test. This still respects
-  the spatial-exchangeability requirement in paper/uq_decision.md (no
-  train pixel is within one node-hop of a test pixel) while not betting
-  the entire evaluation on crossing one specific regional boundary. This
-  exact split is reused unchanged for every later experiment (baseline,
-  physics-informed, CQR calibration) so results are comparable.
+  far larger than the 150m node spacing, so the large majority of
+  train/test pixel pairs are not adjacent) and assigning a reproducible,
+  seed-42-selected 20% of superblocks (scattered, not edge-clustered) to
+  test. This substantially improves on the spatial-exchangeability
+  requirement in paper/uq_decision.md relative to a random split, but does
+  NOT fully eliminate cross-split adjacency at superblock boundaries --
+  no buffer/no-man's-land separates adjacent superblocks, so nodes right
+  at a boundary can still be 1-hop graph neighbors across a split.
+  Quantified directly on the operative `split` column (not this legacy
+  `split_legacy_day1_2` one): 2,520 of 64,366 directed edges (3.92%)
+  cross a split boundary, touching 9.7% of all nodes (14.2% of test
+  nodes) -- disclosed in the paper's Limitations section, not corrected
+  by resampling (that would mean re-touching an already-evaluated test
+  set), since the same-ranking check in that disclosure shows this does
+  not change which model wins, only shifts all three test R^2 values by
+  a small, non-model-specific amount. This exact split is reused
+  unchanged for every later experiment (baseline, physics-informed, CQR
+  calibration) so results are comparable.
 """
 import pathlib
 import sys
