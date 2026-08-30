@@ -352,6 +352,98 @@ since Day 3 is now resolved.
 
 ---
 
+## Post-submission journal-extension sprint (2026-08-30): real dC/dt experiment
+
+**Everything in this section is exploratory work for the eventual journal
+extension only. It does NOT touch `paper/main.tex`, does not change
+Table I/II or any headline submitted number, and does not read from or
+write to `data/processed/graph_nodes.csv` / `graph_edges.npy` (the
+submitted paper's graph -- read exactly once, read-only, to look up which
+coarse superblocks its test split occupies; see entry #60). All new code
+lives in files with an `ext`/`temporal` name; nothing existing was
+modified except an additive `.gitignore` whitelist entry for the two new
+processed-graph files. Full write-up:
+`paper/extension_temporal_notes.md`.**
+
+### Step 1: second Sentinel-2 date
+
+| # | Number | Exact source | Note |
+|---|---|---|---|
+| 57 | **Scene 1 (unchanged, already used by the submitted paper): `S2B_MSIL2A_20260206T160339_R097_T17RMJ_20260206T213114`, 2026-02-06, tile T17RMJ.** Scene 2 (NEW): `S2B_MSIL2A_20260815T155819_R097_T17RMJ_20260815T195532`, 2026-08-15, tile T17RMJ, cloud cover 20.07% (scene-wide). **Separation: 190 days (~6.2 months).** | `data/raw/sentinel2/stac_items_ten_thousand_islands_fl_2026-08-15_2026-08-16.json` (STAC search+clip output, run 2026-08-30 via Microsoft Planetary Computer, keyless); clipped bands at `data/raw/sentinel2/sample_clip_S2B_MSIL2A_20260815T155819_R097_T17RMJ_20260815T195532.tif` (B04/B08/B11) and `sample_clip_B03_S2B_MSIL2A_20260815T155819_R097_T17RMJ_20260815T195532.tif` (B03, via `scripts/fetch_ext_second_date_green.py`, reusing `fetch_sentinel2.py:fetch_green_band()` unchanged with the new scene's item id) | **Disclosed, not a shortcut:** 190 days is at the low end of the requested 6-12 month window because this session's live STAC access only has scenes up to "today" (2026-08-30); no scene closer to 12 months apart exists yet to pull. A search of 2026-07-15/2026-08-30 at <20% cloud returned 0 scenes (Florida wet season); widening to <60% over 2026-06-01/2026-08-30 returned 22, and the same-tile (T17RMJ), lowest-cloud candidate closest to "today" (maximizing separation) was 2026-08-15 at 20.07%. Still spans SW Florida's real dry-to-wet season transition -- confirmed by a real, non-degenerate NDVI-delta distribution (entry #59). |
+
+### Step 2: dC/dt proxy graph build
+
+| # | Number | Exact source | Note |
+|---|---|---|---|
+| 58 | **All 10,124 nodes from the submitted paper's graph retained with both dates' bands valid (0 dropped for date-2 cloud/nodata); 64,366 directed edges (identical count -- same node set, same 8-connectivity adjacency, unchanged geometry).** `d_ndvi` (= `ndvi_t2 - ndvi_t1`) distribution: min=-0.4034, max=0.2733, mean=+0.0248, std=0.0662. | `src/data_pipeline/build_graph_temporal.py` stdout, run 2026-08-30; `data/processed/graph_nodes_ext_temporal.csv` (new file, not the submitted graph) | Positive mean d_ndvi (dry-season Feb -> wet-season Aug green-up) is the expected direction ecologically and confirms the two-date signal is real, not degenerate. `ndvi_rate_per_day = d_ndvi / 190`. Also computed (per the instruction's "other available band deltas"): `d_ndwi`, `d_ndmi`, `d_b11` -- all written as columns, only `ndvi_rate_per_day` is used in the physics proxy (see #59 below for why). |
+| 59 | **dC/dt proxy formula (accretion term only changed): `physics_gnn_dcdt` proxy = 0.5·scaled(`ndvi_rate_per_day`) + 0.5·scaled(`dist_to_tide_km`)**, same equal-weighted / train-only-min-max / no-fitted-coefficients form as the submitted paper's proxy | `src/models/physics_terms_temporal.py`, `compute_mass_balance_proxy_dcdt()` | Export term (`dist_to_tide_km`) deliberately UNCHANGED -- its own, separate, already-disclosed positional-proxy limitation is not addressed by this extension (see that module's docstring). Directly targets the submitted paper's stated Limitations-section sentence: "Single-date imagery constrains the physics term to a cross-sectional relationship, not an actual $dC/dt$." |
+
+### Step 3: fresh, non-overlapping test partition
+
+| # | Number | Exact source | Note |
+|---|---|---|---|
+| 60 | **Excluded (never eligible for new test/val) coarse superblocks: `{4, 5, 7, 12, 17, 18, 26, 33, 41, 57}` -- exactly the 10 of 20 occupied coarse superblocks the SUBMITTED paper's operative test split (`data/processed/graph_nodes.csv`, `split=="test"`) occupies.** New split (`split_ext`, `data/processed/graph_nodes_ext_temporal.csv`): train=6,429, val=1,541, test=2,154 (of 10,124). | `src/data_pipeline/build_graph_temporal.py` stdout, run 2026-08-30 | Sanity check (printed, passed): zero overlap between these 10 excluded superblocks and the legacy Day 1-2 test/val superblocks -- confirms, independent of this extension, that the submitted paper's own Phase-0 fix left its operative-test superblocks entirely disjoint from every other split ever computed on this AOI. Two `assert`s in the build script additionally enforce, mechanically, that no `split_ext=="test"` or `"val"` node falls in an excluded superblock. Per-split SOC mean (t/ha): train=409.0, val=436.5, test=445.5 (AOI mean 421.0, same as always -- node set unchanged). New split seed: `EXT_SPLIT_SEED=20260830`, distinct from both `SPLIT_SEED=42` (legacy) and `PHASE1_SPLIT_SEED=20260829` (submitted paper's Phase-0 fix). |
+
+### Step 4: pre-registered robustness/selection experiments, VAL-ONLY
+
+Mirrors the submitted paper's Phase 1A/1B exactly (same 5 seeds {1..5}, same
+lambda grid {0.01, 0.05, 0.1, 0.3, 0.5, 1.0, 2.0}, same mechanical selection
+rule: candidates = lambda with mean val R² within 0.05 of the best; select
+the candidate with the highest mean val prior-gen corr), run TWICE on the
+identical new split -- once against the new dC/dt proxy, once against the
+submitted paper's original steady-state proxy re-targeted at the new split
+(a CONTROL run, so the dC/dt-vs-steady-state comparison in Phase 2 is
+single-variable: same split/seed/architecture, only the proxy differs).
+
+| # | Number | Exact source | Note |
+|---|---|---|---|
+| 61 | Extension Phase 1A (5 seeds, w_prior=0.3/w_nonneg=0.1 fixed starting config): linear val R²=0.132 (deterministic); baseline GNN val R² mean=0.226, std=0.008, prior-gen corr mean=0.799; **physics GNN (dC/dt) val R² mean=0.293, std=0.012, prior-gen corr mean=0.916** | `results/ext_phase1a_multiseed_val.csv`, `results/ext_phase1a_multiseed_summary.csv` | On this new split, unlike the submitted paper's Phase 1A finding (#35, physics GNN's mean val R² fell BELOW baseline's), the physics-dC/dt GNN's mean val R² is clearly above both baseline GNN and linear regression, motivating the lambda re-sweep below rather than treating 0.3 as final. |
+| 62 | **dC/dt-proxy lambda sweep (35 runs, all reported): per-lambda mean val R² rises monotonically 0.01->1.0 (0.229 -> 0.319) then dips at 2.0 (0.312); prior-gen corr rises monotonically throughout (0.809 -> 0.959 -> 0.960). Best mean val R²=0.3193 (lambda=1.0); tolerance band >= 0.2693; candidates={0.3, 0.5, 1.0, 2.0}. SELECTED lambda=2.0 (mean val R²=0.3122, mean val prior-gen corr=0.9595, highest among candidates).** | `results/ext_phase1b_lambda_sweep.csv`, `results/ext_phase1b_lambda_summary.csv`, `scripts/run_ext_phase1b_lambda_sweep.py` stdout | Supersedes nothing from the submitted paper (different track entirely) -- selection rule identical in form to the submitted paper's Phase 1B (entry #38), applied mechanically to new numbers. |
+| 63 | **Steady-state-proxy CONTROL sweep (same new split, submitted paper's original proxy formula, 35 runs): mean val R² peaks at lambda=0.3 (0.269), DECLINES for lambda>=0.5 (0.264, 0.247, 0.210) -- unlike the dC/dt sweep's monotonic rise. Prior-gen corr still rises monotonically (0.496 -> 0.955). Best mean val R²=0.2695 (lambda=0.3); tolerance band >= 0.2195; candidates={0.01, 0.05, 0.1, 0.3, 0.5, 1.0}. SELECTED lambda=1.0 (mean val R²=0.2468, mean val prior-gen corr=0.9223, highest among candidates).** | `results/ext_phase1b_steadystate_control_sweep.csv`, `results/ext_phase1b_steadystate_control_summary.csv`, `scripts/run_ext_phase1b_steadystate_control_sweep.py` stdout | At every lambda from 0.01 to 1.0, the dC/dt sweep's mean val R² (#62) is higher than the steady-state control's at the same lambda on the SAME split -- an early (val-only, pre-registered-selection-stage) signal in the same direction as the eventual test result (#64). |
+
+### Step 5: the one and only new-test-partition evaluation
+
+| # | Number | Exact source | Note |
+|---|---|---|---|
+| 64 | **Extension Phase 2, four-way comparison, TEST (n=2,154, evaluated once, never read by any script above): linear regression R²=0.104, RMSE=102.5, prior-gen corr=0.665 · baseline GNN (no physics) R²=0.291, RMSE=91.2, prior-gen corr=0.787 · physics GNN, steady-state-proxy CONTROL (lambda=1.0) R²=0.214, RMSE=96.0, prior-gen corr=0.933 · **physics GNN, real dC/dt (lambda=2.0) R²=0.320, RMSE=89.3, prior-gen corr=0.952**.** | `results/ext_phase2_test_comparison.csv`, `scripts/run_ext_phase2_test_eval.py` stdout | **Headline single-variable result (same split/seed/architecture/features for both physics arms, only the proxy formula differs): the real-dC/dt physics GNN beats the steady-state-proxy control on TEST by +0.107 R² (0.320 vs 0.214) and +0.019 prior-gen corr (0.952 vs 0.933). It also has the best test R² of all four models on this split (beating baseline GNN by +0.029, linear regression by +0.216) and the highest prior-gen corr of all four.** Full interpretation, including the honest caveats (both physics variants have NEGATIVE train R² despite positive, competitive test R² -- a known pattern in this project's physics-loss variants, not a new anomaly; the steady-state control's val-ranking above baseline GNN did not hold on test, an honest val/test mismatch reported as such) in `paper/extension_temporal_notes.md`. |
+
+### Step 4b (user-requested, after reviewing the single-seed Phase 2 table): multi-seed TEST characterization
+
+**Deliberate, disclosed departure from this project's "evaluate test
+exactly once" norm.** The user asked, before drawing any conclusion from
+entry #64, whether its ~0.2-0.3 test-$R^2$ level (vs.\ the submitted
+paper's negative test $R^2$s) was driven specifically by the dC/dt proxy
+or largely by the new split's superblocks being easier/more homogeneous
+-- a question a single seed cannot answer. `scripts/run_ext_phase2b_
+multiseed_test.py` re-evaluates the SAME four already-fixed
+configurations (nothing selected or tuned by this script -- every
+lambda/feature-set choice was already fixed by Step 4's val-only
+pre-registered sweeps) across the same 5 seeds {1..5} used throughout
+this project's val-only stability checks, on TEST. This is variance
+characterization of an already-decided comparison, not a second selection
+round -- no downstream choice depends on any number this script produced.
+
+| # | Number | Exact source | Note |
+|---|---|---|---|
+| 65 | **Four-way TEST comparison, 5-seed mean $\pm$ std (linear deterministic, std=0 by construction): linear R²=0.1044 · baseline GNN (no physics) R²=0.2886$\pm$0.0078 · physics GNN, steady-state control ($\lambda$=1.0) R²=0.2294$\pm$0.0167 · physics GNN, real dC/dt ($\lambda$=2.0) R²=0.2797$\pm$0.0274.** Prior-gen corr (test, 5-seed mean$\pm$std): linear=0.6654 · baseline=0.7975$\pm$0.0305 · steady-state control=0.9242$\pm$0.0141 · **dC/dt=0.9585$\pm$0.0107**. | `results/ext_phase2b_multiseed_test.csv` (all 20 rows), `results/ext_phase2b_multiseed_test_summary.csv` | **Revises entry #64's single-seed(42) reading.** At seed=42 alone, dC/dt's test R² (0.320) exceeded the no-physics baseline's (0.291); under 5-seed averaging, the RANKING FLIPS -- baseline GNN's mean test R² (0.289) is now marginally ABOVE dC/dt's (0.280), well within dC/dt's own std (0.027, more than 3x baseline's std of 0.008). Per-seed, baseline beats dC/dt on 3 of 5 seeds. **Conclusion: dC/dt does NOT reliably beat the no-physics baseline on raw test R² once seed variance is accounted for -- that specific comparison is a wash, not a win.** |
+| 66 | **Per-seed dC/dt-vs-steady-state-control test-R² difference (the genuine single-variable, same-split/seed/architecture comparison): +0.0575, +0.0687, +0.0063, +0.0350, +0.0840 (seeds 1-5 respectively) -- POSITIVE at all 5/5 seeds, mean +0.0503.** | Computed directly from `results/ext_phase2b_multiseed_test.csv`'s per-seed `test_r2` columns, paired by seed | Unlike the baseline comparison above, this one-variable-differs comparison DOES hold up under multi-seed averaging, consistently in the dC/dt-favoring direction at every seed -- though the margin varies considerably (0.006 to 0.084), and is smaller on average than the single-seed(42) estimate in entry #64 (+0.107). Prior-gen corr shows the same pattern even more strongly: dC/dt > steady-state control at all 5/5 seeds, non-overlapping mean$\pm$std ranges (0.9585$\pm$0.0107 vs.\ 0.9242$\pm$0.0141). |
+| 67 | **Split-effect magnitude (diagnostic, not a new experiment): the new split's own no-physics baseline GNN test R² (5-seed mean 0.2886) minus the SUBMITTED paper's no-physics baseline GNN test R² (single seed=42, entry #44: $-0.383$) = +0.672.** | `results/ext_phase2b_multiseed_test_summary.csv` row `baseline_gnn_no_physics` vs.\ `results/phase2_test_comparison.csv` row `baseline_gnn_no_physics` (entry #44, READ-ONLY, not re-run -- the submitted paper's test partition was not touched again to produce this number) | **This is the answer to the user's question.** A model with ZERO physics term shows almost the entire magnitude of the "jump" (+0.67 R²) between the submitted paper's test split and this extension's new one. The proxy-specific effect isolated in entry #66 (+0.05 mean R²) is real, consistent, and an order of magnitude smaller than the split effect. **The bulk of the improvement this extension appeared to show is attributable to the new split's superblocks, not to the dC/dt proxy.** Caveat on the comparison basis: the submitted-side figure is single-seed (Phase 2 never ran multi-seed on test, by design -- see that script's docstring); the new-side figure is a 5-seed mean. The submitted paper's own Phase 1A found baseline-GNN val-R² seed-to-seed std to be small (0.019, entry #34), so a 0.67 gap is not plausibly seed noise, but the comparison is not perfectly matched and is reported as a diagnostic, not a formal test. |
+
+**Selected-$\lambda$ boundary caveat (both proxy tracks):** $\lambda$=2.0
+(dC/dt, entry #62) and, in the control sweep, $\lambda$=1.0 came from a
+grid whose largest value was 2.0 -- i.e.\ the dC/dt track's selected value
+sits at the UPPER EDGE of the tested range $\{0.01,...,2.0\}$. The true
+optimum may lie above 2.0; this sweep cannot rule that out. Per this
+project's own pre-registration discipline, extending the grid upward now,
+after seeing that 2.0 was selected, would not be a legitimate mechanical
+application of the existing rule -- it would require a NEW pre-registered
+grid, stated before running, not a post-hoc extension of this one. Not
+done here. See `paper/extension_temporal_notes.md` for the full caveat.
+
+---
+
+---
+
 ## Superseded/rejected numbers (kept for the audit trail, not for the paper)
 
 | # | Number | Why rejected |
