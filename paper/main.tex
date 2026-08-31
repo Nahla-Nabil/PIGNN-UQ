@@ -166,10 +166,11 @@ uncertainty interval (the gap this paper addresses).
 cheap but poorly calibrated under shift; deep ensembles
 \cite{lakshminarayanan2017ensembles} calibrate better but need multiple
 full models, as in climate-downscaling \cite{gonzalezabad2023ensembles}.
-CQR \cite{romano2019cqr} gives a finite-sample, distribution-free coverage
-guarantee under exchangeability, validated for earth observation
-\cite{eo_conformal2024}; that guarantee is conditional on exchangeability
-spatial autocorrelation can violate. GeoConformal Prediction
+CQR \cite{romano2019cqr} turns a point predictor into calibrated
+intervals with a coverage guarantee that holds without distributional
+assumptions, so long as calibration and test data are exchangeable,
+validated for earth observation \cite{eo_conformal2024}; that guarantee
+is conditional on exchangeability spatial autocorrelation can violate. GeoConformal Prediction
 \cite{lou2024geoconformal} addresses this with a spatially localized
 framework, motivating the Mondrian variant we test (Section~III-F).
 
@@ -407,11 +408,11 @@ CQR from validation-internal evidence, before test was read. On test it
 undercovered more than global at both levels (83.4\% vs.\ 90\% nominal;
 92.4\% vs.\ 95\%, against global's 91.1\%/96.4\%), likely because only 6
 spatial superblocks had enough validation nodes ($\geq 30$) for a stable
-local correction. This matches theory: spatial conformal validity requires
-an \emph{infill asymptotic} regime with sufficient calibration-point
-density per local region \cite{mao2024validmodelfree}, plausibly what
-our split validation set lacked, a density limit, not evidence against
-localization. Nor is the pattern isolated to this paper:
+local correction. This matches theory: \cite{mao2024validmodelfree} shows that local
+conformal validity needs calibration points dense enough within each
+local region, an \emph{infill asymptotic} requirement this AOI's
+validation split plausibly did not satisfy, a density limit, not
+evidence against localization. Nor is the pattern isolated to this paper:
 applying Mondrian calibration to real-estate valuation, Hjort et al.\
 \cite{hjort2023spatialavm} report "little to no improvement" over global
 in one scenario, cautioning that an apparent gain can instead reflect a
