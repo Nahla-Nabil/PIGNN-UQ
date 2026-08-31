@@ -189,22 +189,6 @@ framework, motivating the Mondrian variant we test (Section~III-F).
 
 \section{Method}
 
-\begin{figure*}[t]
-\centering
-\includegraphics[width=0.78\textwidth]{figures/fig1_pipeline.pdf}
-\caption{End-to-end pipeline. Four public data sources feed construction of
-a 10{,}124-node, 64{,}366-edge spatial graph over the pilot AOI
-(node/edge counts: \texttt{src/data\_pipeline/build\_graph.py} stdout,
-\texttt{data/processed/graph\_nodes.csv}; NUMBER\_SOURCE\_LOG.md \#7); a
-GraphSAGE encoder trained with the added physics-informed loss (Section~III-E)
-feeds a split-conformal CQR head (global and Mondrian variants compared,
-Section~III-F), whose (global) interval widths drive the pricing
-proof-of-concept (Section~VI). Inset: the 10{,}124 graph node locations
-(\texttt{data/processed/graph\_nodes.csv}, columns \texttt{lon}/\texttt{lat}),
-the true AOI shape, not a fabricated map.}
-\label{fig:pipeline}
-\end{figure*}
-
 \subsection{Pilot region and data}
 The pilot AOI is the Ten Thousand Islands / Rookery Bay mangrove fringe,
 southwest Florida ($-81.90^\circ$ to $-81.40^\circ$ lon.,
@@ -389,12 +373,10 @@ against the $y=x$ perfect-calibration line.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.80\linewidth]{figures/fig2_results.pdf}
-\caption{(a) Validation $R^2$ and prior-generalization correlation for the
-three compared models, mean $\pm$ one standard deviation across 5 seeds
-(Section~IV-A; linear regression is deterministic, no error bar).
-(b) Empirical vs.\ nominal CQR coverage on the test split, global vs.\
-localized (Mondrian) calibration; dashed line: perfect
-calibration (Section~IV-C).}
+\caption{(a) Validation $R^2$ and prior-gen.\ correlation, three models,
+mean $\pm$ 1 std.\ across 5 seeds (linear regression: deterministic, no
+error bar). (b) Empirical vs.\ nominal CQR coverage, test split, global
+vs.\ localized (Mondrian); dashed line: perfect calibration.}
 \label{fig:results}
 \end{figure}
 
@@ -503,13 +485,11 @@ project-specific value via its own risk tool, Section~I).
 \centering
 \includegraphics[width=0.34\linewidth]{figures/fig3_spatial_uncertainty.pdf}
 \caption{Per-node 90\% global-CQR interval width, 2{,}076 test nodes
-(\texttt{results/phase2\_cqr\_test\_predictions.csv}, columns
-\texttt{lo\_adj\_global\_0.9}/\texttt{hi\_adj\_global\_0.9}; range
+(\texttt{results/phase2\_cqr\_test\_predictions.csv}; range
 143.9--552.5\,t/ha, median 341.1\,t/ha, matching Table~\ref{tab:pricing}).
-Gray points: remaining train/val nodes, AOI context only (Fig.~\ref{fig:pipeline}'s
-technique). Width clusters by location, narrower northwest and centrally,
-wider along part of the southern fringe, the visual basis for
-location-differentiated pricing a flat buffer cannot supply.}
+Gray: train/val nodes, for AOI context. Width clusters by location,
+narrower northwest/centrally, wider south, the basis for
+location-differentiated pricing.}
 \label{fig:spatial}
 \end{figure}
 

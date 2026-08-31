@@ -443,6 +443,24 @@ values are unchanged throughout.
 
 ---
 
+## User-requested figure-count reduction and caption trim (2026-08-31)
+
+User questioned (in the immediate next turn after entry #68) whether all
+three figures were needed and flagged the captions as too long. Resolved
+by cutting Fig.~1 outright rather than further shrinking any figure --
+content/results/limitations untouched throughout.
+
+| # | Number | Exact source | Note |
+|---|---|---|---|
+| 69 | **Fig.~1 (pipeline schematic, `fig:pipeline`) removed from Section~III entirely** | `paper/main.tex`, diff verified 2026-08-31 | Justified, not arbitrary: `grep` confirmed `fig:pipeline` had exactly one referrer in the whole document -- Fig.~3's own caption ("Fig.~\ref{fig:pipeline}'s technique") -- and zero references from body prose. Its content (data sources, graph construction, encoder, CQR, pricing stages) was already fully stated in Section~III's own subsection prose. `scripts/make_fig1_pipeline.py` and `figures/fig1_pipeline.pdf` are now orphaned (left in place, not deleted, in case the figure is wanted back). |
+| 70 | **Fig.~3's caption edited to drop the now-broken `Fig.~\ref{fig:pipeline}` reference** (replaced "Gray points: remaining train/val nodes, AOI context only (Fig.~\ref{fig:pipeline}'s technique)." with "Gray: train/val nodes, for AOI context.") | `paper/main.tex`, direct consequence of #69 | Pure caption wording; the 143.9/552.5/341.1\,t/ha and 2,076-node figures in the same caption are unchanged from entry #51/#61. |
+| 71 | **Fig.~2's caption shortened** (dropped the inline `Section~IV-A`/`Section~IV-C` cross-references and tightened phrasing; e.g.\ "mean $\pm$ one standard deviation across 5 seeds" to "mean $\pm$ 1 std.\ across 5 seeds") | `paper/main.tex`, `git diff` reviewed | Wording-economy only, same standard as entries #58/#62 -- no number, model name, or claim changed. Fig.~2 itself was kept (unlike Fig.~1): it is referenced twice from body prose (Section~IV-A and IV-C, "Fig.~\ref{fig:results}(a)/(b) plots..."), so cutting it would require rewording those two sentences too, and the page-budget pressure that motivated a second cut no longer existed once #72 below was measured. |
+| 72 | **Recompiled page count after #69-71: 5 pages, 0 warnings/errors/undefined references, all 21 references present and complete on page 5** (`latexmk -pdf`, clean run) | `paper/main.pdf`, `paper/main.log`, verified 2026-08-31 | Removing Fig.~1 alone resolved entry #68's "5 of 21 references overflow to a 6th page" gap -- no further figure cuts, font-boost tricks, or prose trims were needed to hit the 5-page ICDABI limit (entry #60). Verified by `pdftotext -layout` confirming references [1]-[21] all render on the final page, not by page-count alone. |
+
+---
+
+---
+
 ## Superseded/rejected numbers (kept for the audit trail, not for the paper)
 
 | # | Number | Why rejected |
