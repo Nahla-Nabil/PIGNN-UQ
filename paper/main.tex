@@ -38,13 +38,6 @@
 % sub-pixel overfull/underfull hbox warnings.
 \emergencystretch=2em
 \hfuzz=20pt
-% The remaining underfull/overfull hbox notices after the fixes above are
-% all sub-visual (a handful of points of stretch on lines containing long
-% DOI/URL tokens or an 11-author citation list that cannot be hyphenated
-% mid-word) -- not a rendering defect. Suppressed at the diagnostic-report
-% level only, standard camera-ready practice; nothing about the rendered
-% page layout changes.
-\hbadness=10000
 \vbadness=10000
 
 \begin{document}
@@ -66,8 +59,9 @@ Flat, rule-based non-permanence buffers discount every credit in a
 voluntary carbon market identically, regardless of the underlying
 carbon-stock estimate's confidence. We test whether a physics-informed
 graph neural network (GNN) with conformalized quantile regression (CQR)
-can supply a per-site confidence signal instead, on a 10,124-node spatial
-graph of the Ten Thousand Islands mangrove fringe, southwest Florida
+can supply a per-site confidence signal that complements, rather than
+replaces, this buffer, on a 10,124-node spatial graph of the Ten
+Thousand Islands mangrove fringe, southwest Florida
 (Sentinel-2, Global Mangrove Watch, field-calibrated soil organic
 carbon). Model selection (physics-loss weight, feature set, calibration
 method) was pre-registered on validation data and confirmed once on a
@@ -316,7 +310,6 @@ narrower but visibly undercovering both levels.
 \begin{table}[htbp]
 \caption{Model comparison and plausibility metrics, test split (evaluated once)}
 \centering
-\footnotesize
 \begin{tabular}{lcccc}
 \toprule
 Model & Test $R^2$ & RMSE & Edge inc.\ & Prior-gen.\ \\
@@ -341,7 +334,6 @@ message-passing generically, not the physics term).
 \begin{table}[htbp]
 \caption{CQR coverage, test split (evaluated once), global vs.\ localized}
 \centering
-\footnotesize
 \begin{tabular}{llcc}
 \toprule
 Nominal & Method & Emp.\ coverage & Width (t/ha) \\
@@ -451,7 +443,6 @@ V5.0's flat 20\% buffer.
 \begin{table}[htbp]
 \caption{Pricing proof-of-concept: 5 representative test nodes (global CQR)}
 \centering
-\footnotesize
 \begin{tabular}{lccc}
 \toprule
 Node & Interval width & Our mult.\ & Flat-buffer mult.\ \\
@@ -535,13 +526,6 @@ Sentinel-2 date, a higher-volume or second-region localized-conformal
 test, deep-ensemble/MC-dropout comparisons, and market-outcome validation
 of the pricing mechanism against non-permanence risk.
 
-% Bibliography (page-budget only, see NUMBER_SOURCE_LOG.md Day 5 Task 3
-% page-budget note) -- footnotesize, matching the three tables above;
-% reference-list text remains fully legible at this size, a standard,
-% common IEEE camera-ready convention; no reference's content/text is
-% altered.
-\footnotesize
-\sloppy
 \bibliographystyle{IEEEtran}
 \bibliography{references}
 

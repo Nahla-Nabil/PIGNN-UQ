@@ -501,6 +501,18 @@ User asked directly: are all figures/tables referenced in the body text, are all
 
 ---
 
+## Two explicit user-directed edits: abstract wording, and removing page-budget compression hacks (2026-08-31)
+
+| # | Number | Exact source | Note |
+|---|---|---|---|
+| 91 | **Abstract's second sentence reworded**: "...can supply a per-site confidence signal instead, on a 10,124-node..." to "...can supply a per-site confidence signal that complements, rather than replaces, this buffer, on a 10,124-node..." | `paper/main.tex`, user-specified wording (Edit 1) | Makes explicit, in the abstract itself, the same "complement, not replace" framing already used in Section~VI ("sit alongside, not replace, a non-permanence buffer") and Section~VIII's Conclusion ("could complement, not replace, flat buffer pools"). Pure rewording; no number, claim, or citation changed. Read back in full afterward to confirm the paragraph still reads as one coherent sentence -- it does. |
+| 92 | **Removed 5 page-budget compression settings, user-directed, conditional on the 5-page fit surviving**: `\hbadness=10000` (preamble diagnostic suppression) and its accompanying now-inapplicable comment; `\footnotesize` on Table~I, Table~II, and Table~III (all three now render at normal 10pt body size); `\footnotesize` and `\sloppy` immediately before `\bibliography{references}` (reference list now normal size, normal (non-sloppy) justification) | `paper/main.tex`, diffed against the pre-edit commit, 2026-08-31 | **Result: the paper still fits cleanly in 5 pages at these normal defaults -- kept, not reverted.** Compiling with these removed does surface a small number of `Underfull \hbox` warnings that `\hbadness=10000` had been suppressing from the log (title, author block, one dense-number paragraph, one caption's final line) -- checked directly (not assumed benign from the log alone): rendered every page at 200 DPI and visually inspected each flagged location; none shows a visible gap, stretch, or layout defect, consistent with these being routine badness-metric noise from short/centered text elements and non-hyphenatable numeric tokens, not real rendering problems. `\vbadness=10000`, `\emergencystretch`, `\hfuzz`, the float-spacing `\setlength` block, `\arraystretch=0.85`, and the `\thebibliography` itemsep/parskip wrapper were left untouched (not named in the user's request). |
+| 93 | **Final state after both edits: 5 pages, 0 warnings/errors on a from-scratch clean rebuild, 21/21 references present and complete on page 5, all three tables and the bibliography at normal (non-footnotesize) size** | `paper/main.pdf`, `paper/main.log`, verified 2026-08-31 | Both edits kept; neither reverted. The bibliography in particular has visible slack remaining below reference [21] on the final page at this normal size, i.e.\ the paper is not right at the edge of the 5-page limit with these compression hacks removed. |
+
+---
+
+---
+
 ## Superseded/rejected numbers (kept for the audit trail, not for the paper)
 
 | # | Number | Why rejected |
