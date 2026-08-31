@@ -14,12 +14,25 @@
 % Compact spacing (page-budget only, IEEEtran-compatible): default float/
 % caption skips are generous for a conference two-column layout; tightened
 % here so a content-heavy 5-page paper fits without shrinking fonts/margins.
-\setlength{\textfloatsep}{4pt plus 2pt minus 2pt}
-\setlength{\floatsep}{3pt plus 2pt minus 2pt}
-\setlength{\intextsep}{4pt plus 2pt minus 2pt}
+\setlength{\textfloatsep}{3pt plus 2pt minus 2pt}
+\setlength{\floatsep}{2pt plus 2pt minus 2pt}
+\setlength{\intextsep}{3pt plus 2pt minus 2pt}
 \setlength{\abovecaptionskip}{2pt}
 \setlength{\belowcaptionskip}{1pt}
-\renewcommand{\arraystretch}{0.92}
+\renewcommand{\arraystretch}{0.85}
+% Bibliography-only: IEEEtran's default per-entry list spacing is more
+% generous than a 21-entry, footnotesize reference list needs; tightened
+% here rather than shrinking the two enlarged figures back down again
+% (user preference, this round). \bibsep itself is a natbib length, not
+% defined by plain IEEEtran, so the standard robust trick is used instead:
+% wrap \thebibliography (always a list environment, whatever the class)
+% and tighten \itemsep/\parskip inside it directly.
+\let\IEEEoldthebibliography\thebibliography
+\renewcommand{\thebibliography}[1]{%
+  \IEEEoldthebibliography{#1}%
+  \setlength{\itemsep}{0pt plus 0.3ex}%
+  \setlength{\parskip}{0pt}%
+}
 % Allow a little extra justification slack (standard, invisible at this
 % magnitude) so dense technical text and long bibliography URLs don't throw
 % sub-pixel overfull/underfull hbox warnings.
@@ -100,8 +113,8 @@ buffer, revisited roughly every ten years
 \cite{verra_vm0033,planvivo_buffer}. Neither resolves risk at
 sub-project granularity or conditions the discount on stock-estimate
 confidence. A restored interior stand and an eroding fringe in the same
-project get the identical discount (a market inefficiency, not merely an
-academic gap). Carbon-stock models for this ecosystem and region also
+project get the identical discount, a market inefficiency as much as an
+academic one. Carbon-stock models for this ecosystem and region also
 report point estimates with no calibrated uncertainty: Radabaugh et al.'s
 field-plot-calibrated spatial model for our pilot region
 \cite{radabaugh2023bluecarbon}, Sanderman et al.'s global mangrove SOC
@@ -117,9 +130,10 @@ However, neither literature pairs calibrated uncertainty with a
 physics-informed spatial predictor, couples it to a buffer-pool pricing
 mechanism, or asks whether a calibration strategy (global versus
 spatially localized) stays valid under a single region's calibration-
-density constraints: the narrower gap this paper addresses, not the
-broader multi-region MRV agenda the wider literature separately
-identifies \cite{roy2024mangroveasiapacific}. This paper combines a
+density constraints. That is the narrower gap this paper addresses; the
+broader multi-region MRV agenda is a separate, larger question the wider
+literature is only beginning to take up
+\cite{roy2024mangroveasiapacific}. This paper combines a
 physics-informed graph neural network with distribution-free uncertainty
 calibration to test whether estimation confidence can complement, not
 replace, a flat non-permanence discount, following physics-informed
@@ -130,26 +144,21 @@ dualfloodgnn2025} but not, to our knowledge, blue carbon.
 
 The scope is deliberately narrow: one pilot region, one physics constraint
 (a steady-state mass-balance proxy, not a full temporal flux equation),
-and one primary UQ method (CQR; deep ensembles and MC dropout are future
-ablations). Every model-selection decision (physics-loss weight, feature
-set, calibration method) was pre-registered on a validation split,
-confirmed once on a spatially distinct test block never used for any
-prior decision, a two-stage protocol we treat as a methodological
-contribution (Section~III-C). Reliable UQ-driven pricing needs protocols
-that survive this scrutiny: a naive single-run estimate and a
-theoretically-motivated calibration refinement can each mislead; this
-paper's two central findings illustrate both. First, a five-seed check
-found the physics-informed loss's point-accuracy advantage over a
-no-physics GNN, seen in an earlier single-seed pilot, did not replicate.
-What does replicate, at a smaller but real margin, is that its
-predictions generalize the imposed physical prior to held-out nodes more
-strongly than either non-physics model. Second, localized (Mondrian)
-conformal calibration, competitive with global on validation-internal
-evidence, underperformed global on the test evaluation that matters, a
-cautionary result (Section~V) for UQ-driven pricing on similarly sparse
-geospatial data. The contribution is this pre-registered evaluation and
-its honest limits, not validated point-prediction accuracy or a validated
-pricing model.
+and one primary UQ method (CQR; deep ensembles and MC dropout are left
+for future work). Every model-selection decision, physics-loss weight,
+feature set, calibration method, was pre-registered on a validation
+split and confirmed once on a spatially distinct test block never used
+for any prior decision; we treat this two-stage protocol itself as a
+methodological contribution (Section~III-C), since a naive single-run
+estimate and a theoretically-motivated calibration refinement each turned
+out to mislead here (Section~V). What survives that scrutiny is smaller
+and more tightly bounded than either initial result suggested: a real
+but modest prior-generalization advantage for the physics-informed model,
+and evidence that localized (Mondrian) conformal calibration, plausible
+in theory and competitive on validation-internal evidence, underperforms
+the simpler global variant on this AOI's test data. The contribution is
+this pre-registered evaluation and its honest limits, not a validated
+point-prediction accuracy claim or a validated pricing model.
 
 \section{Related Work}
 
@@ -157,10 +166,10 @@ pricing model.
 scientific structure into learned models \cite{willard2022piml}; PINNs add
 a PDE-residual loss \cite{raissi2019pinn}, Graph Network Simulators encode
 physics via local, permutation-invariant message passing
-\cite{sanchezgonzalez2020gns}. The closest prior art is
-flood forecasting \cite{taghizadeh2025floodpignn, dualfloodgnn2025}, all
-hydrological; none target mangrove carbon or couple the prediction to a
-priced instrument via UQ (this paper's delta).
+\cite{sanchezgonzalez2020gns}. The closest prior art, flood forecasting
+\cite{taghizadeh2025floodpignn, dualfloodgnn2025}, is entirely
+hydrological and does not target mangrove carbon or couple prediction to
+a priced instrument via UQ.
 
 \textbf{Mangrove carbon stock estimation.} The dominant approach is
 per-pixel tabular regression (random forest, XGBoost) on spectral
@@ -177,9 +186,9 @@ representation or a physical constraint, or reports a calibrated
 uncertainty interval (the gap this paper addresses).
 
 \textbf{Uncertainty quantification.} MC dropout \cite{gal2016dropout} is
-cheap but poorly calibrated under shift. Deep ensembles
+cheap but poorly calibrated under shift; deep ensembles
 \cite{lakshminarayanan2017ensembles} calibrate better but need multiple
-full models, including in climate-downscaling \cite{gonzalezabad2023ensembles}.
+full models, as in climate-downscaling \cite{gonzalezabad2023ensembles}.
 CQR \cite{romano2019cqr} gives a finite-sample, distribution-free coverage
 guarantee under exchangeability, validated for earth observation
 \cite{eo_conformal2024}; that guarantee is conditional on exchangeability
@@ -187,7 +196,7 @@ spatial autocorrelation can violate. GeoConformal Prediction
 \cite{lou2024geoconformal} addresses this with a spatially localized
 framework, motivating the Mondrian variant we test (Section~III-F).
 
-\section{Method}
+\section{Methodology}
 
 \subsection{Pilot region and data}
 The pilot AOI is the Ten Thousand Islands / Rookery Bay mangrove fringe,
@@ -254,11 +263,14 @@ reduces its test prior-generalization correlation only modestly ($0.682$
 to $0.654$), so this is not narrowly a feature-overlap artifact. A second
 term penalized negative
 predictions, a mass-balance corollary, not independent.
-Both combined into one physics loss,
-$\mathcal{L}_{\text{phys}} = \lambda \cdot \text{MSE}(\hat y, \text{proxy})
-+ w_{\text{nonneg}} \cdot \text{mean}(\text{ReLU}(-\hat y_{\text{raw}})^2)$,
-added to the standard MSE data loss, with no fitted coefficients inside
-the proxy itself. $w_{\text{nonneg}}=0.1$ was held fixed
+Both combined into one physics loss, added to the standard MSE data loss,
+with no fitted coefficients inside the proxy itself:
+\begin{equation}
+\mathcal{L}_{\text{phys}} = \lambda \cdot \text{MSE}(\hat y, \text{proxy})
++ w_{\text{nonneg}} \cdot \text{mean}\!\left(\text{ReLU}(-\hat y_{\text{raw}})^2\right)
+\label{eq:physloss}
+\end{equation}
+$w_{\text{nonneg}}=0.1$ was held fixed
 (never swept); $\lambda$ was chosen by a pre-registered sweep over
 $\{0.01, 0.05, 0.1, 0.3, 0.5, 1.0, 2.0\}$, five seeds each, on validation
 only, selecting the value with best mean validation prior-generalization
@@ -370,15 +382,15 @@ width and excluded from Section~VI's pricing examples; either way it
 counted as a coverage miss. Fig.~\ref{fig:results}(b) plots both
 against the $y=x$ perfect-calibration line.
 
-\begin{figure}[htbp]
+\begin{figure*}[t]
 \centering
-\includegraphics[width=0.80\linewidth]{figures/fig2_results.pdf}
+\includegraphics[width=0.92\linewidth]{figures/fig2_results.pdf}
 \caption{(a) Validation $R^2$ and prior-gen.\ correlation, three models,
 mean $\pm$ 1 std.\ across 5 seeds (linear regression: deterministic, no
 error bar). (b) Empirical vs.\ nominal CQR coverage, test split, global
 vs.\ localized (Mondrian); dashed line: perfect calibration.}
 \label{fig:results}
-\end{figure}
+\end{figure*}
 
 \section{Discussion}
 
@@ -483,7 +495,7 @@ project-specific value via its own risk tool, Section~I).
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.34\linewidth]{figures/fig3_spatial_uncertainty.pdf}
+\includegraphics[width=0.95\linewidth]{figures/fig3_spatial_uncertainty.pdf}
 \caption{Per-node 90\% global-CQR interval width, 2{,}076 test nodes
 (\texttt{results/phase2\_cqr\_test\_predictions.csv}; range
 143.9--552.5\,t/ha, median 341.1\,t/ha, matching Table~\ref{tab:pricing}).

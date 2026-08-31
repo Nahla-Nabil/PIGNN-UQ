@@ -50,16 +50,20 @@ MODEL_COLORS = {
     "physics_gnn": VERMILLION,
 }
 
-# Page-budget note (NUMBER_SOURCE_LOG.md Day 5 must-fix-response page-
-# budget note): placed in main.tex at width=0.60\linewidth (down from the
-# original full-detail 0.85/0.80) to make room for reviewer-mandated new
-# disclosures without cutting content. Every font/linewidth/marker-area
-# size below is boosted by SCALE = 1/0.60 relative to the original design
-# (areas by SCALE**2) so it lands back at its originally-designed size
-# after LaTeX's placement scale-down -- not just uniformly shrunk, which
-# would take the legend/annotation text below a legible size at 0.60x
-# (verified: this same technique already used for fig3_spatial_uncertainty.pdf).
-SCALE = 1 / 0.80
+# figsize below (7.16, 2.05) is the full IEEEtran \textwidth, i.e. this
+# figure is designed for a double-column `figure*` float, not a
+# single-column `figure`. It was briefly placed in a single-column
+# `figure` at width=0.80\linewidth during an earlier page-budget pass --
+# that silently shrunk it far more than the SCALE below accounted for
+# (\linewidth there is the ~3.5in column, not the ~7.16in \textwidth this
+# figure is drawn at), which is the root cause of the legend/annotation
+# crowding found on visual review. Restored to `figure*` at
+# width=0.85\linewidth (=0.85\textwidth inside `figure*`), matching this
+# SCALE's actual assumption. Every font/linewidth/marker-area size below
+# is boosted by SCALE relative to the original 1:1 design (areas by
+# SCALE**2) so it lands back at its originally-designed size after
+# LaTeX's placement scale-down.
+SCALE = 1 / 0.85
 
 plt.rcParams.update({
     "font.family": "sans-serif",
@@ -140,7 +144,16 @@ def panel_b(ax):
     ax.set_aspect("equal")
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
-    ax.legend(fontsize=5.8 * SCALE, frameon=False, loc="lower right",
+    # Placed entirely outside the axes, below the x-axis label. Both
+    # in-axes corners were tried and rejected on visual inspection:
+    # "lower right" overlapped the (90, 83.4%) point/annotation; "upper
+    # left" overlapped the (95, 96.4%) point/annotation. With only 4 data
+    # points spanning nominal in {90,95} and empirical in [83,97] inside a
+    # small 22x22-unit square panel, no in-axes corner is reliably clear,
+    # so this avoids the collision by construction rather than by guessing
+    # another corner.
+    ax.legend(fontsize=5.8 * SCALE, frameon=False, loc="upper center",
+               bbox_to_anchor=(0.5, -0.32), ncol=1,
                handlelength=1.4, handletextpad=0.4, borderaxespad=0.2)
 
 
