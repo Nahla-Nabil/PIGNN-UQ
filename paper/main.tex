@@ -62,39 +62,34 @@ nahla.nabil.52@gmail.com}
 \maketitle
 
 \begin{abstract}
-Flat, rule-based non-permanence buffers price every credit in a voluntary
-carbon market the same way regardless of how confident the underlying
-carbon-stock estimate is, so a well- and a poorly-characterized site are
-discounted identically. We test whether a physics-informed graph neural
-network (GNN) combined with conformalized quantile regression (CQR) can
-produce a per-site confidence signal to complement it, on the Ten Thousand Islands
-mangrove fringe, southwest Florida (a 10,124-node spatial graph
-from Sentinel-2, Global Mangrove Watch, and field-calibrated soil organic
+Flat, rule-based non-permanence buffers discount every credit in a
+voluntary carbon market identically, regardless of the underlying
+carbon-stock estimate's confidence. We test whether a physics-informed
+graph neural network (GNN) with conformalized quantile regression (CQR)
+can supply a per-site confidence signal instead, on a 10,124-node spatial
+graph of the Ten Thousand Islands mangrove fringe, southwest Florida
+(Sentinel-2, Global Mangrove Watch, field-calibrated soil organic
 carbon). Model selection (physics-loss weight, feature set, calibration
-method) used a pre-registered protocol on validation only, confirmed once
-on a held-out test block never used for any prior decision. A five-seed
-robustness check found the physics-informed loss's point-accuracy
-advantage over a no-physics GNN, reported in an earlier single-seed
-pilot, did not replicate: on test, the no-physics GNN has the best
-$R^2$ of three models ($-0.383$ vs.\ $-0.430$ physics-informed and
-$-0.450$ linear). The physics-informed model's predictions correlate most
-strongly with the imposed physical prior on held-out nodes ($0.755$ vs.\
-$0.682$/$0.686$), evidence the constraint transfers under spatial shift,
-not independent physical validation; this gap is real but substantially
-smaller than the earlier single-seed estimate. Two CQR calibration
-methods were compared: global achieves 91.1\%/96.4\% coverage at
-90\%/95\% nominal; a spatially localized (Mondrian) variant,
-pre-registered from validation-only evidence, undercovers more on test
-(83.4\%, 92.4\%). This is a genuine negative result, consistent with
-spatial-conformal theory requiring more local calibration density than
-this set supplied. A pricing PoC, built on the better-calibrated global
-intervals, maps interval width to a multiplier ranging
-$0.50$--$1.50$ across five test nodes, against one fixed $0.800$
-multiplier under Plan Vivo's flat 20\% buffer. Point-prediction accuracy
-remains weak throughout; the contribution is a
-pre-registered protocol that catches both a single-run estimate and a
-calibration refinement overstating their own reliability, not validated
-point accuracy or a validated pricing model.
+method) was pre-registered on validation data and confirmed once on a
+held-out test block. A five-seed check found the physics-informed loss's
+point-accuracy advantage over a no-physics GNN did not replicate: on
+test, the no-physics GNN has the best $R^2$ of three models ($-0.383$
+vs.\ $-0.430$ physics-informed and $-0.450$ linear). Its predictions do
+correlate most strongly with the imposed physical prior on held-out
+nodes ($0.755$ vs.\ $0.682$/$0.686$), evidence the constraint transfers
+under spatial shift, not independent physical validation, and a real but
+much smaller margin than an earlier single-seed pilot suggested. Global
+CQR calibration reached 91.1\%/96.4\% coverage at 90\%/95\% nominal; a
+spatially localized (Mondrian) variant undercovered more on test
+(83.4\%, 92.4\%), a genuine negative result consistent with
+spatial-conformal theory's local-density requirement. A pricing
+proof-of-concept built on the better-calibrated global intervals maps
+interval width to a multiplier ranging $0.50$--$1.50$ across five test
+nodes, against Plan Vivo's fixed $0.800$ flat-buffer multiplier.
+Point-prediction accuracy remains weak throughout; the contribution is
+the pre-registered protocol itself, which caught both a single-run
+estimate and a calibration refinement overstating their reliability, not
+validated point accuracy or a validated pricing model.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -104,43 +99,31 @@ prediction, uncertainty quantification, carbon credit pricing
 
 \section{Introduction}
 
-Voluntary carbon markets discount mangrove restoration and conservation
-credits for non-permanence risk (carbon later released via erosion,
-sea-level rise, or disturbance) using a buffer pool: a fixed percentage
-of issued credits withheld from sale. Verra's VM0033 scores non-permanence
-risk via a checklist-based tool, and Plan Vivo V5.0 applies a flat 20\%
-buffer, revisited roughly every ten years
-\cite{verra_vm0033,planvivo_buffer}. Neither resolves risk at
-sub-project granularity or conditions the discount on stock-estimate
-confidence. A restored interior stand and an eroding fringe in the same
-project get the identical discount, a market inefficiency as much as an
-academic one. Carbon-stock models for this ecosystem and region also
-report point estimates with no calibrated uncertainty: Radabaugh et al.'s
-field-plot-calibrated spatial model for our pilot region
-\cite{radabaugh2023bluecarbon}, Sanderman et al.'s global mangrove SOC
-product, our training label \cite{sanderman2023soc}, and Simard et al.'s
-global mangrove biomass product \cite{simard2019mangrove} report one
-value per pixel/site, with no per-prediction confidence for pricing to
-condition on. Conformal prediction gives valid, distribution-free
-uncertainty for earth-observation regression \cite{eo_conformal2024} and
-for spatial prediction under autocorrelation-induced exchangeability
-violations \cite{lou2024geoconformal}; deep ensembles have been shown in
-an adjacent climate-downscaling setting \cite{gonzalezabad2023ensembles}.
-However, neither literature pairs calibrated uncertainty with a
+Voluntary carbon markets discount mangrove credits for non-permanence
+risk (carbon later released via erosion, sea-level rise, or disturbance)
+using a buffer pool: a fixed percentage of issued credits withheld from
+sale, unconditioned on how confident the underlying carbon-stock estimate
+is. Verra's VM0033 and Plan Vivo V5.0 both apply this uniformly,
+regardless of sub-project granularity
+\cite{verra_vm0033,planvivo_buffer}, and existing carbon-stock models for
+this ecosystem and region report only point estimates, with no
+calibrated per-prediction confidence a pricing rule could condition on
+\cite{radabaugh2023bluecarbon,sanderman2023soc,simard2019mangrove}.
+Conformal prediction supplies valid, distribution-free uncertainty for
+earth-observation and spatial regression
+\cite{eo_conformal2024,lou2024geoconformal,gonzalezabad2023ensembles},
+but no existing work pairs that calibrated uncertainty with a
 physics-informed spatial predictor, couples it to a buffer-pool pricing
-mechanism, or asks whether a calibration strategy (global versus
-spatially localized) stays valid under a single region's calibration-
-density constraints. That is the narrower gap this paper addresses; the
-broader multi-region MRV agenda is a separate, larger question the wider
-literature is only beginning to take up
-\cite{roy2024mangroveasiapacific}. This paper combines a
-physics-informed graph neural network with distribution-free uncertainty
-calibration to test whether estimation confidence can complement, not
-replace, a flat non-permanence discount, following physics-informed
-neural networks \cite{raissi2019pinn} and
-their graph-based extensions \cite{sanchezgonzalez2020gns}, applied to
-mass-conserving flood forecasting \cite{taghizadeh2025floodpignn,
-dualfloodgnn2025} but not, to our knowledge, blue carbon.
+mechanism, or tests whether a calibration strategy (global versus
+spatially localized) holds under one region's calibration-density
+constraints, the narrower gap this paper addresses (Section~II surveys
+each literature in full). This paper combines a physics-informed graph
+neural network \cite{raissi2019pinn,sanchezgonzalez2020gns}, previously
+applied to mass-conserving flood forecasting
+\cite{taghizadeh2025floodpignn,dualfloodgnn2025} but not, to our
+knowledge, blue carbon, with distribution-free uncertainty calibration
+to test whether estimation confidence can complement, not replace, a
+flat non-permanence discount.
 
 The scope is deliberately narrow: one pilot region, one physics constraint
 (a steady-state mass-balance proxy, not a full temporal flux equation),
@@ -395,8 +378,8 @@ vs.\ localized (Mondrian); dashed line: perfect calibration.}
 \section{Discussion}
 
 \textbf{The physics term's point-accuracy advantage did not replicate.}
-An earlier single-seed pilot found the physics-informed loss improved test
-$R^2$ over a no-physics baseline. The multi-seed check (Section~IV-A)
+An earlier single-seed pilot found the physics-informed loss
+(Eq.~\ref{eq:physloss}) improved test $R^2$ over a no-physics baseline. The multi-seed check (Section~IV-A)
 already showed this was fragile (physics-informed mean validation $R^2$
 across 5 seeds ($-0.040$) sat below the baseline's ($+0.005$) even before
 the corrected split and pre-registered $\lambda$), and the final test
@@ -491,7 +474,10 @@ the latter at a 50\% discount, a plausible implication, not a validated
 outcome. $\alpha$ and the clipping bounds are stated, arbitrary choices.
 The flat-buffer value is not arbitrary: it is Plan Vivo V5.0's stated
 buffer, used only as a comparison point (VM0033 instead scores a
-project-specific value via its own risk tool, Section~I).
+project-specific value via its own risk tool, Section~I). Fig.~\ref{fig:spatial}
+maps this interval width across the full test set, the spatial pattern
+behind the location-differentiated pricing Table~\ref{tab:pricing}
+illustrates.
 
 \begin{figure}[htbp]
 \centering

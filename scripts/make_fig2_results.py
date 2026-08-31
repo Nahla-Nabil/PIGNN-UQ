@@ -158,6 +158,17 @@ def panel_b(ax):
 
 
 def main():
+    # Tried raising this height (panel (b) uses set_aspect("equal"), so
+    # its plotted square is bound by whichever of {allocated width,
+    # allocated height} is smaller -- at this height that's height, so a
+    # LaTeX-side width increase alone mostly adds blank side margin rather
+    # than enlarging the square). Measured empirically (NUMBER_SOURCE_LOG.md
+    # #84): the largest width\linewidth that still holds 5 pages tracks
+    # the figure's RENDERED height, which the venue's page budget caps at
+    # ~1.95in regardless of this design height/width split -- a taller
+    # design just needs a smaller \linewidth to reach the same rendered
+    # height, netting no real gain. Reverted to the original, simpler
+    # aspect rather than keep the added complexity for no benefit.
     fig, (ax_a, ax_b) = plt.subplots(1, 2, figsize=(7.16, 2.05),
                                        constrained_layout=True)
     panel_a(ax_a)
