@@ -139,4 +139,24 @@ the paper presents it as a conditional design, stated as such.
 
 ## 8. Deviations log
 
-(empty at pre-registration time)
+**D1 (2026-10-07, found while building §2 features, before any model fit):
+the submitted paper's Sentinel-2 features were mis-georeferenced by 9.18 km.**
+`fetch_sentinel2.clip_bands()` requested an AOI window that extended 918
+rows north of tile T17RMJ's top edge. The non-boundless read returned tile
+rows starting at row 0, but the file was written with the window's
+transform, so every S2 pixel in `data/raw/sentinel2/sample_clip_*.tif` is
+labeled 9.18 km north of its true position (verified: clip row 0 equals
+tile row 0 for 100% of compared pixels). The northern AOI (lat > ~26.21) is
+outside T17RMJ entirely (it lies in T17RMK). As a result, the submitted
+features for "mangrove" nodes had mean NDVI 0.003, with 94.8% below 0.3,
+i.e. mostly water. The SOC labels, the GMW mask (merge + mask-crop), the
+node set, the edges and the splits are **not** affected; nor is
+dist_to_tide_km, which is computed from coordinates.
+
+Consequence for this pre-registration: every feature set in §2 (including
+`F0_base`) uses the **corrected** features from
+`src/data_pipeline/build_rev_features.py` (T17RMJ + T17RMK mosaic of the
+same datatake, boundless windowed reads, SCL cloud mask). Corrected
+F0 NDVI: mean 0.458, 4.0% below 0.3. Nothing else in §1–§7 changes. The
+submitted paper's numbers are reported as "original submission
+(mis-georeferenced features)", and the paper states the error explicitly.
