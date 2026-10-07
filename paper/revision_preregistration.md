@@ -160,3 +160,14 @@ same datatake, boundless windowed reads, SCL cloud mask). Corrected
 F0 NDVI: mean 0.458, 4.0% below 0.3. Nothing else in §1–§7 changes. The
 submitted paper's numbers are reported as "original submission
 (mis-georeferenced features)", and the paper states the error explicitly.
+
+**D2 (2026-10-07, during the smoke test on CV fold 0, before the full CV run):
+GNN early-stopping patience changed from 30 to 100 (minimum 50 epochs,
+maximum 500), for both GNN variants equally.** The inner-holdout loss
+curve is noisy for the first ~40 epochs (it rises from 0.80 to 0.90 before
+falling to ~0.56 by epoch ~140; trace for λ=0 and λ=0.1, fold 0, seed 1).
+With patience 30, runs stopped at an essentially random early epoch: in
+the smoke test the λ=0.1 run stopped after ~35 epochs with a collapsed
+prediction SD (41 vs 96 t/ha). This is a training-procedure fix, not a
+selection choice. It applies uniformly and was decided from loss curves,
+not from comparing CV R² between settings.
