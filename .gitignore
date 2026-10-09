@@ -23,6 +23,11 @@ data/processed/*
 !data/processed/.gitkeep
 !data/processed/graph_nodes.csv
 !data/processed/graph_edges.npy
+# journal-extension (post-submission) temporal dC/dt graph -- SEPARATE
+# files, built by src/data_pipeline/build_graph_temporal.py; the submitted
+# paper's graph_nodes.csv/graph_edges.npy above are never touched by it.
+!data/processed/graph_nodes_ext_temporal.csv
+!data/processed/graph_edges_ext_temporal.npy
 
 # Keep small provenance/metadata files that are cheap to diff and useful
 # to have in history (STAC item index, tide CSVs) -- uncomment if desired:
