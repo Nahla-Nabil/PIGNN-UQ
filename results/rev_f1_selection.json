@@ -1,0 +1,51 @@
+{
+  "winner": "ens",
+  "best_by_mean": "ens",
+  "tied_within_1se": [
+    "ens"
+  ],
+  "agg": {
+    "xgb": {
+      "mean_r2": 0.4677,
+      "se": 0.0303
+    },
+    "phys_gnn": {
+      "mean_r2": 0.4593,
+      "se": 0.0302
+    },
+    "ens": {
+      "mean_r2": 0.509,
+      "se": 0.0277
+    },
+    "stack_gnn": {
+      "mean_r2": 0.4736,
+      "se": 0.0287
+    },
+    "phys_gnn_f3aug": {
+      "mean_r2": 0.43,
+      "se": 0.037
+    }
+  },
+  "params": {
+    "xgb": [
+      "xgb",
+      "F3_spec_dem_temporal",
+      "{'max_depth': 6}"
+    ],
+    "phys_gnn": [
+      "phys_gnn",
+      "F1_spectral",
+      "{'constraint': 'mse', 'hidden': 16, 'lambda': 0.1, 'proxy': 'P2'}"
+    ],
+    "stack_gnn": [
+      "stack_gnn",
+      "F1_spectral",
+      "{'constraint': 'mse', 'hidden': 16, 'lambda': 0.1, 'proxy': 'P2', 'xgb_cols': ['ndvi', 'b04', 'b08', 'b11', 'dist_to_tide_km', 'b02', 'b03', 'b05', 'b06', 'b07', 'b8a', 'b12', 'ndre', 'mndwi', 'ndmi', 'elevation', 'elevation_std', 't1_ndvi', 't1_ndre', 't1_ndmi', 't1_mndwi', 'd_ndvi', 'd_ndmi'], 'xgb_depth': 6}"
+    ],
+    "phys_gnn_f3aug": [
+      "phys_gnn_f3aug",
+      "F3_spec_dem_temporal",
+      "{'constraint': 'mse', 'hidden': 16, 'lambda': 0.1, 'proxy': 'P2'}"
+    ]
+  }
+}
