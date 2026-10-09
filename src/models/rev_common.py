@@ -66,13 +66,21 @@ def mass_balance_proxy(df: pd.DataFrame, fit_idx: np.ndarray) -> np.ndarray:
     return out
 
 
-def _design(df, cols, fit_idx):
+def _design(df, cols, fit_idx, pred_df=None):
+    """Standardized design matrix with fit-set median imputation (only the
+    cloud-masked t1 columns have NaNs) and fit-set mean/SD. If pred_df is
+    given, the returned matrix is pred_df's inputs transformed with df's
+    fit-set statistics (used by E8 to swap in second-date imagery)."""
     X = df[cols].values.astype(np.float64)
     med = np.nanmedian(X[fit_idx], axis=0)
-    X = np.where(np.isnan(X), med, X)  # fit-set median imputation (cloud-masked t1 only)
+    X = np.where(np.isnan(X), med, X)
     mu, sd = X[fit_idx].mean(0), X[fit_idx].std(0)
     sd[sd == 0] = 1.0
-    return X, (X - mu) / sd
+    Xz = (X - mu) / sd
+    if pred_df is None:
+        return X, Xz
+    Xp = pred_df[cols].values.astype(np.float64)
+    return X, Xz, (np.where(np.isnan(Xp), med, Xp) - mu) / sd
 
 
 def spatial_lag(Xz: np.ndarray, edges: np.ndarray, groups: list) -> np.ndarray:
@@ -91,7 +99,7 @@ def spatial_lag(Xz: np.ndarray, edges: np.ndarray, groups: list) -> np.ndarray:
     return lag
 
 
-def _train_gnn(Xz, y, edges, fit_idx, stop_idx, pred_groups, seed, hidden, w_prior, proxy):
+def _train_gnn(Xz, y, edges, fit_idx, stop_idx, pred_groups, seed, hidden, w_prior, proxy, Xz_pred=None):
     torch.manual_seed(seed)
     np.random.seed(seed)
     n = len(Xz)
@@ -132,6 +140,8 @@ def _train_gnn(Xz, y, edges, fit_idx, stop_idx, pred_groups, seed, hidden, w_pri
     model.load_state_dict(best_state)
     model.eval()
     pred = np.full(n, np.nan)
+    if Xz_pred is not None:
+        X_t = torch.tensor(Xz_pred, dtype=torch.float32)
     with torch.no_grad():
         for g in pred_groups:
             xg, eg = sub(g)
@@ -139,41 +149,48 @@ def _train_gnn(Xz, y, edges, fit_idx, stop_idx, pred_groups, seed, hidden, w_pri
     return pred
 
 
-def fit_predict(df, edges, family, cols, fit_idx, pred_groups, seed, params=None, stop_idx=None):
+def fit_predict(df, edges, family, cols, fit_idx, pred_groups, seed, params=None, stop_idx=None, pred_df=None):
     """Fit `family` on fit_idx; return predictions for every node in
     pred_groups (a list of index arrays, each predicted on its own induced
     subgraph). stop_idx: early-stopping nodes (GNN only), disjoint from
     fit_idx."""
     params = params or {}
     y = df[TARGET_COL].values.astype(np.float64)
-    X, Xz = _design(df, cols, fit_idx)
+    if pred_df is None:
+        X, Xz = _design(df, cols, fit_idx)
+        Xp = Xz
+    else:
+        X, Xz, Xp = _design(df, cols, fit_idx, pred_df)
     pred_idx = np.concatenate(pred_groups)
     pred = np.full(len(df), np.nan)
 
     if family == "linear":
         from sklearn.linear_model import LinearRegression
         m = LinearRegression().fit(Xz[fit_idx], y[fit_idx])
-        pred[pred_idx] = m.predict(Xz[pred_idx])
+        pred[pred_idx] = m.predict(Xp[pred_idx])
     elif family in ("rf", "rf_lag", "rf_coords"):
         from sklearn.ensemble import RandomForestRegressor
         if family == "rf_lag":
             groups = [fit_idx] + list(pred_groups)
+            if pred_df is not None:
+                raise NotImplementedError("pred_df is not supported for rf_lag")
             Xz = np.hstack([Xz, spatial_lag(Xz, edges, groups)])
+            Xp = Xz
         m = RandomForestRegressor(n_estimators=500, max_features=params.get("max_features", 1.0),
                                   min_samples_leaf=params.get("min_samples_leaf", 5),
                                   n_jobs=-1, random_state=seed).fit(Xz[fit_idx], y[fit_idx])
-        pred[pred_idx] = m.predict(Xz[pred_idx])
+        pred[pred_idx] = m.predict(Xp[pred_idx])
     elif family == "xgb":
         import xgboost as xgb
         m = xgb.XGBRegressor(n_estimators=600, learning_rate=0.03, max_depth=params.get("max_depth", 3),
                              subsample=0.8, colsample_bytree=0.8, min_child_weight=10,
                              random_state=seed, n_jobs=-1).fit(Xz[fit_idx], y[fit_idx])
-        pred[pred_idx] = m.predict(Xz[pred_idx])
+        pred[pred_idx] = m.predict(Xp[pred_idx])
     elif family in ("gnn", "phys_gnn"):
         w_prior = params.get("lambda", 0.0) if family == "phys_gnn" else 0.0
         proxy = mass_balance_proxy(df, fit_idx)
         pred = _train_gnn(Xz, y, edges, fit_idx, stop_idx, pred_groups, seed,
-                          params.get("hidden", 16), w_prior, proxy)
+                          params.get("hidden", 16), w_prior, proxy, Xz_pred=None if pred_df is None else Xp)
     else:
         raise ValueError(family)
     return pred

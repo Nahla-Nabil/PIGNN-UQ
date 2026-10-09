@@ -1,0 +1,9 @@
+{
+  "linear": "linear|F1_spectral|{}",
+  "rf": "rf|F2_spec_dem|{\"max_features\": 0.33, \"min_samples_leaf\": 5}",
+  "xgb": "xgb|F3_spec_dem_temporal|{\"max_depth\": 6}",
+  "rf_lag": "rf_lag|F2_spec_dem|{\"max_features\": 0.33, \"min_samples_leaf\": 5}",
+  "gnn": "gnn|F1_spectral|{\"hidden\": 16}",
+  "phys_gnn": "phys_gnn|F1_spectral|{\"hidden\": 16, \"lambda\": 0.3}",
+  "rf_coords": "rf_coords|coords|{\"max_features\": 1.0, \"min_samples_leaf\": 5}"
+}

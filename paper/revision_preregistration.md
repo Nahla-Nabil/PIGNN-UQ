@@ -171,3 +171,90 @@ the smoke test the λ=0.1 run stopped after ~35 epochs with a collapsed
 prediction SD (41 vs 96 t/ha). This is a training-procedure fix, not a
 selection choice. It applies uniformly and was decided from loss curves,
 not from comparing CV R² between settings.
+
+**D3 (addition, 2026-10-07):** the E7 reference is upgraded from
+Radabaugh et al. (2023) Table 1 regional means to their full 30 m
+belowground-carbon map (FWC ArcGIS item 50b8a2c855b448209aa5aabeb9301193,
+fetched by `src/data_pipeline/fetch_radabaugh_bgc.py`). It is used for
+evaluation only, never as a feature or for selection. Descriptive fact
+recorded on fetch, before any model test: corr(Sanderman label, Radabaugh)
+= −0.100 over 10,115 nodes; −0.017 over 20 superblock means.
+
+**D4 (addition, 2026-10-07):** issuance rule B = VM0033 v2.1 (Verra,
+4 Sept 2023) p. 64, Eq. 92, quoted in `src/pricing/issuance.py` (primary PDF in
+`paper/refs_primary/`). Rule A (§6) remains the pre-registered primary rule.
+
+**C1 (clarification):** quantile GNNs early-stop on an inner 15% holdout
+of train superblock groups, so val is used only for conformal calibration.
+
+---
+
+# Addendum A (2026-10-09): pre-registered BEFORE running W2/W5/W6/W7
+
+Written after the §4 CV results were known (`results/rev_e1_cv_summary.csv`)
+and before any of the experiments below were run. Test is still unread.
+
+## A1. Physics prior v2 (reviewer R2: "physics relies on NDVI/distance proxies")
+Facts already known from CV, which motivated this: NDVI is uncorrelated with
+the label (r = −0.04 on the pool), and the proxy's signal comes from
+distance to the gauge.
+
+Candidate priors. Each is min-max scaled on fit nodes, so no coefficient is
+fitted:
+- `P0_original`: 0.5·NDVI + 0.5·dist (the submitted paper's prior), the control;
+- `P1_hydroperiod`: tidal inundation frequency = fraction of hours in one
+  year (2025-01-01 to 2025-12-31) of NOAA CO-OPS 8725114 hourly heights
+  (datum NAVD88) exceeding the node's mean USGS 3DEP 1/3″ (10 m) bare-earth
+  elevation (NAVD88). Physical basis: hydroperiod controls sediment
+  delivery and soil-carbon preservation (anoxia). A single-gauge water
+  level for the whole AOI is a stated simplification;
+- `P2_hydro_veg`: 0.5·P1 + 0.5·(t0 NDRE), i.e. inundation plus a canopy
+  productivity term (red-edge, which tracks canopy chlorophyll better than
+  NDVI for dense mangrove).
+
+Constraint forms:
+- `mse`: λ·MSE(ŷ_z, proxy_z), as before;
+- `mono`: λ·mean(ReLU(−∂ŷ/∂P1)) via finite difference. This penalizes
+  predictions that *decrease* with inundation frequency, i.e. a sign
+  constraint, not a target. It applies to P1 only.
+
+Grid: {P0, P1, P2} × mse × λ ∈ {0.1, 0.3, 1.0}, plus P1 × mono × λ ∈ {0.1, 1.0},
+on the selected GNN (F1, hidden 16), same CV folds/seeds as §4.
+Selection rule: highest mean OOF R². Ties within 1 SE go to P0 < P1 < P2
+order reversed (prefer the physically grounded prior, P1 or P2, if within
+1 SE of the best). If no physics config is within 1 SE of the no-physics
+GNN, the paper states that the physics prior does not improve accuracy.
+Reported for every config, never used to select: OOF prior-gen corr and
+OOF corr with the Radabaugh map (independent).
+
+## A2. UQ ensemble candidate (R1: intervals wider than the label SD)
+Added to §5: `Ens-Q` = the element-wise mean of CQR-GNN, CQR-XGB quantiles
+and NCP-RF's yhat ± z·s (z from normal quantiles), then CQR-conformalized
+on val. The same §5 selection rule applies, and Trivial stays the reference.
+
+## A3. Second region (R1: single region)
+- Region 2 bbox: (−81.20, 25.30, −80.90, 25.60), Everglades NP coast
+  (Lostmans River to Shark River). Fixed now, before its labels are viewed.
+- The same graph construction (5×5 blocks of the Sanderman 30 m grid,
+  GMW 2020 > 0.5, 8-connectivity) and the same split procedure as region 1
+  (`build_graph.py` superblock assignment: 20% test / 15% val by cumulative
+  node count, seed 20261009). The same feature builder.
+- Tide gauge: the nearest NOAA CO-OPS station with 2025 hourly heights in
+  NAVD88.
+- **No new selection in region 2.** Region-1 selections are reused.
+  Two evaluations, read once, together with region 1's test:
+  (a) in-region: train on region-2 train (+ val for GNN early stopping),
+  evaluate on region-2 test;
+  (b) transfer: train on region-1 train, evaluate on all region-2 test
+  nodes, and vice versa (train on region-2 train, evaluate on region-1
+  test).
+
+## A4. Non-permanence check (R1/R2: pricing conflates risks, not validated)
+- Per node: mangrove loss fraction = GMW 2010 mangrove pixels absent in GMW
+  2020, divided by GMW 2010 mangrove pixels in the node (GMW v3).
+- Reported on test nodes: Spearman ρ between loss fraction and (i) 90%
+  interval width, (ii) rule-B deduction. Hypothesis stated now: |ρ| < 0.1,
+  i.e. estimation uncertainty is not a proxy for non-permanence, which is
+  why the two factors stay separate. Reported whatever the result.
+- Market sensitivity (labeled not-validation): credited tC × 3.667 → tCO2e
+  × published blue-carbon price range (sources verified before use).
