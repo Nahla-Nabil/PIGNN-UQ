@@ -278,3 +278,14 @@ P2/λ=0.1 (0.405), which is itself physically grounded. Corrected to P2/λ=0.1;
 `selected_phys_by_buggy_code`. Both are reported in the paper's supplementary
 table. No-physics GNN: 0.385 (fold SE 0.033), so the physics gain (+0.020) is
 within 1 SE, i.e. not significant, and is stated as such.
+
+**D7 (2026-10-09, region-2 build, before any region-2 model was fit):** the
+pre-registered same-datatake S2 scenes (R097, 2026-02-06 / 2026-08-15) leave
+the eastern part of region 2 (lon > −81.007; 5,169 of 22,326 nodes, 23%)
+outside the swath. That is not cloud: t0 cloud fraction is 0 there.
+Uncovered pixels are filled from the nearest-date adjacent-orbit scene
+with < 20% cloud (relative orbit R054: S2C 2026-02-08 for t0, S2C
+2026-08-17 for t1). The original datatake keeps priority wherever it has
+data. Cross-sensor (S2B/S2C) differences are a stated, minor caveat.
+Region-2 tide gauge: the nearest NAVD88 hourly station is 8723970 Vaca Key
+(about 70 km from the bbox), a stated simplification for the P1/P2 prior.
