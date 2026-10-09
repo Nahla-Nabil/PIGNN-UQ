@@ -451,3 +451,57 @@ Per project p:
 Reported: the fraction of val-check projects with e_p ≤ U (nominal 90%) for
 each of (i)-(iii), and the implied deduction (U − 20%)⁺. A method is called
 valid if its coverage is ≥ 85% (small project count). Both regions.
+
+---
+
+# Addendum F (2026-10-09, written before running F1-F5): improving the remaining weak points
+
+Context: the test read showed XGBoost (F3) above the physics-informed GNN in R1
+(0.20 vs 0.17). F1-F4 use CV/validation only. F5 is a **declared second test
+read for ONE pre-specified model**; the original test numbers stay reported
+unchanged next to it.
+
+**F1. Candidate models** (§4 CV folds/seeds in R1, and the same procedure on the
+R2 train ∪ val pool: GroupKFold by `phase1_superblock`, seed 20261007, seeds
+{1, 2, 3}, leakage-safe subgraphs):
+- `xgb`: selected XGBoost (F3, depth 6), reference;
+- `phys_gnn`: selected Phys-GNN (F1, hidden 16, P2, λ 0.1), reference;
+- `ens`: unweighted mean of `xgb` and `phys_gnn` predictions;
+- `stack_gnn` (hybrid): Phys-GNN (same settings) whose inputs are F1 plus the
+  XGBoost prediction. For fit nodes, that prediction is out-of-fold from an inner
+  5-fold grouped CV inside the fit set; for evaluated nodes it comes from XGBoost
+  trained on all fit nodes. So the GNN learns to correct XGBoost spatially,
+  without leakage;
+- `phys_gnn_f3aug`: Phys-GNN with F3 features, trained on both image dates (C4
+  augmentation), i.e. feature parity with XGBoost.
+
+**Selection rule:** the highest mean of (R1 OOF R², R2 OOF R²). Candidates within
+one SE (the mean of the two regions' fold SEs) of the best are tied, and ties go
+to the simpler model in the order xgb < phys_gnn < ens < stack_gnn <
+phys_gnn_f3aug.
+
+**F2. Intervals for the F1 winner** (val-internal split, seed 7, as §5).
+Candidates: the selected CQR-GNN (current), and `NCP-winner`, i.e. the winner's
+point prediction ± Q·s(x) with s(x) the CQR-GNN half-width (score
+|y − ŷ| / s). Rule: the lowest 90% Winkler score among methods with
+val-check coverage ≥ 88%. The trivial interval is reported as the reference.
+
+**F3. Site-level field validation** (no selection): cores (≥ 15 cm) are grouped by
+(region, study_id, site_id). The site-mean field 0-100 cm stock is compared with
+the mean out-of-fold prediction (5-fold spatial CV over all nodes, as D-c) of the
+nodes matched to the site's cores. Reported: Spearman across sites, and the
+median absolute % error for sanderman, radabaugh, xgb, phys_gnn, the F1 winner
+and a constant train mean.
+
+**F4. One model for both regions** (no selection): features z-scored within each
+region (C3); grouped CV over the pooled R1 ∪ R2 train+val pool (groups = region ×
+phase1_superblock); xgb and the F1 winner. Reported: per-region OOF R² of the
+pooled model vs the region's own CV.
+
+**F5. Declared second test read.** It runs only if the F1 winner is not `xgb` or
+`phys_gnn` (those were already read). Test is evaluated **once** for the winner
+(3 seeds) and its F2-selected interval method, in both regions, with
+`--rerun-reason` logged in `rev_test_RUN_STAMP.json`. Output goes to
+`results/rev_test2_*`, and the paper labels it "second, declared test read of
+one pre-specified model". If the winner is xgb or phys_gnn, there is no second
+read.
