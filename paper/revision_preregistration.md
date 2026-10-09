@@ -329,3 +329,44 @@ again, and the zero-shot test numbers are reported unchanged.
 - Reported for every variant; nothing is selected. Pre-stated hypothesis:
   V1/V2 recover positive R², and local conformal calibration restores
   ~90% coverage, whereas source calibration undercovers.
+
+---
+
+# Addendum C (2026-10-09, written before running C1-C4): remaining weaknesses, NO test read
+
+All evaluations use CV on train ∪ val (region 1) or target-region val
+`check` nodes (Addendum B split). Test is not read again.
+
+**C1. Fix-only ablation (credibility of D1).** The submitted paper's exact
+setup is reproduced: features F0 (ndvi, b04, b08, b11, dist), the linear
+and GNN models (hidden 16), and the §4 spatial CV folds/seeds. The *only*
+difference between arms is the feature source:
+- (a) the submitted, mis-georeferenced S2 columns from `graph_nodes.csv`;
+- (b) the corrected columns.
+Reported: OOF R² and MAE per arm and the paired per-fold difference. A
+further arm (c) adds a deliberate 9.18 km shift to the *corrected* rasters,
+reproducing the bug from clean inputs.
+
+**C2. Proper local split (Addendum B fix).** V2/V3 used the same local
+sample for training and conformal calibration, so the residuals were
+in-sample and the intervals invalid. C2 splits `local` by fine-grid groups
+50/50 into `local_fit` and `local_cal` (seed 11):
+- V2b pooled (source train ∪ local_fit), calibrated on local_cal;
+- V3b local_fit only, calibrated on local_cal;
+- V1b recalibration fitted on local_fit, conformal on local_cal.
+All are scored on the same `check` nodes as Addendum B.
+
+**C3. Region-wise feature standardization (domain adaptation).** Each
+region's features are z-scored with its own non-test statistics before
+cross-region training and prediction, a standard first-moment
+alignment. Evaluated with zero-shot, V1b and V2b, as in C2.
+
+**C4. Two-date augmentation for temporal robustness.** The GNN and
+Phys-GNN are trained on the union of t0 and t1 inputs: each training node
+appears twice, with t0 and t1 imagery and the same label; t1 cloud gaps
+are imputed as before. Reported: CV OOF R² (region 1, §4 folds) with t0
+inputs, and the Spearman ρ between t0- and t1-input predictions on the
+OOF nodes, vs the t0-only model (E8 found ρ = 0.42 on test).
+
+Nothing here changes any reported test number. Results are additions,
+labelled as such.
