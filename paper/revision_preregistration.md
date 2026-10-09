@@ -428,3 +428,26 @@ keeps Craft's quadratic *form* and is **fitted on SW-Florida mangrove CCN
 intervals with both measurements** (679 intervals, 61 cores, 7 studies):
 OC% = 0.00174·OM%² + 0.3196·OM% + 2.330 (R² = 0.908). It is used only where
 fraction_carbon is missing.
+
+---
+
+# Addendum E (2026-10-09, before running): which VM0033 aggregation is valid? VALIDATION ONLY
+
+Concern anticipated from R1: VM0033 applies Eq. 92 at project level, and
+with Eq. 87/88 (independent errors) our project uncertainty is under 1%,
+so the deduction is zero. Per-node application is our extension. Test, on
+val only: CQR-GNN (selected) fit on train, calibrated on val-calib, with
+the Phase-1D 50/50 val split (seed 7). Each fine-grid cell
+(`phase1_superblock`, about 2.5 km) of val-check is a pseudo-project.
+Per project p:
+- realized aggregate relative error e_p = |Σ(ŷ − y)| / Σy;
+- predicted project uncertainty (90% half-width, % of the stock):
+  - (i) U_ind: VM0033 Eq. 87/88 with independent node errors;
+  - (ii) U_corr: fully correlated, the stock-weighted mean of node half-widths;
+  - (iii) U_block: an empirical aggregate conformal half-width, the 90%
+    quantile of e over val-calib projects (out-of-sample for val-check
+    projects).
+
+Reported: the fraction of val-check projects with e_p ≤ U (nominal 90%) for
+each of (i)-(iii), and the implied deduction (U − 20%)⁺. A method is called
+valid if its coverage is ≥ 85% (small project count). Both regions.
