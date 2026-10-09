@@ -505,3 +505,10 @@ pooled model vs the region's own CV.
 `results/rev_test2_*`, and the paper labels it "second, declared test read of
 one pre-specified model". If the winner is xgb or phys_gnn, there is no second
 read.
+
+**F-C1 (clarification, written while F1 was still running, before any F1 or F2
+result was seen):** F2's rule is applied jointly to both regions: the lowest
+**mean** 90% Winkler over R1 and R2, among methods whose val-check coverage is
+≥ 88% in **both** regions. For GNN winners, the NCP point model early-stops
+on an inner 15% train holdout so val stays calibration-only (as C1). F3 uses
+the D-b node matching (`rev_d_field_cores.csv`) and the CCN `site_id`.
