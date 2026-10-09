@@ -419,3 +419,12 @@ stock (≥ 50 cm cores) by the CQR-GNN 90% intervals (Sanderman-calibrated).
 leave-one-study-out (studies as groups) to avoid within-study leakage.
 Reported: held-out coverage and the implied VM0033 deduction
 (k − 0.20)⁺, against the Sanderman-calibrated deduction.
+
+**D9 (2026-10-09, before matching cores to predictions):** the Craft et al.
+(1991) coefficients could not be verified from an accessible primary text
+(the article is on JSTOR; the citation itself is verified:
+Estuaries 14:175, doi:10.2307/1351691). Instead, the OM→OC conversion
+keeps Craft's quadratic *form* and is **fitted on SW-Florida mangrove CCN
+intervals with both measurements** (679 intervals, 61 cores, 7 studies):
+OC% = 0.00174·OM%² + 0.3196·OM% + 2.330 (R² = 0.908). It is used only where
+fraction_carbon is missing.
