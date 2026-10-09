@@ -301,3 +301,31 @@ The original A3b transfer evaluation is kept and reported unchanged. Other
 dry-run observations, reported but not acted on: project-level VM0033
 aggregation (Eq. 88, independence assumption) yields 1.4% uncertainty and
 so no deduction; the GNN is less stable than RF under the t1 image swap.
+
+---
+
+# Addendum B (2026-10-09 21:20): local calibration for cross-region use, VALIDATION ONLY
+
+Written after the single test read, which showed that zero-shot
+cross-region transfer fails (all transfer R² < 0). This addendum asks a
+different, practical question: **with a small local labeled sample, as
+any real crediting project would collect, does a model trained elsewhere
+become usable, and do conformal intervals regain valid coverage?** It is
+evaluated **only on target-region validation nodes**. Test is not read
+again, and the zero-shot test numbers are reported unchanged.
+
+- Directions: R1→R2 and R2→R1. Families: XGBoost, RF, GNN, Phys-GNN
+  (selected configs), with no positional features (as in D8).
+- Target val is split by fine-grid groups 50/50 (seed 7, the dry-run
+  split) into `local` (the "field sample") and `check` (evaluation).
+- Variants, all scored on `check`:
+  - V0 zero-shot: source-trained model;
+  - V1 recalibrated: V0 + linear correction y ≈ a + b·ŷ fitted on `local`;
+  - V2 pooled: model retrained on source train ∪ target `local`;
+  - V3 local-only: model trained on target `local` alone (reference).
+- Intervals: split-conformal on |y − ŷ| for each variant. Two calibration
+  sets are compared: source val (zero-shot UQ) and target `local` (local
+  UQ). Coverage, width and Winkler at 90% are reported on `check`.
+- Reported for every variant; nothing is selected. Pre-stated hypothesis:
+  V1/V2 recover positive R², and local conformal calibration restores
+  ~90% coverage, whereas source calibration undercovers.
