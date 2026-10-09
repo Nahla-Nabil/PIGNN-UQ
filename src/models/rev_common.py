@@ -36,12 +36,19 @@ GNN_MAX_EPOCHS, GNN_PATIENCE, GNN_MIN_EPOCHS, GNN_LR, GNN_WD, GNN_DROPOUT = 500,
 W_NONNEG = 0.1
 
 
-def load_rev():
-    df = pd.read_csv(DATA_PROCESSED / "graph_nodes.csv")
-    rev = pd.read_csv(DATA_PROCESSED / "graph_nodes_rev_features.csv")
-    base_cols = ["b03", "b04", "b08", "b11", "ndvi", "ndwi", "ndmi"]
+def load_rev(region=None):
+    """Nodes + corrected features (+ hydroperiod inputs and the Radabaugh
+    reference when built) for a region (default: region 1)."""
+    from src.data_pipeline.region import R1
+    region = region or R1
+    df = pd.read_csv(region.nodes_csv)
+    rev = pd.read_csv(region.rev_features_csv)
+    base_cols = [c for c in ["b03", "b04", "b08", "b11", "ndvi", "ndwi", "ndmi"] if c in df.columns]
     df = df.drop(columns=base_cols).merge(rev, on=["row", "col"], how="left", validate="1:1")
-    edges = np.load(DATA_PROCESSED / "graph_edges.npy")
+    for extra in (region.hydro_csv, region.radabaugh_csv):
+        if extra.exists():
+            df = df.merge(pd.read_csv(extra), on=["row", "col"], how="left", validate="1:1")
+    edges = np.load(region.edges_npy)
     return df, edges
 
 
@@ -54,16 +61,37 @@ def induced_edges(edges: np.ndarray, node_idx: np.ndarray, n_total: int):
     return np.vstack([s[keep], d[keep]])
 
 
-def mass_balance_proxy(df: pd.DataFrame, fit_idx: np.ndarray) -> np.ndarray:
-    """Same steady-state proxy as physics_terms.compute_mass_balance_proxy
-    (equal-weight min-max NDVI + tide distance), but scaled on the fit nodes
-    and using the corrected NDVI."""
+PROXY_COLS = {  # Addendum A1; equal weights of min-max scaled columns, no fitted coefficients
+    "P0": ("ndvi", "dist_to_tide_km"),  # submitted paper's prior (control)
+    "P1": ("inund_freq",),              # hydroperiod: tidal inundation frequency
+    "P2": ("inund_freq", "ndre"),       # hydroperiod + red-edge canopy productivity
+}
+
+
+def mass_balance_proxy(df: pd.DataFrame, fit_idx: np.ndarray, kind: str = "P0") -> np.ndarray:
+    """Physics prior target, min-max scaled on the fit nodes. P0 equals the
+    submitted paper's proxy (physics_terms.compute_mass_balance_proxy) with
+    the corrected NDVI."""
+    cols = PROXY_COLS[kind]
     out = np.zeros(len(df))
-    for col in ("ndvi", "dist_to_tide_km"):
-        v = df[col].values
+    for col in cols:
+        v = df[col].values.astype(float)
+        v = np.where(np.isnan(v), np.nanmedian(v[fit_idx]), v)
         lo, hi = np.nanmin(v[fit_idx]), np.nanmax(v[fit_idx])
-        out += 0.5 * (v - lo) / (hi - lo + 1e-9)
+        out += (v - lo) / (hi - lo + 1e-9) / len(cols)
     return out
+
+
+def mono_pairs(edges, idx, n, signal, quantile=0.5):
+    """Deviation D5 (implementation of the A1 'mono' constraint): ordered
+    neighbour pairs (a, b) inside the induced subgraph of idx where
+    signal[a] - signal[b] exceeds the median |difference| (so the pair is
+    clearly wetter/drier). The loss penalises yhat[a] < yhat[b]."""
+    e = induced_edges(edges, idx, n)
+    d = signal[idx][e[0]] - signal[idx][e[1]]
+    thr = np.quantile(np.abs(d), quantile)
+    keep = d > thr
+    return torch.tensor(e[0][keep]), torch.tensor(e[1][keep])
 
 
 def _design(df, cols, fit_idx, pred_df=None):
@@ -99,7 +127,8 @@ def spatial_lag(Xz: np.ndarray, edges: np.ndarray, groups: list) -> np.ndarray:
     return lag
 
 
-def _train_gnn(Xz, y, edges, fit_idx, stop_idx, pred_groups, seed, hidden, w_prior, proxy, Xz_pred=None):
+def _train_gnn(Xz, y, edges, fit_idx, stop_idx, pred_groups, seed, hidden, w_prior, proxy, Xz_pred=None,
+               constraint="mse", mono_signal=None):
     torch.manual_seed(seed)
     np.random.seed(seed)
     n = len(Xz)
@@ -116,6 +145,9 @@ def _train_gnn(Xz, y, edges, fit_idx, stop_idx, pred_groups, seed, hidden, w_pri
     p_mu, p_sd = proxy[fit_idx].mean(), proxy[fit_idx].std() + 1e-9
     proxy_fit = torch.tensor((proxy[fit_idx] - p_mu) / p_sd, dtype=torch.float32).unsqueeze(1)
 
+    if constraint == "mono" and w_prior > 0:
+        pa, pb = mono_pairs(edges, fit_idx, n, mono_signal)
+
     model = SAGERegressor(Xz.shape[1], hidden_dim=hidden, dropout=GNN_DROPOUT)
     opt = torch.optim.Adam(model.parameters(), lr=GNN_LR, weight_decay=GNN_WD)
     mse = torch.nn.MSELoss()
@@ -124,7 +156,12 @@ def _train_gnn(Xz, y, edges, fit_idx, stop_idx, pred_groups, seed, hidden, w_pri
         model.train()
         opt.zero_grad()
         out = model(x_fit, e_fit)
-        phys, _, _ = physics_loss(out, out * y_sd + y_mu, proxy_fit, y_sd, w_prior, W_NONNEG if w_prior > 0 else 0.0)
+        if constraint == "mono" and w_prior > 0:
+            # sign constraint: wetter neighbour should not hold less carbon
+            phys = w_prior * torch.relu(out[pb] - out[pa]).mean() +                 physics_loss(out, out * y_sd + y_mu, proxy_fit, y_sd, 0.0, W_NONNEG)[0]
+        else:
+            phys, _, _ = physics_loss(out, out * y_sd + y_mu, proxy_fit, y_sd, w_prior,
+                                      W_NONNEG if w_prior > 0 else 0.0)
         loss = mse(out, y_fit) + phys
         loss.backward()
         opt.step()
@@ -188,9 +225,13 @@ def fit_predict(df, edges, family, cols, fit_idx, pred_groups, seed, params=None
         pred[pred_idx] = m.predict(Xp[pred_idx])
     elif family in ("gnn", "phys_gnn"):
         w_prior = params.get("lambda", 0.0) if family == "phys_gnn" else 0.0
-        proxy = mass_balance_proxy(df, fit_idx)
+        kind = params.get("proxy", "P0")
+        proxy = mass_balance_proxy(df, fit_idx, kind)
+        constraint = params.get("constraint", "mse")
+        signal = df["inund_freq"].values if constraint == "mono" else None
         pred = _train_gnn(Xz, y, edges, fit_idx, stop_idx, pred_groups, seed,
-                          params.get("hidden", 16), w_prior, proxy, Xz_pred=None if pred_df is None else Xp)
+                          params.get("hidden", 16), w_prior, proxy, Xz_pred=None if pred_df is None else Xp,
+                          constraint=constraint, mono_signal=signal)
     else:
         raise ValueError(family)
     return pred

@@ -61,8 +61,6 @@ def main():
     STAMP.write_text(json.dumps(log, indent=2))
 
     df, edges = load_rev()
-    ref = pd.read_csv(DATA_PROCESSED / "graph_nodes_radabaugh_ref.csv")
-    df = df.merge(ref, on=["row", "col"], how="left", validate="1:1")
     y = df[TARGET_COL].values
     sel = json.loads((RESULTS / "rev_e1_selection.json").read_text())
     uq_sel = json.loads((RESULTS / "rev_e6_uq_selection.json").read_text())["selected_uq"]

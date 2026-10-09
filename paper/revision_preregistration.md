@@ -258,3 +258,13 @@ on val. The same §5 selection rule applies, and Trivial stays the reference.
   why the two factors stay separate. Reported whatever the result.
 - Market sensitivity (labeled not-validation): credited tC × 3.667 → tCO2e
   × published blue-carbon price range (sources verified before use).
+
+**D5 (2026-10-09, before running W2):** the A1 `mono` constraint is
+implemented as a *neighbour-pair* sign constraint rather than a finite-difference
+partial dependence, because inund_freq is not a model input (F1 features).
+For ordered graph neighbours (a, b) in the fit subgraph whose inund_freq
+difference exceeds the median absolute neighbour difference, the loss adds
+λ·mean(ReLU(ŷ_b − ŷ_a)) (z units), i.e. the wetter neighbour should not be
+predicted to hold less carbon. The non-negativity term is kept. Elevation
+source for P1: USGS 3DEP seamless 1/3″ (10 m) bare earth; GLO-30 (used in F2)
+is 0 m over most of the AOI.
