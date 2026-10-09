@@ -61,3 +61,7 @@ Thumbs.db
 # Editors
 .vscode/
 .idea/
+
+# local-only archive of old versions and Overleaf bundles (never pushed)
+.local_archive/
+*.zip
