@@ -1,0 +1,20 @@
+{
+  "shift_rows_on_soc_grid": 331,
+  "corr_reshifted_vs_submitted": {
+    "ndvi": 0.97331778301661,
+    "b04": 0.9147682063207287,
+    "b08": 0.9464973359093919,
+    "b11": 0.953364186398959
+  },
+  "mean_ndvi": {
+    "submitted": 0.002657680489159424,
+    "corrected": 0.4580329758485184,
+    "reshifted": 0.0067227245308458805
+  },
+  "frac_ndvi_below_0.3": {
+    "submitted": 0.9477479257210588,
+    "corrected": 0.040003951007506915,
+    "reshifted": 0.27943500592651127
+  },
+  "n_nodes_reshift_valid": 3355
+}

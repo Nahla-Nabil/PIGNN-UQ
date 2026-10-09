@@ -1,0 +1,156 @@
+C:\Users\nahla\Desktop\Physics-Informed Graph Neural Networks with Uncertainty Quantification for Data-Driven Valuation and Risk Assessment of Blue Carbon Assets\blue-carbon-pinn-gnn\src\models\rev_uq.py:202: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  rho = spearmanr(width, abs_err).statistic
+C:\Users\nahla\Desktop\Physics-Informed Graph Neural Networks with Uncertainty Quantification for Data-Driven Valuation and Risk Assessment of Blue Carbon Assets\blue-carbon-pinn-gnn\src\models\rev_uq.py:207: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  boots.append(spearmanr(width[b], abs_err[b]).statistic)
+C:\Users\nahla\venvs\bcpg\Lib\site-packages\numpy\lib\_nanfunctions_impl.py:1396: RuntimeWarning: All-NaN slice encountered
+  return _nanquantile_unchecked(
+C:\Users\nahla\Desktop\Physics-Informed Graph Neural Networks with Uncertainty Quantification for Data-Driven Valuation and Risk Assessment of Blue Carbon Assets\blue-carbon-pinn-gnn\src\models\rev_uq.py:202: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  rho = spearmanr(width, abs_err).statistic
+C:\Users\nahla\Desktop\Physics-Informed Graph Neural Networks with Uncertainty Quantification for Data-Driven Valuation and Risk Assessment of Blue Carbon Assets\blue-carbon-pinn-gnn\src\models\rev_uq.py:207: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  boots.append(spearmanr(width[b], abs_err[b]).statistic)
+C:\Users\nahla\venvs\bcpg\Lib\site-packages\numpy\lib\_nanfunctions_impl.py:1396: RuntimeWarning: All-NaN slice encountered
+  return _nanquantile_unchecked(
+C:\Users\nahla\Desktop\Physics-Informed Graph Neural Networks with Uncertainty Quantification for Data-Driven Valuation and Risk Assessment of Blue Carbon Assets\blue-carbon-pinn-gnn\src\models\rev_common.py:247: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  "spearman": spearmanr(y, p).statistic,
+C:\Users\nahla\venvs\bcpg\Lib\site-packages\numpy\lib\_function_base_impl.py:3036: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[:, None]
+C:\Users\nahla\venvs\bcpg\Lib\site-packages\numpy\lib\_function_base_impl.py:3037: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[None, :]
+C:\Users\nahla\Desktop\Physics-Informed Graph Neural Networks with Uncertainty Quantification for Data-Driven Valuation and Risk Assessment of Blue Carbon Assets\blue-carbon-pinn-gnn\src\models\rev_common.py:247: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  "spearman": spearmanr(y, p).statistic,
+C:\Users\nahla\Desktop\Physics-Informed Graph Neural Networks with Uncertainty Quantification for Data-Driven Valuation and Risk Assessment of Blue Carbon Assets\blue-carbon-pinn-gnn\src\models\rev_common.py:247: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  "spearman": spearmanr(y, p).statistic,
+C:\Users\nahla\Desktop\Physics-Informed Graph Neural Networks with Uncertainty Quantification for Data-Driven Valuation and Risk Assessment of Blue Carbon Assets\blue-carbon-pinn-gnn\src\models\rev_common.py:247: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  "spearman": spearmanr(y, p).statistic,
+C:\Users\nahla\Desktop\Physics-Informed Graph Neural Networks with Uncertainty Quantification for Data-Driven Valuation and Risk Assessment of Blue Carbon Assets\blue-carbon-pinn-gnn\src\models\rev_common.py:247: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  "spearman": spearmanr(y, p).statistic,
+C:\Users\nahla\venvs\bcpg\Lib\site-packages\numpy\lib\_function_base_impl.py:3036: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[:, None]
+C:\Users\nahla\venvs\bcpg\Lib\site-packages\numpy\lib\_function_base_impl.py:3037: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[None, :]
+C:\Users\nahla\Desktop\Physics-Informed Graph Neural Networks with Uncertainty Quantification for Data-Driven Valuation and Risk Assessment of Blue Carbon Assets\blue-carbon-pinn-gnn\src\models\rev_common.py:247: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  "spearman": spearmanr(y, p).statistic,
+                                   test_r2_mean  test_r2_std  test_mae_mean  test_spearman_mean  prior_gen_corr_selected_mean  corr_with_radabaugh_mean  interior2hop_r2_mean
+eval                    family                                                                                                                                               
+r1_in_region            gnn               0.071        0.236         66.527               0.294                         0.027                     0.098                -0.054
+                        linear           -0.241          NaN         80.971               0.015                         0.126                     0.205                -0.379
+                        phys_gnn          0.170        0.054         62.684               0.438                         0.141                     0.056                 0.054
+                        rf                0.029        0.006         66.751               0.360                         0.032                    -0.009                -0.124
+                        rf_coords        -0.790        0.018         80.443               0.344                        -0.247                     0.002                -1.158
+                        rf_lag            0.010        0.010         66.798               0.359                        -0.002                    -0.000                -0.149
+                        xgb               0.203        0.029         59.617               0.478                         0.044                    -0.072                 0.120
+r2_in_region            gnn               0.582        0.001         45.447               0.748                         0.258                     0.193                 0.574
+                        linear            0.409          NaN         52.603               0.594                         0.283                     0.106                 0.362
+                        phys_gnn          0.565        0.041         46.516               0.745                         0.285                     0.209                 0.559
+                        rf                0.580        0.001         44.584               0.748                         0.257                     0.160                 0.554
+                        rf_coords         0.567        0.001         45.303               0.748                         0.220                     0.086                 0.508
+                        rf_lag            0.594        0.002         43.737               0.760                         0.266                     0.169                 0.574
+                        xgb               0.586        0.002         44.300               0.743                         0.261                     0.151                 0.557
+transfer_nopos_r1_to_r2 gnn              -0.832        1.642         92.573               0.219                         0.152                    -0.155                   NaN
+                        linear           -0.639          NaN         91.044              -0.055                         0.423                     0.050                   NaN
+                        phys_gnn         -1.290        1.419        107.266               0.105                         0.074                    -0.217                   NaN
+                        rf               -0.175        0.009         79.342               0.204                         0.188                    -0.195                   NaN
+                        rf_lag           -0.241        0.015         83.160               0.131                         0.117                    -0.159                   NaN
+                        xgb              -0.104        0.010         73.715               0.272                         0.162                    -0.216                   NaN
+transfer_nopos_r2_to_r1 gnn              -0.429        0.113         77.036               0.136                         0.479                     0.203                   NaN
+                        linear           -0.808          NaN         94.881              -0.187                         0.541                     0.342                   NaN
+                        phys_gnn         -0.247        0.196         75.053               0.138                         0.426                     0.157                   NaN
+                        rf               -0.126        0.003         74.390               0.272                         0.524                     0.167                   NaN
+                        rf_lag           -0.008        0.002         69.993               0.400                         0.493                     0.120                   NaN
+                        xgb              -0.029        0.015         69.594               0.344                         0.387                     0.097                   NaN
+transfer_r1_to_r2       gnn             -12.309       10.226        276.312               0.062                        -0.056                     0.071                   NaN
+                        linear           -3.715          NaN        161.702              -0.182                         0.009                    -0.370                   NaN
+                        phys_gnn         -8.624        6.092        239.625               0.334                         0.240                     0.364                   NaN
+                        rf               -0.726        0.012         98.740               0.376                         0.086                    -0.300                   NaN
+                        rf_coords        -0.025        0.015         72.670                 NaN                         0.000                    -0.000                   NaN
+                        rf_lag           -0.595        0.009         95.111               0.339                         0.037                    -0.347                   NaN
+                        xgb              -0.487        0.030         88.946               0.470                         0.134                    -0.069                   NaN
+transfer_r2_to_r1       gnn              -1.326        1.791        106.472               0.229                         0.153                    -0.039                   NaN
+                        linear           -5.181          NaN        199.671               0.033                         0.140                    -0.087                   NaN
+                        phys_gnn         -0.948        0.593        104.596               0.274                         0.023                    -0.161                   NaN
+                        rf               -0.491        0.014         90.384               0.305                         0.245                     0.015                   NaN
+                        rf_coords        -0.416        0.003         76.717                 NaN                         0.000                    -0.000                   NaN
+                        rf_lag           -0.450        0.007         88.569               0.314                         0.089                    -0.064                   NaN
+                        xgb              -0.282        0.021         81.300               0.299                        -0.054                    -0.166                   NaN
+region      method calibration  level  coverage  mean_width  median_width  winkler  rho_width_abserr  rho_ci_lo  rho_ci_hi  coverage_tercile1  coverage_tercile2  coverage_tercile3
+    r1     CQR-GNN      global    0.9     0.915     273.020       269.872  306.352             0.545      0.510      0.575              0.965              0.915              0.864
+    r1     CQR-GNN    mondrian    0.9     0.879     269.615       250.879  326.711             0.437      0.399      0.474              0.841              0.851              0.944
+    r1 CQR-PhysGNN      global    0.9     0.895     280.093       274.831  323.819             0.430      0.393      0.467              0.916              0.887              0.883
+    r1 CQR-PhysGNN    mondrian    0.9     0.852     283.325       291.498  356.975             0.302      0.263      0.343              0.698              0.931              0.928
+    r1     CQR-XGB      global    0.9     0.957     269.968       260.463  293.107             0.474      0.438      0.510              0.973              0.965              0.932
+    r1     CQR-XGB    mondrian    0.9     0.902     242.839       232.213  282.980             0.379      0.343      0.417              0.853              0.934              0.919
+    r1      NCP-RF      global    0.9     0.963     306.973       291.712  327.291             0.548      0.519      0.580              0.958              0.949              0.983
+    r1      NCP-RF    mondrian    0.9     0.918     272.060       259.354  313.127             0.484      0.452      0.517              0.900              0.890              0.964
+    r1       Ens-Q      global    0.9     0.952     272.224       266.428  294.491             0.542      0.511      0.572              0.986              0.955              0.915
+    r1       Ens-Q    mondrian    0.9     0.912     260.982       257.441  295.097             0.432      0.399      0.464              0.895              0.899              0.944
+    r1     Trivial      global    0.9     0.893     274.405       274.405  372.152               NaN        NaN        NaN                NaN                NaN              0.893
+    r1     Trivial    mondrian    0.9     0.846     252.488       274.405  364.442             0.187      0.142      0.227              0.948              0.609              0.896
+    r2     CQR-GNN      global    0.9     0.891     191.405       190.286  247.394             0.152      0.123      0.181              0.897              0.912              0.865
+    r2     CQR-GNN    mondrian    0.9     0.880     192.226       187.899  244.585             0.209      0.181      0.238              0.828              0.901              0.910
+    r2 CQR-PhysGNN      global    0.9     0.905     208.975       209.592  264.958             0.145      0.115      0.173              0.916              0.935              0.863
+    r2 CQR-PhysGNN    mondrian    0.9     0.881     203.326       205.007  261.543             0.187      0.157      0.216              0.808              0.939              0.895
+    r2     CQR-XGB      global    0.9     0.900     197.358       194.140  252.742             0.203      0.172      0.231              0.910              0.914              0.876
+    r2     CQR-XGB    mondrian    0.9     0.902     198.679       190.103  245.596             0.254      0.225      0.282              0.883              0.905              0.917
+    r2      NCP-RF      global    0.9     0.908     185.413       182.150  237.207             0.202      0.173      0.230              0.916              0.914              0.893
+    r2      NCP-RF    mondrian    0.9     0.916     196.216       182.532  234.916             0.251      0.222      0.279              0.897              0.913              0.936
+    r2       Ens-Q      global    0.9     0.897     184.004       182.512  240.533             0.226      0.198      0.256              0.920              0.922              0.851
+    r2       Ens-Q    mondrian    0.9     0.900     188.533       182.279  233.014             0.251      0.223      0.278              0.878              0.920              0.901
+    r2     Trivial      global    0.9     0.878     282.309       282.309  369.134               NaN        NaN        NaN                NaN                NaN              0.878
+    r2     Trivial    mondrian    0.9     0.833     260.114       282.309  376.762             0.178      0.149      0.206              0.735              0.912              0.869
+region  method               calibration  n_nodes  median_unc_pct  frac_nodes_within_allowable  total_flat  total_ruleA_lowerbound  total_ruleB_vm0033_node  total_ruleB_vm0033_project  project_unc_pct_independent  ruleA_vs_flat  ruleB_node_vs_flat  ruleB_project_vs_flat  dedB_p10  dedB_p50  dedB_p90
+    r1 CQR-GNN         global (post-hoc)     2076           0.327                        0.000  701559.475              497920.389               615155.771                  701559.475                        0.007          0.710               0.877                    1.0     0.025     0.127     0.203
+    r1 CQR-GNN mondrian (pre-registered)     2076           0.325                        0.046  701559.475              500747.749               617528.134                  701559.475                        0.007          0.714               0.880                    1.0     0.010     0.125     0.231
+    r2 CQR-GNN         global (post-hoc)     4476           0.221                        0.330 1581235.483             1267460.050              1539563.603                 1581235.483                        0.003          0.802               0.974                    1.0     0.000     0.021     0.072
+    r2 CQR-GNN mondrian (pre-registered)     4476           0.220                        0.387 1581235.483             1265990.051              1518986.112                 1581235.483                        0.003          0.801               0.961                    1.0     0.000     0.020     0.097
+region               calibration    n  frac_nodes_with_loss  rho_width_loss  rho_deductionB_loss
+    r1         global (post-hoc) 2076                 0.127          -0.058               -0.128
+    r1 mondrian (pre-registered) 2076                 0.127          -0.068               -0.115
+    r2         global (post-hoc) 4476                 0.107          -0.062               -0.160
+    r2 mondrian (pre-registered) 4476                 0.107          -0.057               -0.126
+region family feature_set  spearman_t0_t1  mean_abs_change  frac_t1_cloud_imputed
+    r1    gnn F1_spectral           0.419           84.007                  0.052
+    r1     rf F2_spec_dem           0.918           20.405                  0.052
+    r2    gnn F1_spectral           0.579           48.449                  0.228
+    r2     rf F2_spec_dem           0.691           32.877                  0.228
+{
+  "r1": {
+    "n": {
+      "train": 6465,
+      "val": 1583,
+      "test": 2076,
+      "interior": 1518
+    },
+    "trainmean_r2_on_test": -0.10547040776251815,
+    "label_sd_test": 87.5669204761252,
+    "corr_label_vs_radabaugh_test": -0.16851115689977128,
+    "uq_gate": {
+      "selected_uq": "CQR-GNN",
+      "rho": 0.5445162001167999,
+      "ci": [
+        0.5098906848605618,
+        0.5753856521007426
+      ],
+      "gate_passed": true
+    }
+  },
+  "r2": {
+    "n": {
+      "train": 14499,
+      "val": 3351,
+      "test": 4476,
+      "interior": 2678
+    },
+    "trainmean_r2_on_test": -0.012979938550870207,
+    "label_sd_test": 89.02862958249554,
+    "corr_label_vs_radabaugh_test": 0.21524981307810748,
+    "uq_gate": {
+      "selected_uq": "CQR-GNN",
+      "rho": 0.15152454578034028,
+      "ci": [
+        0.123140603086033,
+        0.18131373922640387
+      ],
+      "gate_passed": true
+    }
+  }
+}

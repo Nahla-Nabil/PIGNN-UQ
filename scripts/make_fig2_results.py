@@ -50,14 +50,29 @@ MODEL_COLORS = {
     "physics_gnn": VERMILLION,
 }
 
+# figsize below (7.16, 2.05) is the full IEEEtran \textwidth, i.e. this
+# figure is designed for a double-column `figure*` float, not a
+# single-column `figure`. It was briefly placed in a single-column
+# `figure` at width=0.80\linewidth during an earlier page-budget pass --
+# that silently shrunk it far more than the SCALE below accounted for
+# (\linewidth there is the ~3.5in column, not the ~7.16in \textwidth this
+# figure is drawn at), which is the root cause of the legend/annotation
+# crowding found on visual review. Restored to `figure*` at
+# width=0.85\linewidth (=0.85\textwidth inside `figure*`), matching this
+# SCALE's actual assumption. Every font/linewidth/marker-area size below
+# is boosted by SCALE relative to the original 1:1 design (areas by
+# SCALE**2) so it lands back at its originally-designed size after
+# LaTeX's placement scale-down.
+SCALE = 1 / 0.85
+
 plt.rcParams.update({
     "font.family": "sans-serif",
     "font.sans-serif": ["Arial", "Helvetica", "DejaVu Sans"],
-    "font.size": 8,
+    "font.size": 8 * SCALE,
     "pdf.fonttype": 42,
-    "axes.linewidth": 0.7,
-    "xtick.major.width": 0.7,
-    "ytick.major.width": 0.7,
+    "axes.linewidth": 0.7 * SCALE,
+    "xtick.major.width": 0.7 * SCALE,
+    "ytick.major.width": 0.7 * SCALE,
 })
 
 
@@ -79,18 +94,18 @@ def panel_a(ax):
         stds = [sub[m].std(ddof=0) if model != "linear_regression" else 0.0 for m in metrics]
         offset = (i - (n_models - 1) / 2) * bar_w
         ax.bar(x + offset, means, width=bar_w * 0.92,
-               yerr=stds, capsize=2.2, error_kw=dict(linewidth=0.8, ecolor="black"),
-               color=MODEL_COLORS[model], edgecolor="black", linewidth=0.5,
+               yerr=stds, capsize=2.2 * SCALE, error_kw=dict(linewidth=0.8 * SCALE, ecolor="black"),
+               color=MODEL_COLORS[model], edgecolor="black", linewidth=0.5 * SCALE,
                label=MODEL_LABELS[model])
 
-    ax.axhline(0, color="black", linewidth=0.7)
+    ax.axhline(0, color="black", linewidth=0.7 * SCALE)
     ax.set_xticks(x)
     ax.set_xticklabels(metric_labels)
     ax.set_ylabel("Value")
-    ax.set_title("(a) Model comparison, val (5 seeds)", fontsize=8, loc="left")
+    ax.set_title("(a) Model comparison, val (5 seeds)", fontsize=8 * SCALE, loc="left")
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
-    ax.legend(fontsize=6.0, frameon=False, loc="upper left",
+    ax.legend(fontsize=6.0 * SCALE, frameon=False, loc="upper left",
                handlelength=1.2, handletextpad=0.4, borderaxespad=0.2)
     ax.set_ylim(-0.25, 0.95)
 
@@ -98,8 +113,10 @@ def panel_a(ax):
 def panel_b(ax):
     df = pd.read_csv(COVERAGE_CSV)
     lims = (78, 100)
-    ax.plot(lims, lims, linestyle="--", color=GRAY, linewidth=1.0,
-            label="Perfect calibration", zorder=1)
+    # Not given a legend label (redundant with the caption's own "dashed
+    # line: perfect calibration" -- dropping it from the in-panel legend
+    # reduces crowding at the smaller placement size below).
+    ax.plot(lims, lims, linestyle="--", color=GRAY, linewidth=1.0 * SCALE, zorder=1)
 
     method_style = {
         "global": dict(color=BLUE, marker="o", label="Global (before)"),
@@ -110,12 +127,12 @@ def panel_b(ax):
         nom = sub["nominal_level"].values * 100
         emp = sub["empirical_coverage_test"].values * 100
         for n, e in zip(nom, emp):
-            ax.plot([n, n], [e, n], color=style["color"], linewidth=0.8, zorder=2, alpha=0.6)
-        ax.scatter(nom, emp, s=30, color=style["color"], marker=style["marker"],
-                   edgecolor="black", linewidth=0.5, zorder=3, label=style["label"])
+            ax.plot([n, n], [e, n], color=style["color"], linewidth=0.8 * SCALE, zorder=2, alpha=0.6)
+        ax.scatter(nom, emp, s=30 * SCALE**2, color=style["color"], marker=style["marker"],
+                   edgecolor="black", linewidth=0.5 * SCALE, zorder=3, label=style["label"])
         for n, e in zip(nom, emp):
             ax.annotate(f"{e:.1f}%", (n, e), textcoords="offset points",
-                        xytext=(6, -2 if style["marker"] == "o" else -12), fontsize=5.8, color=style["color"])
+                        xytext=(6 * SCALE, (-2 if style["marker"] == "o" else -12) * SCALE), fontsize=5.8 * SCALE, color=style["color"])
 
     ax.set_xlim(*lims)
     ax.set_ylim(*lims)
@@ -123,15 +140,35 @@ def panel_b(ax):
     ax.set_yticks([80, 85, 90, 95, 100])
     ax.set_xlabel("Nominal coverage (%)")
     ax.set_ylabel("Empirical coverage (%)")
-    ax.set_title("(b) CQR coverage, test (global vs. localized)", fontsize=8, loc="left")
+    ax.set_title("(b) CQR coverage, test (global vs. localized)", fontsize=8 * SCALE, loc="left")
     ax.set_aspect("equal")
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
-    ax.legend(fontsize=5.8, frameon=False, loc="lower right",
+    # Placed entirely outside the axes, below the x-axis label. Both
+    # in-axes corners were tried and rejected on visual inspection:
+    # "lower right" overlapped the (90, 83.4%) point/annotation; "upper
+    # left" overlapped the (95, 96.4%) point/annotation. With only 4 data
+    # points spanning nominal in {90,95} and empirical in [83,97] inside a
+    # small 22x22-unit square panel, no in-axes corner is reliably clear,
+    # so this avoids the collision by construction rather than by guessing
+    # another corner.
+    ax.legend(fontsize=5.8 * SCALE, frameon=False, loc="upper center",
+               bbox_to_anchor=(0.5, -0.32), ncol=1,
                handlelength=1.4, handletextpad=0.4, borderaxespad=0.2)
 
 
 def main():
+    # Tried raising this height (panel (b) uses set_aspect("equal"), so
+    # its plotted square is bound by whichever of {allocated width,
+    # allocated height} is smaller -- at this height that's height, so a
+    # LaTeX-side width increase alone mostly adds blank side margin rather
+    # than enlarging the square). Measured empirically (NUMBER_SOURCE_LOG.md
+    # #84): the largest width\linewidth that still holds 5 pages tracks
+    # the figure's RENDERED height, which the venue's page budget caps at
+    # ~1.95in regardless of this design height/width split -- a taller
+    # design just needs a smaller \linewidth to reach the same rendered
+    # height, netting no real gain. Reverted to the original, simpler
+    # aspect rather than keep the added complexity for no benefit.
     fig, (ax_a, ax_b) = plt.subplots(1, 2, figsize=(7.16, 2.05),
                                        constrained_layout=True)
     panel_a(ax_a)

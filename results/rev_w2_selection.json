@@ -1,0 +1,10 @@
+{
+  "selected_phys": "phys_gnn|F1_spectral|{\"constraint\": \"mse\", \"hidden\": 16, \"lambda\": 0.1, \"proxy\": \"P2\"}",
+  "phys_oof_r2": 0.4051337689700764,
+  "no_physics_oof_r2": 0.3853423927992376,
+  "no_physics_se": 0.0328024651226791,
+  "physics_within_1se_of_no_physics": true,
+  "physics_better_than_no_physics": true,
+  "selected_phys_by_buggy_code": "phys_gnn|F1_spectral|{\"constraint\": \"mse\", \"hidden\": 16, \"lambda\": 0.1, \"proxy\": \"P1\"}",
+  "note": "D6: corrected selection; see revision_preregistration.md"
+}
