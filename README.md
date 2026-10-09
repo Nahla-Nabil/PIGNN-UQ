@@ -1,14 +1,13 @@
 <div align="center">
 
-# 🌿 PIGNN-UQ
+# PIGNN-UQ
 
 ### Physics-Informed Graph Neural Networks with Uncertainty Quantification for Registry-Compatible Blue Carbon Crediting
 
-**Nahla Nabil Skaik** · Faculty of Computer Studies, Arab Open University, Kingdom of Bahrain
+**Nahla Nabil** · Faculty of Computer Studies, Arab Open University, Kingdom of Bahrain
 
 [![Conference](https://img.shields.io/badge/ICDABI%202026-DATA'26-3B6FB6?style=for-the-badge)](#)
 [![IEEE](https://img.shields.io/badge/IEEE-Conference%20Paper-E8749A?style=for-the-badge)](#)
-[![Status](https://img.shields.io/badge/Status-Revised%20after%20major%20revision-F2C14E?style=for-the-badge)](#)
 
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.13-EE4C2C?logo=pytorch&logoColor=white)](https://pytorch.org/)
@@ -34,76 +33,76 @@
   <img src="paper/figures/rev_fig0_framework.png" alt="PIGNN-UQ pipeline" width="620">
 </p>
 
-## 📑 Contents
+## Contents
 
 | | | |
 |---|---|---|
-| 🎯 [Key results](#-key-results) | 🧰 [Tech stack](#-tech-stack) | 🔄 [Pipeline](#-pipeline) |
-| 🗺️ [Regions and data](#%EF%B8%8F-study-regions-and-data) | 🧪 [Evaluation protocol](#-evaluation-protocol) | 📊 [Detailed results](#-detailed-results) |
-| 📁 [Repository layout](#-repository-layout) | ▶️ [Reproduce](#%EF%B8%8F-reproducing-the-results) | 📝 [Revision record](#-revision-record-icdabi-2026-major-revision) |
+| [Key results](#key-results) | [Tech stack](#tech-stack) | [Pipeline](#pipeline) |
+| [Regions and data](#study-regions-and-data) | [Evaluation protocol](#evaluation-protocol) | [Detailed results](#detailed-results) |
+| [Repository layout](#repository-layout) | [Reproduce](#reproducing-the-results) | [Changes](#changes-from-the-first-version) |
 
 ---
 
-## 🎯 Key results
+## Key results
 
-| | 🔵 Region 1<br/>Ten Thousand Islands | 🌸 Region 2<br/>Everglades coast |
+| | Region 1<br/>Ten Thousand Islands | Region 2<br/>Everglades coast |
 |---|:---:|:---:|
 | **Ensemble** (physics-informed GNN + XGBoost), CV R² | 0.47 | 0.55 |
 | **Ensemble, test R²** (declared second read) | **0.28** | **0.60** |
 | XGBoost alone, test R² | 0.20 | 0.59 |
 | 90% interval coverage, test | 91.5% | 89.1% |
 | Median VM0033 deduction per node | **12.7%** | **2.1%** |
-| Project coverage, VM0033 independent-error rule | 🔴 18% | 🔴 33% |
-| Project coverage, correlation-aware rule | 🟢 91% | 🟢 100% |
+| Project coverage, VM0033 independent-error rule | 18% | 33% |
+| Project coverage, correlation-aware rule | 91% | 100% |
 
-- 🌱 **Field check:** at 25 sites (87 Smithsonian soil cores) the ensemble's median error is
+- **Field check:** at 25 sites (87 Smithsonian soil cores) the ensemble's median error is
   **10.1%**, against 15.0% for a regional mean and 14.1% / 15.1% for two published maps.
-- 🏦 **Market check:** the deduction is close to the **11.0%** median buffer of the seven blue
+- **Market check:** the deduction is close to the **11.0%** median buffer of the seven blue
   carbon projects with issued credits (Berkeley VROD v2026-08).
-- ⚖️ **Calibration matters:** the label map's own uncalibrated intervals would withhold about
+- **Calibration matters:** the label map's own uncalibrated intervals would withhold about
   **65%** of credits.
 
 ---
 
-## 🧰 Tech stack
+## Tech stack
 
 | Layer | Tools |
 |---|---|
-| 🐍 **Language** | Python 3.12 |
-| 🧠 **Graph learning** | PyTorch 2.13, PyTorch Geometric 2.8 (GraphSAGE), custom physics-informed loss |
-| 🌳 **Tabular models** | XGBoost 3.4, scikit-learn 1.9 (random forest, linear, quantile models) |
-| 📏 **Uncertainty** | Conformalized quantile regression, normalized conformal prediction, Mondrian calibration (own implementation in `src/models/rev_uq.py`) |
-| 🛰️ **Remote sensing & GIS** | rasterio, shapely, pyproj, pystac-client, Microsoft Planetary Computer, LERC |
-| 📈 **Analysis & plots** | NumPy, pandas, SciPy, matplotlib |
-| 📄 **Paper** | LaTeX (IEEEtran), BibTeX, latexdiff |
-| 🔁 **Reproducibility** | Fixed seeds, pre-registered selection rules, test-read run stamp, git history |
+| **Language** | Python 3.12 |
+| **Graph learning** | PyTorch 2.13, PyTorch Geometric 2.8 (GraphSAGE), custom physics-informed loss |
+| **Tabular models** | XGBoost 3.4, scikit-learn 1.9 (random forest, linear, quantile models) |
+| **Uncertainty** | Conformalized quantile regression, normalized conformal prediction, Mondrian calibration (own implementation in `src/models/rev_uq.py`) |
+| **Remote sensing & GIS** | rasterio, shapely, pyproj, pystac-client, Microsoft Planetary Computer, LERC |
+| **Analysis & plots** | NumPy, pandas, SciPy, matplotlib |
+| **Paper** | LaTeX (IEEEtran), BibTeX, latexdiff |
+| **Reproducibility** | Fixed seeds, pre-registered selection rules, test-read run stamp, git history |
 
 ---
 
-## 🔄 Pipeline
+## Pipeline
 
 ```mermaid
 flowchart LR
-    subgraph IN["🛰️ Inputs"]
+    subgraph IN["Inputs"]
         S2[Sentinel-2 L2A<br/>Feb + Aug 2026]
         DEM[USGS 3DEP lidar]
         TIDE[NOAA hourly<br/>water levels]
         SOC[Maxwell et al. 2023<br/>30 m SOC label]
         GMW[Global Mangrove Watch]
     end
-    subgraph GR["🕸️ Graph"]
+    subgraph GR["Graph"]
         N[150 m nodes]
         E[8-neighbor edges<br/>split-induced subgraphs]
     end
-    subgraph MO["🧠 Models"]
+    subgraph MO["Models"]
         GNN[Physics-informed<br/>GraphSAGE]
         XGB[XGBoost]
         ENS[Ensemble mean]
     end
-    subgraph UQ["📏 Uncertainty"]
+    subgraph UQ["Uncertainty"]
         CQR[Conformal 90%<br/>intervals]
     end
-    subgraph CR["🌿 Crediting"]
+    subgraph CR["Crediting"]
         VM[VM0033 Eq. 92<br/>deduction]
         BUF[Registry buffer<br/>unchanged]
         OUT[Credited t C]
@@ -136,9 +135,9 @@ red-edge canopy productivity (NDRE).
 
 ---
 
-## 🗺️ Study regions and data
+## Study regions and data
 
-| | 🔵 Region 1 (R1) | 🌸 Region 2 (R2) |
+| | Region 1 (R1) | Region 2 (R2) |
 |---|---|---|
 | Area | Ten Thousand Islands / Rookery Bay, SW Florida | Everglades NP coast (Lostmans to Shark River) |
 | Bounding box | -81.90, 25.90, -81.40, 26.30 | -81.20, 25.30, -80.90, 25.60 |
@@ -151,7 +150,7 @@ Each node is a 5x5 block of the native 30 m SOC grid. Fine-grid cells (about 2.5
 assigned whole to train, validation or test, and **no edge crosses a split**.
 
 <details>
-<summary><b>📚 Data sources</b></summary>
+<summary><b>Data sources</b></summary>
 
 <a id="data-sources"></a>
 
@@ -173,16 +172,16 @@ Provenance, access dates and licensing notes are in [`data/README.md`](data/READ
 
 ---
 
-## 🧪 Evaluation protocol
+## Evaluation protocol
 
 ```mermaid
 flowchart TD
-    A[📝 Rules committed before each experiment] --> B[Spatial 5-fold CV on train+val<br/>features, models, physics prior]
+    A[Rules committed before each experiment] --> B[Spatial 5-fold CV on train+val<br/>features, models, physics prior]
     B --> C[UQ selection on a val-internal split]
-    C --> D[🔒 First test read<br/>all pre-specified models]
+    C --> D[First test read<br/>all pre-specified models]
     D --> F[Ensemble chosen on CV only]
-    F --> G[🔒 Declared second test read<br/>one model, logged]
-    D --> H[🌱 External checks<br/>field cores, project aggregation,<br/>market records, label-map intervals]
+    F --> G[Declared second test read<br/>one model, logged]
+    D --> H[External checks<br/>field cores, project aggregation,<br/>market records, label-map intervals]
     style A fill:#EAF3FC,stroke:#3B6FB6
     style B fill:#EAF3FC,stroke:#3B6FB6
     style C fill:#EAF3FC,stroke:#3B6FB6
@@ -192,15 +191,15 @@ flowchart TD
     style H fill:#E3F4E8,stroke:#5BAA7A
 ```
 
-- 🔒 `scripts/run_revision_test_eval.py` is the only script that reads test labels. It writes
+- `scripts/run_revision_test_eval.py` is the only script that reads test labels. It writes
   `results/rev_test_RUN_STAMP.json` and refuses a second run without a logged reason.
-- 📝 Every deviation (D1 to D9) and addendum (A to G) is logged in
+- Every deviation (D1 to D9) and addendum (A to G) is logged in
   [`paper/revision_preregistration.md`](paper/revision_preregistration.md). Analyses run after
   the first test read are labelled exploratory.
 
 ---
 
-## 📊 Detailed results
+## Detailed results
 
 <p align="center">
   <img src="paper/figures/rev_fig1_results.png" alt="Results" width="900">
@@ -222,9 +221,9 @@ dashed = trivial interval, labels = coverage.*
 | XGBoost | 0.41 | 0.20 | 0.59 |
 | GraphSAGE | 0.39 | 0.07 (sd 0.24) | 0.58 |
 | Physics-informed GraphSAGE (P2) | 0.41 | 0.17 (sd 0.05) | 0.56 |
-| ⭐ **Ensemble (physics-informed GNN + XGBoost)** | **0.47** | **0.28** | **0.60** |
+| **Ensemble (physics-informed GNN + XGBoost)** | **0.47** | **0.28** | **0.60** |
 
-The ensemble row comes from the declared second test read. The originally submitted model
+The ensemble row comes from the declared second test read. The first version of the model
 scored R² = -0.38 on the same R1 test block, with Sentinel-2 features misplaced by 9.18 km.
 
 </details>
@@ -246,7 +245,7 @@ Zero-shot transfer scores below zero, and recalibrating intervals on half of the
 validation nodes restores 88% to 97% coverage. Training on both image dates raises the
 cross-date rank agreement of predictions from 0.44 to 0.88.
 
-### 🌿 Crediting
+### Crediting
 
 <p align="center">
   <img src="paper/figures/rev_fig2_deduction_map.png" alt="Per-node VM0033 deduction" width="560">
@@ -264,11 +263,11 @@ cross-date rank agreement of predictions from 0.44 to 0.88.
 - Over the 2,076 R1 test nodes (about 4,700 ha), the deducted share equals 0.71 Mt CO2e of
   standing stock, or US$19.2 million at US$26.96 per credit (an upper bound).
 
-### 🌱 Field cores (Smithsonian CCN, validation only)
+### Field cores (Smithsonian CCN, validation only)
 
 | Source | Site-level median abs. error (25 sites) |
 |---|:---:|
-| ⭐ Ensemble | **10.1%** |
+| Ensemble | **10.1%** |
 | Physics-informed GNN | 11.6% |
 | Maxwell et al. map | 14.1% |
 | Constant regional mean | 15.0% |
@@ -279,7 +278,7 @@ In the result files the column `sanderman` holds the Maxwell et al. (2023) label
 
 ---
 
-## 📁 Repository layout
+## Repository layout
 
 ```
 blue-carbon-pinn-gnn/
@@ -299,7 +298,8 @@ blue-carbon-pinn-gnn/
 │   ├── run_rev_w2_physics_cv.py       physics-prior selection
 │   ├── run_rev_e6_uq_val.py           UQ selection (validation)
 │   ├── run_revision_test_eval.py      first test read (both regions, transfer)
-│   ├── run_rev_f_cv.py, run_rev_f2_uq.py, run_rev_f34.py   ensemble selection, UQ, field sites, pooled CV
+│   ├── run_rev_f_cv.py                ensemble selection (spatial CV)
+│   ├── run_rev_f2_uq.py, run_rev_f34.py  interval method, field sites, pooled model
 │   ├── run_rev_f5_test2.py            declared second test read (ensemble only)
 │   ├── run_rev_b_*, run_rev_c*_*      local calibration, fix-only ablation, two-date training
 │   ├── run_rev_d_field_validation.py  CCN field-core comparison
@@ -313,16 +313,22 @@ blue-carbon-pinn-gnn/
 
 ---
 
-## ▶️ Reproducing the results
+## Reproducing the results
 
 Keep the virtual environment outside the repository: deeply nested Windows paths broke a DLL
 load once.
 
+**1. Environment**
+
 ```bash
 python -m venv C:/venvs/bcpg
-C:/venvs/bcpg/Scripts/pip install -r requirements.txt xgboost openpyxl lerc pypdf
+C:/venvs/bcpg/Scripts/pip install -r requirements.txt
+C:/venvs/bcpg/Scripts/pip install xgboost openpyxl lerc pypdf
+```
 
-# 1. data (region 1 graph is in the repo; these rebuild features and references)
+**2. Data** (the region 1 graph is in the repository; these rebuild features and references)
+
+```bash
 python src/data_pipeline/build_rev_features.py r1
 python src/data_pipeline/build_hydroperiod.py r1
 python src/data_pipeline/fetch_radabaugh_bgc.py r1
@@ -330,22 +336,37 @@ python src/data_pipeline/build_region2.py
 python src/data_pipeline/build_rev_features.py r2
 python src/data_pipeline/build_hydroperiod.py r2
 python src/data_pipeline/fetch_radabaugh_bgc.py r2
-python src/eval/nonpermanence.py r1 && python src/eval/nonpermanence.py r2
+python src/eval/nonpermanence.py r1
+python src/eval/nonpermanence.py r2
+```
 
-# 2. selection on validation only
+**3. Model selection** (validation data only)
+
+```bash
 python scripts/run_rev_e1_cv.py
 python scripts/run_rev_w2_physics_cv.py
 python scripts/run_rev_e6_uq_val.py
-python scripts/run_rev_f_cv.py && python scripts/run_rev_f2_uq.py && python scripts/run_rev_f34.py
+python scripts/run_rev_f_cv.py
+python scripts/run_rev_f2_uq.py
+python scripts/run_rev_f34.py
+```
 
-# 3. test reads (logged in results/rev_test_RUN_STAMP.json)
+**4. Test reads** (logged in `results/rev_test_RUN_STAMP.json`)
+
+```bash
 python scripts/run_revision_test_eval.py --dry-run
 python scripts/run_revision_test_eval.py
 python scripts/run_rev_f5_test2.py
+```
 
-# 4. external checks and figures
-python scripts/run_rev_d_field_validation.py && python scripts/run_rev_g_label_pi.py
-python scripts/make_rev_fig0_framework.py && python scripts/make_rev_fig1.py && python scripts/make_rev_fig2_map.py
+**5. External checks and figures**
+
+```bash
+python scripts/run_rev_d_field_validation.py
+python scripts/run_rev_g_label_pi.py
+python scripts/make_rev_fig0_framework.py
+python scripts/make_rev_fig1.py
+python scripts/make_rev_fig2_map.py
 ```
 
 Seeds are fixed in every script (models 1 to 3, CV folds 20261007, region-2 split 20261009).
@@ -353,9 +374,9 @@ Sentinel-2, 3DEP and GLO-30 are read from Microsoft Planetary Computer without a
 
 ---
 
-## 📝 Revision record (ICDABI 2026 major revision)
+## Changes from the first version
 
-| Reviewer concern | ✅ What changed |
+| Issue in the first version | What changed |
 |---|---|
 | Negative test R² | Found and fixed a 9.18 km georeferencing error in the Sentinel-2 clip (reproduced from clean inputs); richer features; ensemble test R² 0.28 (R1) and 0.60 (R2) |
 | No RF / XGBoost | Added RF, XGBoost, RF with spatial lag, a location-only reference and a constant baseline |
@@ -373,6 +394,6 @@ Sentinel-2, 3DEP and GLO-30 are read from Microsoft Planetary Computer without a
 
 <div align="center">
 
-**Nahla Nabil Skaik** · Arab Open University, Kingdom of Bahrain · nahla.nabil.52@gmail.com
+**Nahla Nabil** · Faculty of Computer Studies, Arab Open University, Kingdom of Bahrain
 
 </div>
