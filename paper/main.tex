@@ -52,14 +52,14 @@ blue carbon, graph neural networks, conformal prediction, carbon credits, uncert
 
 \section{Introduction}
 
-Voluntary carbon markets discount mangrove credits for non-permanence risk (carbon later released through erosion, sea-level rise or disturbance) by withholding a fixed share of issued credits in a buffer pool \cite{verra_vm0033,planvivo_buffer}.
+Voluntary carbon markets discount mangrove credits for non-permanence risk (carbon later released through erosion, sea-level rise or disturbance) by withholding a fixed share of issued credits in a buffer pool \cite{planvivo_buffer}.
 That share does not depend on how well the carbon stock itself was estimated.
 Verra's VM0033 methodology does contain a separate uncertainty deduction: credits are reduced when the 90\% confidence interval exceeds 20\% of the estimate \cite[p.~64]{verra_vm0033}.
 In practice, the carbon-stock maps available for mangroves report point estimates with no calibrated per-site interval \cite{sanderman2023soc,radabaugh2023bluecarbon}, and the methodology combines plot uncertainties under an independence assumption that spatial models rarely satisfy.
 
 This paper asks whether calibrated, per-site uncertainty from a spatial model can supply that deduction in a way a registry could audit.
-A physics-informed graph neural network \cite{raissi2019pinn,hamilton2017graphsage} encodes neighborhood structure and a tidal-inundation prior; tree ensembles \cite{breiman2001rf,chen2016xgboost} supply strong tabular baselines; and conformalized quantile regression \cite{romano2019cqr} gives distribution-free intervals.
-This study departs from earlier work in four ways: (1) the interval of every node is converted into the VM0033 deduction, kept separate from the non-permanence buffer and compared with the buffers held by issuing projects \cite{vrod2026}; (2) the methodology's own aggregation rule is tested empirically and shown to understate project-level uncertainty when model errors are spatially correlated; (3) predictions and published maps are checked against 87 independent field soil cores \cite{ccn2023library}; and (4) the analysis covers two regions, two image dates and leakage-free spatial splits, with every model choice fixed on validation data under rules committed before the experiments were run.
+A physics-informed graph neural network encodes neighborhood structure and a tidal-inundation prior, tree ensembles supply strong tabular baselines, and conformalized quantile regression gives distribution-free intervals; Fig.~\ref{fig:framework} summarizes the pipeline.
+This study departs from earlier work in four ways: (1) the interval of every node is converted into the VM0033 deduction, kept separate from the non-permanence buffer and compared with the buffers held by issuing projects; (2) the methodology's own aggregation rule is tested empirically and shown to understate project-level uncertainty when model errors are spatially correlated; (3) predictions and published maps are checked against 87 independent field soil cores; and (4) the analysis covers two regions, two image dates and leakage-free spatial splits, with every model choice fixed on validation data under rules committed before the experiments were run.
 
 The scope is deliberately applied: the paper does not propose a new network architecture.
 The contribution is a crediting pipeline whose uncertainty is calibrated, auditable and conservative, together with evidence on where that uncertainty is and is not informative.
@@ -70,11 +70,11 @@ The contribution is a crediting pipeline whose uncertainty is calibrated, audita
 GraphSAGE \cite{hamilton2017graphsage} learns from node neighborhoods inductively, which suits spatial grids split into separate regions.
 
 \textbf{Mangrove carbon mapping.} Most mangrove carbon studies regress field or map values on spectral indices with random forests or boosted trees \cite{roy2024mangroveasiapacific}.
-Global soil carbon products are themselves machine-learning outputs \cite{sanderman2018map,sanderman2023soc}, and regional maps such as Radabaugh et al.\ \cite{radabaugh2023bluecarbon} are calibrated on local field cores.
+Global soil carbon products are themselves machine-learning outputs \cite{sanderman2018map}, and regional maps such as Radabaugh et al.\ \cite{radabaugh2023bluecarbon} are calibrated on local field cores.
 Geomorphic setting and tidal regime control mangrove soil carbon \cite{rovai2018controls,krauss2014sealevel}, and soil carbon maps can disagree substantially at fine scales \cite{holmquist2018tidal}.
 Random cross-validation overstates accuracy on such data; spatial blocking is required \cite{roberts2017cv,ploton2020spatial}.
 
-\textbf{Uncertainty quantification.} Split conformal prediction gives finite-sample coverage under exchangeability \cite{lei2018conformal,vovk2005alrw}; conformalized quantile regression adapts the interval width to each input \cite{romano2019cqr} and has been applied to earth observation \cite{eo_conformal2024}.
+\textbf{Uncertainty quantification.} Split conformal prediction gives finite-sample coverage under exchangeability \cite{lei2018conformal}; conformalized quantile regression adapts the interval width to each input \cite{romano2019cqr} and has been applied to earth observation \cite{eo_conformal2024}.
 Spatial dependence weakens exchangeability, which motivates localized (Mondrian) calibration \cite{vovk2005alrw,lou2024geoconformal}, whose validity needs dense calibration data in each region \cite{mao2024validmodelfree}.
 Interval quality is scored with the Winkler interval score \cite{winkler1972interval,gneiting2007scoring}.
 
@@ -84,6 +84,13 @@ Interval quality is scored with the Winkler interval score \cite{winkler1972inte
 No study, to our knowledge, (i) converts calibrated spatial intervals into a registry uncertainty deduction, (ii) tests the registry's aggregation rule against realized errors, and (iii) checks the result against field cores and market records at the same time.
 
 \section{Data and Methods}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/rev_fig0_framework.pdf}
+\caption{Crediting pipeline. Calibrated node intervals feed the VM0033 uncertainty deduction, which is applied separately from the registry's non-permanence buffer; field cores, registry records and observed mangrove loss are used only for evaluation.}
+\label{fig:framework}
+\end{figure}
 
 \subsection{Regions, data and graph}
 Two southwest Florida mangrove regions were used: Ten Thousand Islands / Rookery Bay (R1; $-81.90^\circ$ to $-81.40^\circ$, $25.90^\circ$ to $26.30^\circ$) and the Everglades National Park coast (R2; $-81.20^\circ$ to $-80.90^\circ$, $25.30^\circ$ to $25.60^\circ$).
@@ -102,22 +109,22 @@ The physics-informed variant adds a steady-state prior,
 \mathcal{L}=\mathrm{MSE}(\hat{y},y)+\lambda\,\mathrm{MSE}(\hat{y}_z,P_z)+w\,\overline{\mathrm{ReLU}(-\hat{y})^2},
 \label{eq:loss}
 \end{equation}
-where $P$ is an equal-weight, coefficient-free combination of tidal inundation frequency (the share of 2025 hourly National Oceanic and Atmospheric Administration (NOAA) water levels above each node's U.S. Geological Survey (USGS) 3DEP lidar elevation, both in NAVD88) and red-edge canopy index (NDRE), reflecting the role of hydroperiod in sediment delivery and carbon preservation \cite{krauss2014sealevel,rovai2018controls}.
+where $P$ is an equal-weight, coefficient-free combination of tidal inundation frequency (the share of 2025 hourly National Oceanic and Atmospheric Administration (NOAA) water levels above each node's U.S. Geological Survey (USGS) 3DEP lidar elevation, both in NAVD88) and red-edge canopy index (NDRE), reflecting the role of hydroperiod in sediment delivery and carbon preservation \cite{krauss2014sealevel}.
 The prior in Eq.~\ref{eq:loss} replaced the NDVI and gauge-distance proxy of the earlier version.
 The final candidate set added the unweighted mean of the physics-informed GNN and XGBoost (the ensemble), a stacked variant in which the GNN corrects out-of-fold XGBoost predictions, and a GNN trained on both image dates.
 
 \subsection{Uncertainty and crediting}
-Quantile models (GNN, physics-informed GNN, XGBoost), normalized conformal random forest and a quantile ensemble were calibrated by split conformal prediction on the validation split \cite{romano2019cqr,lei2018conformal}, either globally or per spatial block (Mondrian, at least 30 calibration nodes per block).
+Quantile models (GNN, physics-informed GNN, XGBoost), normalized conformal random forest and a quantile ensemble were calibrated by split conformal prediction on the validation split \cite{romano2019cqr}, either globally or per spatial block (Mondrian, at least 30 calibration nodes per block).
 A constant predictor with conformal calibration is reported as the trivial interval.
 For node $i$ with estimate $\hat{y}_i$ and 90\% interval $[l_i,u_i]$, the relative uncertainty $U_i=(u_i-l_i)/(2\hat{y}_i)$ enters the VM0033 rule,
 \begin{equation}
 c_i=\hat{y}_i\,\bigl(1-\max(0,\,U_i-0.20)\bigr)\,(1-b),
 \label{eq:credit}
 \end{equation}
-where $b$ is the registry's non-permanence buffer, applied unchanged. Estimation uncertainty and non-permanence therefore remain separate factors.
+where $b$ is the registry's non-permanence buffer, applied unchanged. Estimation uncertainty and non-permanence therefore remain separate factors. Interval quality and deductions are summarized in Table~\ref{tab:uq} and mapped per node in Fig.~\ref{fig:map}.
 
 \subsection{Evaluation protocol}
-Feature sets, model settings, the physics prior and the interval method were chosen by spatial five-fold cross-validation (CV) on training and validation nodes \cite{roberts2017cv}, using selection rules written and committed before each experiment.
+Feature sets, model settings, the physics prior and the interval method were chosen by spatial five-fold cross-validation (CV) on training and validation nodes, using selection rules written and committed before each experiment.
 The test split was read once for all pre-specified models.
 After that read, one further model (the ensemble) was pre-specified on cross-validation alone and evaluated in a second, declared test read; its test numbers are marked in Table~\ref{tab:acc}.
 Analyses that followed the first test read (generalization, two-date training, project aggregation, field cores, market data) used validation data or external data only and are reported as exploratory.
@@ -176,6 +183,7 @@ Table~\ref{tab:uq} and Fig.~\ref{fig:results}(c) summarize the selected interval
 In R1 the intervals matched the trivial interval's width but scored 18\% better on the Winkler score, and their width ranked absolute errors ($\rho=0.54$, 95\% confidence interval 0.51--0.58); in R2 they were 32\% narrower than the trivial interval (191 vs.\ 282\,t\,C/ha).
 Mondrian calibration covered 87.9\% in R1, where only six validation blocks were available.
 Applied per node, the VM0033 rule withheld a median 12.7\% (R1) and 2.1\% (R2) of credits; across all five interval methods, credited stock stayed within 0.84--0.90 (R1) and 0.95--0.98 (R2) of the buffer-only amount.
+Over the 2,076 R1 test nodes (about 4,700\,ha), the deducted share equals 0.71 million t\,CO$_2$e of standing stock, or US\$19.2 million at the 2022--2023 average credit price (Section~II); this is an upper bound, because credits are issued on stock changes rather than on standing stock.
 Interval width did not track 2010--2020 mangrove loss (Spearman $-0.06$ in both regions).
 Among the seven blue carbon projects with issued credits (6.62 million), the median buffer was 11.0\% and 73.5\% of credits had been retired \cite{vrod2026}.
 
@@ -225,7 +233,7 @@ The physics prior is now a weak constraint (correlation 0.14 with the prediction
 \textbf{Estimation uncertainty is as large as the buffer the market already holds.} The per-node deduction in R1 (12.7\%) is similar to the realized median buffer of issuing blue carbon projects (11.0\%), yet today it is not applied.
 Fig.~\ref{fig:map} shows that the deduction concentrates in specific areas, so it is a location-dependent quantity that a flat buffer cannot represent.
 Because width does not follow observed mangrove loss, the two discounts measure different risks and belong in separate factors, as in Eq.~\ref{eq:credit}.
-\textbf{Business implication:} a registry can adopt the deduction without changing its buffer policy.
+\textbf{Business implication:} a registry can adopt the deduction without changing its buffer policy, and an issuer can see in advance which areas carry the largest deduction and where additional field sampling would raise the credited volume most.
 
 \textbf{Aggregation under independent errors is the weak point of the registry rule.} Spatial model errors are correlated, so root-sum-of-squares aggregation shrinks project uncertainty and grants no deduction even where realized errors exceed the allowance.
 A correlation-aware or empirically calibrated aggregation restored nominal coverage.

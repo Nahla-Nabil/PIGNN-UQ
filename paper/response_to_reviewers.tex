@@ -29,6 +29,7 @@ I thank the three reviewers for their careful reading and detailed comments. The
 \item \textbf{A second region and a second date}: the Everglades coast (22,326 nodes) and August 2026 imagery (Section~III-A, IV-B).
 \item \textbf{A registry rule instead of an ad hoc multiplier}: the Verra VM0033 uncertainty deduction (Eq.~2), kept separate from the non-permanence buffer and checked against registry records and observed mangrove loss (Section~III-C, IV-C).
 \item \textbf{Independent validation}: 87 field soil cores from the Smithsonian Coastal Carbon Library and a field-calibrated regional map (Section~IV-D).
+\item \textbf{Presentation}: a pipeline figure (Fig.~1) now shows how calibrated intervals become the registry deduction, and the business effect is quantified (Section~IV-C).
 \item \textbf{Protocol}: all selection rules were committed before the experiments they govern. The test split was read once for all pre-specified models; one further model (the ensemble), chosen on cross-validation alone, was evaluated in a second, declared read. Both are reported (Section~III-D, Table~I). Code, rules and every result file are public: \url{https://github.com/Nahla-Nabil/PIGNN-UQ}.
 \end{enumerate}
 
@@ -50,7 +51,7 @@ I thank the three reviewers for their careful reading and detailed comments. The
 \resp The multiplier and its free parameter were removed. Credits now follow the VM0033 uncertainty deduction (Eq.~2), whose only constant is the methodology's own 20\% allowance, and the registry's non-permanence buffer is applied unchanged as a separate factor. Interval width does not track 2010--2020 mangrove loss (Spearman $-0.06$ in both regions), which supports keeping the two factors separate.
 
 \rc{The paper uses a single region and a single date.}
-\resp A second region (Everglades coast) and a second Sentinel-2 date were added. A single model trained on both regions reaches cross-validated $R^2=0.37$ and 0.53; training on both dates raises the agreement of predictions across dates from 0.44 to 0.88 (Section~IV-B, Fig.~1b).
+\resp A second region (Everglades coast) and a second Sentinel-2 date were added. A single model trained on both regions reaches cross-validated $R^2=0.37$ and 0.53; training on both dates raises the agreement of predictions across dates from 0.44 to 0.88 (Section~IV-B, Fig.~2b).
 
 \rc{The paper has split leakage.}
 \resp All models are now trained and evaluated on subgraphs induced by a single split, so no edge crosses a split boundary (Section~III-A).
