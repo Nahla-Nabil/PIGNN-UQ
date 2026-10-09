@@ -1,0 +1,15 @@
+{
+  "n_blue_projects_listed": 99,
+  "n_with_issuances": 7,
+  "n_vm0033_with_issuances": 3,
+  "total_issued": 6618829.0,
+  "total_buffer": 812789.0,
+  "total_retired": 4867826.0,
+  "buffer_pct_median": 10.975817553236807,
+  "buffer_pct_iqr": [
+    10.34747597458302,
+    12.90942101060292
+  ],
+  "buffer_pct_credit_weighted": 10.936904991618244,
+  "retired_pct_credit_weighted": 73.54512406952952
+}
