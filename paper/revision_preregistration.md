@@ -370,3 +370,52 @@ OOF nodes, vs the t0-only model (E8 found ρ = 0.42 on test).
 
 Nothing here changes any reported test number. Results are additions,
 labelled as such.
+
+---
+
+# Addendum D (2026-10-09 21:25): field soil-core validation, written before any core is matched to a prediction
+
+Source: Coastal Carbon Network Data Library (Smithsonian CCN),
+`data/CCN_synthesis` (CCN_cores.csv, CCN_depthseries.csv), downloaded
+2026-10-09 into `data/raw/validation_refs/ccn/`. Habitat = mangrove,
+inside the region-1 or region-2 bbox: 87 cores (R1 56, R2 31; 11 studies).
+Facts known before writing this (no carbon values or matching yet):
+max_depth median 25 cm; DBD available in 84 cores, fraction_carbon in 40,
+fraction_organic_matter in 77.
+
+**D-a. Field carbon per core.**
+- SOC density per interval = DBD × fraction_carbon. Where fraction_carbon
+  is missing, it is derived from organic matter using Craft et al. (1991)
+  (OC = 0.40·OM + 0.0025·OM², in %), verified against the primary source
+  before use.
+- Primary field quantity: **mean SOC density over the sampled 0–30 cm**
+  (cores with ≥ 15 cm sampled). This is scale-free with respect to
+  extrapolation.
+- Secondary: 0–100 cm stock (t C/ha) with the mean density below the
+  deepest sample held constant to 100 cm (standard constant-density
+  extrapolation). Reported only for cores sampled ≥ 50 cm; the rest are
+  flagged as extrapolated.
+- Several cores at one site with identical coordinates are averaged into
+  one location.
+
+**D-b. Matching.** Each location is matched to the nearest node of its
+region within 300 m; unmatched cores are reported and dropped.
+
+**D-c. Comparisons (descriptive, no selection).** Spearman ρ (primary) and
+Pearson r between field carbon and: (i) the Sanderman label; (ii) the
+Radabaugh map, excluding Radabaugh_et_al_2023 cores, which calibrated
+that map; (iii) out-of-fold predictions of the selected XGB, RF and
+Phys-GNN. Predictions come from a 5-fold spatial CV over *all* nodes of
+the region (`phase1_superblock` groups, seed 20261007), so every
+core-matched node is predicted by a model that never saw its group. This
+is not a test-set evaluation: no model or setting is selected and no
+Sanderman test metric is computed. Possible overlap of these cores with
+Sanderman's own training data is stated as a caveat.
+
+**D-d. Do intervals cover field truth?** (1) Coverage of field 0–100 cm
+stock (≥ 50 cm cores) by the CQR-GNN 90% intervals (Sanderman-calibrated).
+(2) Field-calibrated conformal: a scale factor k is chosen so that
+ŷ·[1 − k, 1 + k] covers 90% of the field stocks, estimated by
+leave-one-study-out (studies as groups) to avoid within-study leakage.
+Reported: held-out coverage and the implied VM0033 deduction
+(k − 0.20)⁺, against the Sanderman-calibrated deduction.
