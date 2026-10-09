@@ -121,7 +121,7 @@ No study, to our knowledge, (i) converts calibrated spatial intervals into a reg
 Two southwest Florida mangrove regions were used: Ten Thousand Islands / Rookery Bay (R1; $-81.90^\circ$ to $-81.40^\circ$, $25.90^\circ$ to $26.30^\circ$) and the Everglades National Park coast (R2; $-81.20^\circ$ to $-80.90^\circ$, $25.30^\circ$ to $25.60^\circ$).
 The label is the 30\,m soil organic carbon stock (0 to 100\,cm, t\,C/ha) of the 2020 global mangrove product of Maxwell et al., which also provides per-pixel 95\% prediction limits.
 Native cells are aggregated into $5\times5$ blocks (about 150\,m) kept where the Global Mangrove Watch 2020 fraction exceeds 0.5 \cite{bunting2022gmw}, giving 10,124 nodes (64,366 directed 8-neighbor edges) in R1 and 22,326 nodes (143,034 edges) in R2.
-Node features are ten Sentinel-2 L2A bands and derived indices \cite{drusch2012sentinel2} for 6 February 2026, the same quantities for 15 August 2026 with cloud masking, elevation, and distance to the tide gauge.
+Node features are ten Sentinel-2 L2A bands and derived indices \cite{drusch2012sentinel2} for 6 February 2026 and, with cloud masking, for 15 August 2026, together with elevation and distance to the tide gauge.
 While revising this work, the Sentinel-2 clip used in the earlier version was found to be shifted 9.18\,km north of its true position, so that the mean normalized difference vegetation index (NDVI) of mangrove nodes was 0.003.
 Re-applying the same shift to correctly referenced imagery reproduced the earlier features (correlation 0.91 to 0.97), and all features were rebuilt (mean NDVI 0.46).
 
@@ -135,7 +135,7 @@ The physics-informed variant adds a steady-state prior,
 \mathcal{L}=\mathrm{MSE}(\hat{y},y)+\lambda\,\mathrm{MSE}(\hat{y}_z,P_z)+w\,\overline{\mathrm{ReLU}(-\hat{y})^2},
 \label{eq:loss}
 \end{equation}
-where $P$ is an equal-weight, coefficient-free combination of tidal inundation frequency (the share of 2025 hourly National Oceanic and Atmospheric Administration (NOAA) water levels above each node's U.S. Geological Survey (USGS) 3DEP lidar elevation, both in NAVD88) and red-edge canopy index (NDRE), reflecting the role of hydroperiod in sediment delivery and carbon preservation noted in Section~II.
+where $P$ is an equal-weight, coefficient-free combination of tidal inundation frequency (the share of 2025 hourly National Oceanic and Atmospheric Administration (NOAA) water levels above each node's U.S. Geological Survey (USGS) 3DEP lidar elevation, both in NAVD88) and red-edge canopy index (NDRE), reflecting the role of hydroperiod in sediment delivery and carbon preservation.
 The prior in Eq.~\ref{eq:loss} replaced the NDVI and gauge-distance proxy of the earlier version.
 The final candidate set added the unweighted mean of the physics-informed GNN and XGBoost (the ensemble), a stacked variant in which the GNN corrects out-of-fold XGBoost predictions, and a GNN trained on both image dates.
 Table~\ref{tab:acc} lists every candidate with its accuracy.
@@ -148,7 +148,8 @@ For node $i$ with estimate $\hat{y}_i$ and 90\% interval $[l_i,u_i]$, the relati
 c_i=\hat{y}_i\,\bigl(1-\max(0,\,U_i-0.20)\bigr)\,(1-b),
 \label{eq:credit}
 \end{equation}
-where $b$ is the registry's non-permanence buffer, applied unchanged. Estimation uncertainty and non-permanence therefore remain separate factors. Interval quality and deductions are summarized in Table~\ref{tab:uq} and mapped per node in Fig.~\ref{fig:map}.
+where $b$ is the registry's non-permanence buffer, applied unchanged.
+Interval quality and deductions are summarized in Table~\ref{tab:uq} and mapped per node in Fig.~\ref{fig:map}.
 
 \subsection{Evaluation protocol}
 Feature sets, model settings, the physics prior and the interval method were chosen by spatial five-fold cross-validation (CV) on training and validation nodes, using selection rules written and committed before each experiment.
@@ -164,7 +165,7 @@ This section reports measurements only; their interpretation is deferred to Sect
 \subsection{Accuracy}
 Table~\ref{tab:acc} and Fig.~\ref{fig:results}(a) report accuracy.
 In R1 the ensemble reached test $R^2=0.277\pm0.035$ (mean $\pm$ standard deviation (SD) over three seeds; mean absolute error (MAE) 58.1\,t\,C/ha), against 0.203 for XGBoost and 0.170 for the physics-informed GNN, whose seed SD (0.054) was a quarter of the plain GNN's (0.236).
-A constant training mean scored $-0.11$, and the location-only model $-0.79$, although it led cross-validation in R1 (0.42).
+A constant training mean scored $-0.11$, and the location-only model $-0.79$ despite a cross-validated $R^2$ of 0.42, so location alone did not transfer to unseen blocks.
 In R2 all non-linear models scored between 0.56 and 0.60.
 On interior test nodes at least two hops from any other split, the ensemble kept $R^2=0.19$ (R1) and 0.58 (R2).
 With all other settings fixed, correcting the image georeferencing alone raised the GNN's cross-validated $R^2$ from 0.17 to 0.26.
@@ -215,7 +216,7 @@ Across all five interval methods, credited stock stayed within 0.84 to 0.90 (R1)
 Over the 2,076 R1 test nodes (about 4,700\,ha), the deducted share equals 0.71 million t\,CO$_2$e of standing stock, or US\$19.2 million at the 2022 and 2023 average credit price (Section~II).
 This is an upper bound, because credits are issued on stock changes rather than on standing stock.
 Interval width did not track mangrove loss between 2010 and 2020 (Spearman $-0.06$ in both regions).
-Among the seven blue carbon projects with issued credits (6.62 million), the median buffer was 11.0\% and 73.5\% of credits had been retired, according to the registry records described in Section~II.
+Among the seven blue carbon projects with issued credits (6.62 million), the median buffer was 11.0\% and 73.5\% of credits had been retired (registry records, Section~II).
 
 \begin{table}[t]
 \caption{Intervals (90\%, test) and crediting}
@@ -258,12 +259,12 @@ Rescaled to 90\% under a normal approximation, they would imply a VM0033 deducti
 
 \section{Discussion}
 
-\textbf{The physics-informed GNN and tree ensembles are complementary.} Alone, the physics-informed GNN matched XGBoost in cross-validation (0.41 each), but their mean improved both regions (0.47 and 0.55) and held on test (0.28 and 0.60).
+\textbf{The physics-informed GNN and tree ensembles are complementary.} Alone, the physics-informed GNN matched XGBoost in cross-validation (0.41 each), but their mean outperformed every other final candidate in cross-validation (0.47 and 0.55, against at most 0.42 and 0.53) and every model on test (Table~\ref{tab:acc}).
 The GNN contributes neighborhood structure and the hydroperiod prior that the trees do not see, consistent with the geomorphic and tidal controls on mangrove soil carbon reviewed in Section~II, and it was also the most stable graph model across seeds and, once trained on both dates, across seasons.
-The physics prior is now a weak constraint (correlation 0.14 with the predictions), not a target the model copies.
+The physics prior now acts as a weak constraint rather than a target the model copies.
 
 \textbf{Estimation uncertainty is as large as the buffer the market already holds.} The per-node deduction in R1 (12.7\%) is similar to the realized median buffer of issuing blue carbon projects (11.0\%), yet today it is not applied.
-Calibration is what makes the deduction usable: the label map's uncalibrated limits would withhold about 65\% of credits.
+Calibration is what makes the deduction usable, since the label map's uncalibrated limits would withhold about five times as much in R1 (Section~IV-D).
 Fig.~\ref{fig:map} shows that the deduction concentrates in specific areas, so it is a location-dependent quantity that a flat buffer cannot represent.
 Because width does not follow observed mangrove loss, the two discounts measure different risks and belong in separate factors, as in Eq.~\ref{eq:credit}.
 \textbf{Business implication:} a registry can adopt the deduction without changing its buffer policy, and an issuer can see in advance which areas carry the largest deduction and where additional field sampling would raise the credited volume most.
@@ -275,8 +276,8 @@ Model-based crediting therefore needs an aggregation rule that accounts for spat
 
 \textbf{What the intervals can and cannot do.} Interval width is bounded by accuracy: with test $R^2=0.07$ for the GNN underlying the intervals in R1, at most about 4\% narrowing over the trivial interval is attainable, and in R2 ($R^2=0.58$) the 32\% achieved is close to the 35\% bound.
 The value in R1 lies in adaptivity and Winkler score, not sharpness.
-Local calibration is required when a model is moved to a new region, and at core scale even field-calibrated maps barely beat a regional mean, while at site scale the ensemble did.
-Field-calibrated deductions (22\% to 29\%) exceed label-calibrated ones, a reminder that the label product carries its own error, in line with the fine-scale disagreement between soil carbon maps reported for United States tidal wetlands.
+Local calibration is required when a model is moved to a new region.
+Field-calibrated deductions exceed label-calibrated ones, a reminder that the label product carries its own error, in line with the fine-scale disagreement between soil carbon maps reported for United States tidal wetlands.
 
 \section{Limitations}
 \textbf{Labels are a modeled product:} the training label is a global map that disagrees with a field-calibrated regional map at node level.
