@@ -3,6 +3,10 @@
     {
       "time": "2026-10-09T20:56:20.474083",
       "reason": "first run"
+    },
+    {
+      "time": "2026-10-09T22:13:40.293678",
+      "reason": "F5 declared second test read: one pre-specified model (ens) + CQR-GNN (Addendum F)"
     }
   ]
 }
