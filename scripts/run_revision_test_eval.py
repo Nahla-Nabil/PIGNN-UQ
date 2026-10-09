@@ -76,7 +76,10 @@ def two_hop_interior(edges, test_mask):
     return test_mask & ~bad2
 
 
-def point_rows(df, edges, sel, fit, stop, test, interior, tag, seeds=SEEDS):
+POSITIONAL = {"dist_to_tide_km"}  # D8: region-specific by construction (each region's own gauge)
+
+
+def point_rows(df, edges, sel, fit, stop, test, interior, tag, seeds=SEEDS, drop_positional=False):
     y = df[TARGET_COL].values
     rad = df["radabaugh_bgc_mgha"].values if "radabaugh_bgc_mgha" in df else np.full(len(df), np.nan)
     _, _, pp = parse(sel["phys_gnn"])
@@ -84,7 +87,11 @@ def point_rows(df, edges, sel, fit, stop, test, interior, tag, seeds=SEEDS):
     rows, preds = [], {}
     for fam, key in sel.items():
         _, fs, params = parse(key)
+        if drop_positional and fam == "rf_coords":
+            continue
         cols = ["lon", "lat"] if fam == "rf_coords" else FEATURE_SETS[fs]
+        if drop_positional:
+            cols = [c for c in cols if c not in POSITIONAL]
         for seed in ([1] if fam == "linear" else seeds):
             p = fit_predict(df, edges, fam, cols, fit, [test], seed, params, stop_idx=stop)
             preds[(fam, seed)] = p
@@ -208,6 +215,9 @@ def main():
             stop = np.where((df.region == "A") & (df.split == "val"))[0]
             test = np.where((df.region == "B") & (df.split == "test"))[0]
             rows, _ = point_rows(df, edges, sel, fit, stop, test, None, f"transfer_{a}_to_{b}")
+            out["point"] += rows
+            rows, _ = point_rows(df, edges, sel, fit, stop, test, None, f"transfer_nopos_{a}_to_{b}",
+                                 drop_positional=True)
             out["point"] += rows
 
     pt = pd.DataFrame(out["point"])

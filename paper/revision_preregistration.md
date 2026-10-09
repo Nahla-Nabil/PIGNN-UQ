@@ -289,3 +289,15 @@ with < 20% cloud (relative orbit R054: S2C 2026-02-08 for t0, S2C
 data. Cross-sensor (S2B/S2C) differences are a stated, minor caveat.
 Region-2 tide gauge: the nearest NAVD88 hourly station is 8723970 Vaca Key
 (about 70 km from the bbox), a stated simplification for the P1/P2 prior.
+
+**D8 (2026-10-09, after the dry run on val stand-in data, before any test read):**
+an additional cross-region transfer evaluation is added, `transfer_nopos_*`,
+with the positional feature `dist_to_tide_km` removed (and the
+coordinates-only model skipped). Reason: that feature is computed from each
+region's own gauge (region 2: about 70–100 km from Vaca Key vs 0–30 km in
+region 1), so it is non-transferable by construction and forces
+extrapolation. In the dry run, GNN transfer R² was −6.7 ± 8.6 across seeds.
+The original A3b transfer evaluation is kept and reported unchanged. Other
+dry-run observations, reported but not acted on: project-level VM0033
+aggregation (Eq. 88, independence assumption) yields 1.4% uncertainty and
+so no deduction; the GNN is less stable than RF under the t1 image swap.
