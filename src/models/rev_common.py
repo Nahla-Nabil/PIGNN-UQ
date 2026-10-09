@@ -186,12 +186,57 @@ def _train_gnn(Xz, y, edges, fit_idx, stop_idx, pred_groups, seed, hidden, w_pri
     return pred
 
 
+T1_SWAP = {"ndvi": "t1_ndvi", "b04": "t1_b04", "b08": "t1_b08", "b11": "t1_b11", "b03": "t1_b03",
+           "b05": "t1_b05", "b8a": "t1_b8a", "ndre": "t1_ndre", "ndmi": "t1_ndmi", "mndwi": "t1_mndwi"}
+
+
+def _stack_gnn(df, edges, cols, fit_idx, pred_groups, seed, params, stop_idx):
+    """Addendum F1 hybrid: Phys-GNN whose inputs are `cols` plus an XGBoost
+    prediction. Fit nodes get an out-of-fold XGBoost prediction from an inner
+    5-fold grouped CV inside the fit set; stop and predicted nodes get the
+    prediction of XGBoost trained on all fit nodes (no leakage)."""
+    from sklearn.model_selection import GroupKFold
+    xcols, xpar = params["xgb_cols"], {"max_depth": params["xgb_depth"]}
+    xpred = np.full(len(df), np.nan)
+    g = df["phase1_superblock"].values[fit_idx]
+    for k, (a, b) in enumerate(GroupKFold(5, shuffle=True, random_state=seed).split(fit_idx, groups=g)):
+        p = fit_predict(df, edges, "xgb", xcols, fit_idx[a], [fit_idx[b]], seed, xpar)
+        xpred[fit_idx[b]] = p[fit_idx[b]]
+    others = [stop_idx] + list(pred_groups) if stop_idx is not None else list(pred_groups)
+    p = fit_predict(df, edges, "xgb", xcols, fit_idx, others, seed, xpar)
+    for o in others:
+        xpred[o] = p[o]
+    d2 = df.assign(xgb_pred=xpred)
+    gp = {k: v for k, v in params.items() if k not in ("xgb_cols", "xgb_depth")}
+    return fit_predict(d2, edges, "phys_gnn", list(cols) + ["xgb_pred"], fit_idx, pred_groups, seed, gp,
+                       stop_idx=stop_idx)
+
+
+def _phys_gnn_aug(df, edges, cols, fit_idx, pred_groups, seed, params, stop_idx):
+    """Addendum F1 / C4: Phys-GNN trained on both image dates (graph duplicated
+    with t1 imagery, same labels, no edges between copies); predictions use t0."""
+    n = len(df)
+    d1 = df.copy()
+    for a, b in T1_SWAP.items():
+        if b in df:
+            d1[a] = df[b]
+    both = pd.concat([df, d1], ignore_index=True)
+    e2 = np.hstack([edges, edges + n])
+    p = fit_predict(both, e2, "phys_gnn", cols, np.concatenate([fit_idx, fit_idx + n]), pred_groups, seed,
+                    params, stop_idx=stop_idx)
+    return p[:n]
+
+
 def fit_predict(df, edges, family, cols, fit_idx, pred_groups, seed, params=None, stop_idx=None, pred_df=None):
     """Fit `family` on fit_idx; return predictions for every node in
     pred_groups (a list of index arrays, each predicted on its own induced
     subgraph). stop_idx: early-stopping nodes (GNN only), disjoint from
     fit_idx."""
     params = params or {}
+    if family == "stack_gnn":
+        return _stack_gnn(df, edges, cols, fit_idx, pred_groups, seed, params, stop_idx)
+    if family == "phys_gnn_f3aug":
+        return _phys_gnn_aug(df, edges, cols, fit_idx, pred_groups, seed, params, stop_idx)
     y = df[TARGET_COL].values.astype(np.float64)
     if pred_df is None:
         X, Xz = _design(df, cols, fit_idx)

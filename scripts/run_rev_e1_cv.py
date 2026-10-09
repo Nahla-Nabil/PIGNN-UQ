@@ -48,7 +48,7 @@ def run_config(df, edges, pool, fold_list, family, fs, params, seeds, rows, oof_
         oof = np.full(len(df), np.nan)
         for k, (fit, ev) in enumerate(fold_list):
             stop = None
-            if family in ("gnn", "phys_gnn"):
+            if family in ("gnn", "phys_gnn", "stack_gnn", "phys_gnn_f3aug"):
                 rng = np.random.default_rng(seed * 100 + k)
                 g = df["phase1_superblock"].values[fit]
                 ug = np.unique(g)
