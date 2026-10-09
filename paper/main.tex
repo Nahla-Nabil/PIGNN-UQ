@@ -6,7 +6,7 @@
 \usepackage{textcomp}
 \usepackage{booktabs}
 \usepackage{xcolor}
-\usepackage{url}
+\usepackage[hyphens]{url}
 
 \setlength{\textfloatsep}{4pt plus 2pt minus 2pt}
 \setlength{\floatsep}{3pt plus 2pt minus 2pt}
@@ -54,12 +54,12 @@ blue carbon, graph neural networks, conformal prediction, carbon credits, uncert
 
 Voluntary carbon markets discount mangrove credits for non-permanence risk (carbon later released through erosion, sea-level rise or disturbance) by withholding a fixed share of issued credits in a buffer pool \cite{verra_vm0033,planvivo_buffer}.
 That share does not depend on how well the carbon stock itself was estimated.
-Verra's VM0033 methodology does contain a separate uncertainty deduction: credits are reduced when the 90\% confidence interval exceeds 20\% of the estimate \cite{verra_vm0033}.
+Verra's VM0033 methodology does contain a separate uncertainty deduction: credits are reduced when the 90\% confidence interval exceeds 20\% of the estimate \cite[p.~64]{verra_vm0033}.
 In practice, the carbon-stock maps available for mangroves report point estimates with no calibrated per-site interval \cite{sanderman2023soc,radabaugh2023bluecarbon}, and the methodology combines plot uncertainties under an independence assumption that spatial models rarely satisfy.
 
 This paper asks whether calibrated, per-site uncertainty from a spatial model can supply that deduction in a way a registry could audit.
 A physics-informed graph neural network \cite{raissi2019pinn,hamilton2017graphsage} encodes neighborhood structure and a tidal-inundation prior; tree ensembles \cite{breiman2001rf,chen2016xgboost} supply strong tabular baselines; and conformalized quantile regression \cite{romano2019cqr} gives distribution-free intervals.
-This study differs from previous research in four ways: (1) the interval of every node is converted into the VM0033 deduction, kept separate from the non-permanence buffer and compared with the buffers held by issuing projects \cite{vrod2026}; (2) the methodology's own aggregation rule is tested empirically and shown to understate project-level uncertainty when model errors are spatially correlated; (3) predictions and published maps are checked against 87 independent field soil cores \cite{ccn2023library}; and (4) the analysis covers two regions, two image dates and leakage-free spatial splits, with every model choice fixed on validation data under rules committed before the experiments were run.
+This study departs from earlier work in four ways: (1) the interval of every node is converted into the VM0033 deduction, kept separate from the non-permanence buffer and compared with the buffers held by issuing projects \cite{vrod2026}; (2) the methodology's own aggregation rule is tested empirically and shown to understate project-level uncertainty when model errors are spatially correlated; (3) predictions and published maps are checked against 87 independent field soil cores \cite{ccn2023library}; and (4) the analysis covers two regions, two image dates and leakage-free spatial splits, with every model choice fixed on validation data under rules committed before the experiments were run.
 
 The scope is deliberately applied: the paper does not propose a new network architecture.
 The contribution is a crediting pipeline whose uncertainty is calibrated, auditable and conservative, together with evidence on where that uncertainty is and is not informative.

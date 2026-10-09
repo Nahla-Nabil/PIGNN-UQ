@@ -1,7 +1,7 @@
 \documentclass[conference]{IEEEtran}
 %DIF LATEXDIFF DIFFERENCE FILE
 %DIF DEL /tmp/main_submitted.tex   Sat Oct 10 01:10:02 2026
-%DIF ADD main.tex                  Sat Oct 10 01:07:19 2026
+%DIF ADD main.tex                  Sat Oct 10 01:19:47 2026
 \IEEEoverridecommandlockouts
 \usepackage{cite}
 \usepackage{amsmath,amssymb,amsfonts}
@@ -9,7 +9,11 @@
 \usepackage{textcomp}
 \usepackage{booktabs}
 \usepackage{xcolor}
-\usepackage{url}
+%DIF 9c9
+%DIF < \usepackage{url}
+%DIF -------
+\usepackage[hyphens]{url} %DIF > 
+%DIF -------
 
 %DIF 11-19c11-12
 %DIF < \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
@@ -213,7 +217,7 @@ regardless of sub-project granularity
 \mbox{%DIFAUXCMD
 \cite{verra_vm0033,planvivo_buffer}}\hskip0pt%DIFAUXCMD
 , and existing }\DIFdelend \DIFaddbegin \DIFadd{methodology does contain a separate uncertainty deduction: credits are reduced when the 90\% confidence interval exceeds 20\% of the estimate \mbox{%DIFAUXCMD
-\cite{verra_vm0033}}\hskip0pt%DIFAUXCMD
+\cite[p.~64]{verra_vm0033}}\hskip0pt%DIFAUXCMD
 .
 In practice, the }\DIFaddend carbon-stock \DIFdelbegin \DIFdel{models for this ecosystem and region report only point estimates , }\DIFdelend \DIFaddbegin \DIFadd{maps available for mangroves report point estimates }\DIFaddend with no calibrated \DIFdelbegin \DIFdel{per-prediction confidence a pricing rule could condition on
 \mbox{%DIFAUXCMD
@@ -249,15 +253,16 @@ encodes neighborhood structure and a tidal-inundation prior; tree ensembles \mbo
 supply strong tabular baselines; and conformalized quantile regression \mbox{%DIFAUXCMD
 \cite{romano2019cqr} }\hskip0pt%DIFAUXCMD
 gives }\DIFaddend distribution-free \DIFdelbegin \DIFdel{uncertainty calibration
-to test whether estimation confidence can complement, not replace, a flat }\DIFdelend \DIFaddbegin \DIFadd{intervals.
-This study differs from previous research in four ways: (1) the interval of every node is converted into the VM0033 deduction, kept separate from the }\DIFaddend non-permanence \DIFdelbegin \DIFdel{discount.
+to test whether estimation confidence can complement, not replace, a
+flat }\DIFdelend \DIFaddbegin \DIFadd{intervals.
+This study departs from earlier work in four ways: (1) the interval of every node is converted into the VM0033 deduction, kept separate from the }\DIFaddend non-permanence \DIFdelbegin \DIFdel{discount.
 }%DIFDELCMD < 
 
 %DIFDELCMD < %%%
 \DIFdel{The scope is deliberately narrow: one pilot region, one physics constraint
-(a steady-state mass-balance proxy, not a full temporal flux equation) ,
+(a steady-state mass-balance proxy, not a full temporal flux equation),
 and one primary UQ method (CQR; deep ensembles and MC dropout are left
-for future work) . Every model-selection decision, physics-loss weight,
+for future work ). Every model-selection decision, physics-loss weight,
 feature set, calibration method, was pre-registered on a validation
 split and confirmed once on a spatially distinct test block never used
 for any prior decision; we treat this two-stage protocol itself as a
@@ -265,7 +270,8 @@ methodological contribution (Section~III-C) , since a naive single-run
 estimate and a theoretically-motivated calibration refinement each turned
 out to mislead here (Section~V) . What survives that scrutiny is smaller
 and more tightly bounded than either initial result suggested: a real
-but modest prior-generalization advantage for the physics-informed model, and evidence that localized (Mondrian) conformal calibration, plausible
+but modest prior-generalization advantage for the physics-informed model,
+and evidence that localized (Mondrian) conformal calibration, plausible
 in theory and competitive on validation-internal evidence, underperforms
 the simpler global variant on this AOI's test data }\DIFdelend \DIFaddbegin \DIFadd{buffer and compared with the buffers held by issuing projects \mbox{%DIFAUXCMD
 \cite{vrod2026}}\hskip0pt%DIFAUXCMD
