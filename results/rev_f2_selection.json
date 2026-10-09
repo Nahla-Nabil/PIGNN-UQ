@@ -1,0 +1,14 @@
+{
+  "selected_uq": "CQR-GNN",
+  "winner": "ens",
+  "table": {
+    "CQR-GNN": {
+      "winkler": 314.8101,
+      "mincov": 0.8826
+    },
+    "NCP-ens": {
+      "winkler": 322.6143,
+      "mincov": 0.886
+    }
+  }
+}
