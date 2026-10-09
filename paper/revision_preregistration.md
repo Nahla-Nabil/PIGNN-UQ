@@ -304,7 +304,7 @@ so no deduction; the GNN is less stable than RF under the t1 image swap.
 
 ---
 
-# Addendum B (2026-10-09 21:20): local calibration for cross-region use, VALIDATION ONLY
+# Addendum B (2026-10-09 21:06): local calibration for cross-region use, VALIDATION ONLY
 
 Written after the single test read, which showed that zero-shot
 cross-region transfer fails (all transfer R² < 0). This addendum asks a
