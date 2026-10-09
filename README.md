@@ -136,7 +136,7 @@ printed above bars.*
 | RF + spatial lag | 0.01 | 0.59 |
 | XGBoost | **0.20** | 0.59 |
 | GraphSAGE | 0.07 (sd 0.24) | 0.58 |
-| Physics-informed GraphSAGE (P2) | 0.17 (sd 0.05) | 0.57 |
+| Physics-informed GraphSAGE (P2) | 0.17 (sd 0.05) | 0.56 |
 
 For reference, the originally submitted model scored R2 = -0.38 on the same R1 test block, with
 Sentinel-2 features that were misplaced by 9.18 km (see the revision record).
