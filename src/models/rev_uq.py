@@ -62,7 +62,7 @@ def inner_split(df, fit_idx, seed):
     return fit_idx[~np.isin(g, sg)], fit_idx[np.isin(g, sg)]
 
 
-def quantile_gnn(df, edges, cols, fit_idx, pred_groups, seed, hidden, lam=0.0):
+def quantile_gnn(df, edges, cols, fit_idx, pred_groups, seed, hidden, lam=0.0, proxy_kind="P0"):
     """Returns array (N, len(QUANTILES)) of raw-unit quantile predictions
     (NaN outside pred_groups). lam > 0 adds the physics prior on the 0.5
     head (CQR-PhysGNN)."""
@@ -73,7 +73,7 @@ def quantile_gnn(df, edges, cols, fit_idx, pred_groups, seed, hidden, lam=0.0):
     _, Xz = _design(df, cols, fit_idx)
     X_t = torch.tensor(Xz, dtype=torch.float32)
     mu, sd = y[fit].mean(), y[fit].std()
-    proxy = mass_balance_proxy(df, fit)
+    proxy = mass_balance_proxy(df, fit, proxy_kind)
     pz = torch.tensor((proxy[fit] - proxy[fit].mean()) / (proxy[fit].std() + 1e-9), dtype=torch.float32)[:, None]
 
     def sub(idx):
@@ -144,6 +144,18 @@ def ncp_rf(df, cols, fit_idx, pred_idx, seed, max_features, min_samples_leaf):
     yhat[pred_idx] = rf.predict(Xz[pred_idx])
     s[pred_idx] = np.maximum(sc.predict(Xz[pred_idx]), 1e-6)
     return yhat, s
+
+
+Z = {0.025: -1.959964, 0.05: -1.644854, 0.5: 0.0, 0.95: 1.644854, 0.975: 1.959964}
+
+
+def ensemble_quantiles(q_gnn, q_xgb, ncp):
+    """Addendum A2 Ens-Q: element-wise mean of CQR-GNN and CQR-XGB raw
+    quantiles and NCP-RF's yhat + z_q * s (normal quantiles); conformalized
+    afterwards like any CQR base."""
+    yhat, s = ncp
+    q_rf = np.column_stack([yhat + Z[q] * s for q in QUANTILES])
+    return np.sort((q_gnn + q_xgb + q_rf) / 3.0, axis=1)
 
 
 # ---------- conformal calibration ----------

@@ -268,3 +268,13 @@ difference exceeds the median absolute neighbour difference, the loss adds
 predicted to hold less carbon. The non-negativity term is kept. Elevation
 source for P1: USGS 3DEP seamless 1/3″ (10 m) bare earth; GLO-30 (used in F2)
 is 0 m over most of the AOI.
+
+**D6 (2026-10-09, after W2 CV, before any test read):** selection-code bug.
+A1's rule is "highest mean OOF R²; within 1 SE prefer the physically grounded
+priors". The W2 script applied the proxy order P1 < P2 < P0 to *every* config
+within 1 SE, so it returned P1/λ=0.1 (OOF R² 0.394) instead of the best config,
+P2/λ=0.1 (0.405), which is itself physically grounded. Corrected to P2/λ=0.1;
+`rev_w2_selection.json` keeps the buggy-code value under
+`selected_phys_by_buggy_code`. Both are reported in the paper's supplementary
+table. No-physics GNN: 0.385 (fold SE 0.033), so the physics gain (+0.020) is
+within 1 SE, i.e. not significant, and is stated as such.

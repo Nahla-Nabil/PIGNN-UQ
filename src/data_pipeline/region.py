@@ -79,4 +79,12 @@ R2 = Region(
     raw_dir=RAW / "region2", proc_dir=PROC / "region2", tide_station="", tide_latlon=(None, None),
 )
 
+_meta = R2.proc_dir / "region2_meta.json"
+if _meta.exists():
+    import json as _json
+    _m = _json.loads(_meta.read_text())
+    R2.tide_station = _m["tide_station"]["id"]
+    R2.tide_latlon = tuple(_m["tide_station"]["latlon"])
+    R2.s2_items = _m.get("s2_items", {})
+
 REGIONS = {"r1": R1, "r2": R2}

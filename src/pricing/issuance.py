@@ -82,3 +82,26 @@ def issuance_table(yhat, lo, hi, buffer=PLAN_VIVO_BUFFER):
         "dedB_p10": float(np.percentile(dB, 10)), "dedB_p50": float(np.percentile(dB, 50)),
         "dedB_p90": float(np.percentile(dB, 90)),
     }
+
+
+# Market sensitivity (Addendum A4): NOT market validation. All three prices
+# come from Farahmand, Hilmi & Duarte (2025), "The rise and flows of blue
+# carbon credits advance global climate and biodiversity goals", npj Ocean
+# Sustainability 4:39, doi:10.1038/s44183-025-00141-6:
+#   26.96 USD = "weighted average price ... per BCC" (2022-2023);
+#   21.9  USD = 2024 Australian Safeguard Mechanism carbon price (cited there);
+#   54.3  USD = "estimated value of carbon in the buying countries" (2022-2023).
+C_TO_CO2E = 44.0 / 12.0
+PRICES_USD_PER_TCO2E = {"safeguard_AU_2024": 21.9, "bcc_weighted_avg_2022_23": 26.96, "buyer_country_value": 54.3}
+NODE_AREA_HA = 150.0 * 150.0 / 1e4  # 5x5 blocks of ~30 m cells (2.25 ha); approximate, stated
+
+
+def revenue_table(totals_tc_per_ha: dict):
+    """totals_tc_per_ha: {rule: sum over nodes of credited t C/ha}. Converts
+    to tCO2e over the node area and to USD at each reference price."""
+    rows = []
+    for rule, tot in totals_tc_per_ha.items():
+        tco2e = tot * NODE_AREA_HA * C_TO_CO2E
+        rows.append({"rule": rule, "tCO2e": tco2e,
+                     **{f"usd_{k}": tco2e * p for k, p in PRICES_USD_PER_TCO2E.items()}})
+    return rows

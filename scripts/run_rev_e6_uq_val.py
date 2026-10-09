@@ -19,7 +19,7 @@ import pandas as pd
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 from src.models.rev_common import FEATURE_SETS, load_rev  # noqa: E402
 from src.models.rev_uq import (quantile_gnn, quantile_xgb, ncp_rf, calibrate, interval_metrics,  # noqa: E402
-                               LEVELS)
+                               LEVELS, ensemble_quantiles)
 from src.models.gnn_common import TARGET_COL  # noqa: E402
 
 RESULTS = pathlib.Path(__file__).resolve().parents[1] / "results"
@@ -32,19 +32,26 @@ def parse(key):
 
 
 def build_bases(df, edges, sel, fit_idx, pred_groups):
+    """phys_gnn: the W2 (Addendum A1) selection if it exists, else §4's."""
     pred_idx = np.concatenate(pred_groups)
     _, gfs, gp = parse(sel["gnn"])
-    _, pfs, pp = parse(sel["phys_gnn"])
+    w2 = RESULTS / "rev_w2_selection.json"
+    phys_key = json.loads(w2.read_text())["selected_phys"] if w2.exists() else sel["phys_gnn"]
+    _, pfs, pp = parse(phys_key)
     _, xfs, xp = parse(sel["xgb"])
     _, rfs, rp = parse(sel["rf"])
     y = df[TARGET_COL].values
+    q_gnn = quantile_gnn(df, edges, FEATURE_SETS[gfs], fit_idx, pred_groups, SEED, gp["hidden"])
+    q_xgb = quantile_xgb(df, FEATURE_SETS[xfs], fit_idx, pred_idx, SEED, xp["max_depth"])
+    ncp = ncp_rf(df, FEATURE_SETS[rfs], fit_idx, pred_idx, SEED, rp["max_features"], rp["min_samples_leaf"])
     return {
-        "CQR-GNN": ("cqr", quantile_gnn(df, edges, FEATURE_SETS[gfs], fit_idx, pred_groups, SEED, gp["hidden"])),
+        "CQR-GNN": ("cqr", q_gnn),
         "CQR-PhysGNN": ("cqr", quantile_gnn(df, edges, FEATURE_SETS[pfs], fit_idx, pred_groups, SEED,
-                                            pp["hidden"], lam=pp["lambda"])),
-        "CQR-XGB": ("cqr", quantile_xgb(df, FEATURE_SETS[xfs], fit_idx, pred_idx, SEED, xp["max_depth"])),
-        "NCP-RF": ("ncp", ncp_rf(df, FEATURE_SETS[rfs], fit_idx, pred_idx, SEED, rp["max_features"],
-                                 rp["min_samples_leaf"])),
+                                            pp["hidden"], lam=pp.get("lambda", 0.0),
+                                            proxy_kind=pp.get("proxy", "P0"))),
+        "CQR-XGB": ("cqr", q_xgb),
+        "NCP-RF": ("ncp", ncp),
+        "Ens-Q": ("cqr", ensemble_quantiles(q_gnn, q_xgb, ncp)),
         "Trivial": ("trivial", float(y[fit_idx].mean())),
     }
 

@@ -45,7 +45,7 @@ def load_rev(region=None):
     rev = pd.read_csv(region.rev_features_csv)
     base_cols = [c for c in ["b03", "b04", "b08", "b11", "ndvi", "ndwi", "ndmi"] if c in df.columns]
     df = df.drop(columns=base_cols).merge(rev, on=["row", "col"], how="left", validate="1:1")
-    for extra in (region.hydro_csv, region.radabaugh_csv):
+    for extra in (region.hydro_csv, region.radabaugh_csv, region.proc_dir / "graph_nodes_gmw_change.csv"):
         if extra.exists():
             df = df.merge(pd.read_csv(extra), on=["row", "col"], how="left", validate="1:1")
     edges = np.load(region.edges_npy)

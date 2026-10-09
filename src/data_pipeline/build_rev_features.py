@@ -100,7 +100,7 @@ def nd(a, b):
 
 def build(region=R1):
     ref = _ref(region)
-    nodes = pd.read_csv(region.nodes_csv, usecols=["row", "col", "b04"])
+    nodes = pd.read_csv(region.nodes_csv)
     rows, cols = nodes["row"].values, nodes["col"].values
     cat = pystac_client.Client.open(STAC_URL, modifier=pc.sign_inplace)
     s2 = cat.get_collection("sentinel-2-l2a")
@@ -144,7 +144,8 @@ def build(region=R1):
     out["d_ndvi"] = out.t1_ndvi - out.ndvi
     out["d_ndmi"] = out.t1_ndmi - out.ndmi
 
-    print(f"corr(corrected b04, submitted b04) = {np.corrcoef(out.b04.fillna(out.b04.mean()), nodes.b04)[0, 1]:.4f}")
+    if "b04" in nodes:
+        print(f"corr(corrected b04, submitted b04) = {np.corrcoef(out.b04.fillna(out.b04.mean()), nodes.b04)[0, 1]:.4f}")
     print(f"NDVI corrected: mean={out.ndvi.mean():.3f}, frac<0.3={np.mean(out.ndvi < 0.3):.3f}")
     print(f"cloud frac mean t0={out.t0_cloud_frac.mean():.3f}, t1={out.t1_cloud_frac.mean():.3f}")
     na = out.isna().sum()

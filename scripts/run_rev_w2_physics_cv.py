@@ -67,9 +67,14 @@ def main():
 
     ph = summ[summ.family == "phys_gnn"].copy()
     best = ph.loc[ph.oof_r2.idxmax()]
-    cand = ph[ph.oof_r2 >= best.oof_r2 - best.fold_r2_se].copy()
-    cand["po"] = cand.proxy.map(PROXY_ORDER)
-    chosen = cand.sort_values(["po", "lambda"]).iloc[0]
+    # A1 rule: highest OOF R2; the 1-SE tie-break only applies when the best
+    # config uses the non-grounded control P0 (prefer a grounded prior then).
+    # (D6: the first run's code applied the proxy order unconditionally.)
+    if best.proxy == "P0":
+        cand = ph[(ph.oof_r2 >= best.oof_r2 - best.fold_r2_se) & (ph.proxy != "P0")]
+        chosen = cand.loc[cand.oof_r2.idxmax()] if len(cand) else best
+    else:
+        chosen = best
     base = summ[summ.family == "gnn"].iloc[0]
     sel = {"selected_phys": chosen.key, "phys_oof_r2": chosen.oof_r2,
            "no_physics_oof_r2": base.oof_r2, "no_physics_se": base.fold_r2_se,
