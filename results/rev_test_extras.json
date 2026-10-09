@@ -1,0 +1,42 @@
+{
+  "r1": {
+    "n": {
+      "train": 6465,
+      "val": 1583,
+      "test": 2076,
+      "interior": 1518
+    },
+    "trainmean_r2_on_test": -0.10547040776251815,
+    "label_sd_test": 87.5669204761252,
+    "corr_label_vs_radabaugh_test": -0.16851115689977128,
+    "uq_gate": {
+      "selected_uq": "CQR-GNN",
+      "rho": 0.5445162001167999,
+      "ci": [
+        0.5098906848605618,
+        0.5753856521007426
+      ],
+      "gate_passed": true
+    }
+  },
+  "r2": {
+    "n": {
+      "train": 14499,
+      "val": 3351,
+      "test": 4476,
+      "interior": 2678
+    },
+    "trainmean_r2_on_test": -0.012979938550870207,
+    "label_sd_test": 89.02862958249554,
+    "corr_label_vs_radabaugh_test": 0.21524981307810748,
+    "uq_gate": {
+      "selected_uq": "CQR-GNN",
+      "rho": 0.15152454578034028,
+      "ci": [
+        0.123140603086033,
+        0.18131373922640387
+      ],
+      "gate_passed": true
+    }
+  }
+}
