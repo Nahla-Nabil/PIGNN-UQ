@@ -16,6 +16,7 @@ matplotlib.use("Agg")
 matplotlib.rcParams["pdf.fonttype"] = 42  # TrueType, not Type 3 (IEEE PDF eXpress)
 matplotlib.rcParams["ps.fonttype"] = 42
 import matplotlib.pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
 import numpy as np
 import pandas as pd
 
@@ -47,6 +48,10 @@ def node_intervals(rk, sel, uq_sel):
     return df, out
 
 
+CMAP = LinearSegmentedColormap.from_list(
+    "ypb", ["#F7E7A1", "#EE9BB8", "#7A5BA8", "#1F3F8F"])  # yellow -> pink -> blue
+
+
 def main():
     sel = json.loads((RES / "rev_e1_selection.json").read_text())
     sel["phys_gnn"] = json.loads((RES / "rev_w2_selection.json").read_text())["selected_phys"]
@@ -60,7 +65,7 @@ def main():
     for ax, rk, title in zip(axes, ("r1", "r2"), ("R1 Ten Thousand Is.", "R2 Everglades coast")):
         df, t = data[rk]
         ax.scatter(df.lon, df.lat, s=0.15, color="#4D4D4D", alpha=0.10, linewidths=0, rasterized=True)
-        sc = ax.scatter(t.lon, t.lat, c=100 * t.deduction_vm0033, s=0.6, marker="s", cmap="cividis",
+        sc = ax.scatter(t.lon, t.lat, c=100 * t.deduction_vm0033, s=0.6, marker="s", cmap=CMAP,
                         vmin=0, vmax=100 * vmax, linewidths=0, rasterized=True)
         ax.set_aspect("equal")
         ax.set_title(title, fontsize=6.5)

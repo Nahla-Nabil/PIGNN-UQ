@@ -1,7 +1,7 @@
 \documentclass[conference]{IEEEtran}
 %DIF LATEXDIFF DIFFERENCE FILE
-%DIF DEL /tmp/main_submitted.tex   Sat Oct 10 01:10:02 2026
-%DIF ADD main.tex                  Sat Oct 10 01:28:18 2026
+%DIF DEL /tmp/main_submitted.tex   Sat Oct 10 01:39:50 2026
+%DIF ADD main.tex                  Sat Oct 10 01:39:13 2026
 \IEEEoverridecommandlockouts
 \usepackage{cite}
 \usepackage{amsmath,amssymb,amsfonts}
@@ -12,7 +12,7 @@
 %DIF 9c9
 %DIF < \usepackage{url}
 %DIF -------
-\usepackage[hyphens]{url} %DIF > 
+\usepackage[hyphens]{url} %DIF > 
 %DIF -------
 
 %DIF 11-19c11-12
@@ -26,8 +26,8 @@
 %DIF < \setlength{\floatsep}{2pt plus 2pt minus 2pt}
 %DIF < \setlength{\intextsep}{3pt plus 2pt minus 2pt}
 %DIF -------
-\setlength{\textfloatsep}{4pt plus 2pt minus 2pt} %DIF > 
-\setlength{\floatsep}{3pt plus 2pt minus 2pt} %DIF > 
+\setlength{\textfloatsep}{4pt plus 2pt minus 2pt} %DIF > 
+\setlength{\floatsep}{3pt plus 2pt minus 2pt} %DIF > 
 %DIF -------
 \setlength{\abovecaptionskip}{2pt}
 \setlength{\belowcaptionskip}{1pt}
@@ -41,7 +41,7 @@
 %DIF < % wrap \thebibliography (always a list environment, whatever the class)
 %DIF < % and tighten \itemsep/\parskip inside it directly.
 %DIF -------
-\renewcommand{\arraystretch}{0.9} %DIF > 
+\renewcommand{\arraystretch}{0.9} %DIF > 
 %DIF -------
 \let\IEEEoldthebibliography\thebibliography
 \renewcommand{\thebibliography}[1]{%
@@ -56,8 +56,6 @@
 %DIF -------
 \emergencystretch=2em
 %DIF < \hfuzz=20pt
-%DIF -------
- %DIF > 
 %DIF < \vbadness=10000
 %DIF PREAMBLE EXTENSION ADDED BY LATEXDIFF
 %DIF UNDERLINE PREAMBLE %DIF PREAMBLE
@@ -236,7 +234,7 @@ each literature in full).
 This paper combines a }\DIFdelend \DIFaddbegin \DIFadd{per-site interval \mbox{%DIFAUXCMD
 \cite{sanderman2023soc,radabaugh2023bluecarbon}}\hskip0pt%DIFAUXCMD
 , and the methodology combines plot uncertainties under an independence assumption that spatial models rarely satisfy.
-}
+}
 
 \DIFadd{This paper asks whether calibrated, per-site uncertainty from a spatial model can supply that deduction in a way a registry could audit.
 A }\DIFaddend physics-informed graph neural network \DIFdelbegin \DIFdel{\mbox{%DIFAUXCMD
@@ -249,10 +247,15 @@ but not, to our
 knowledge, blue carbon, with }\DIFdelend \DIFaddbegin \DIFadd{encodes neighborhood structure and a tidal-inundation prior, tree ensembles supply strong tabular baselines, and conformalized quantile regression gives }\DIFaddend distribution-free \DIFdelbegin \DIFdel{uncertainty calibration
 to test whether estimation confidence can complement, not replace, a
 flat }\DIFdelend \DIFaddbegin \DIFadd{intervals; Fig.~\ref{fig:framework} summarizes the pipeline.
-This study departs from earlier work in four ways: (1) the interval of every node is converted into the VM0033 deduction, kept separate from the }\DIFaddend non-permanence \DIFdelbegin \DIFdel{discount.}%DIFDELCMD < 
+This study departs from earlier work in four ways: (1) the interval of every node is converted into the VM0033 deduction, kept separate from the }\DIFaddend non-permanence \DIFdelbegin \DIFdel{discount.}\DIFdelend \DIFaddbegin \DIFadd{buffer and compared with the buffers held by issuing projects; (2) the methodology's own aggregation rule is tested empirically and shown to understate project-level uncertainty when model errors are spatially correlated; (3) predictions and published maps are checked against 87 independent field soil cores; and (4) the analysis covers two regions, two image dates and leakage-free spatial splits, with every model choice fixed on validation data under rules committed before the experiments were run.
+}
 
-%DIFDELCMD < %%%
-\DIFdel{The scope is deliberately narrow: one pilot region, one physics constraint
+\DIFadd{The scope is deliberately applied: the paper does not propose a new network architecture.
+The contribution is a crediting pipeline whose uncertainty is calibrated, auditable and conservative, together with evidence on where that uncertainty is and is not informative.
+Table~\ref{tab:gap} positions this contribution against prior work.
+}\DIFaddend 
+
+\DIFdelbegin \DIFdel{The scope is deliberately narrow: one pilot region, one physics constraint
 (a steady-state mass-balance proxy, not a full temporal flux equation) ,
 and one primary UQ method (CQR; deep ensembles and MC dropout are left
 for future work) . Every model-selection decision, physics-loss weight,
@@ -265,17 +268,13 @@ out to mislead here (Section~V) . What survives that scrutiny is smaller
 and more tightly bounded than either initial result suggested: a real
 but modest prior-generalization advantage for the physics-informed model, and evidence that localized (Mondrian) conformal calibration, plausible
 in theory and competitive on validation-internal evidence, underperforms
-the simpler global variant on this AOI's test data }\DIFdelend \DIFaddbegin \DIFadd{buffer and compared with the buffers held by issuing projects; (2) the methodology's own aggregation rule is tested empirically and shown to understate project-level uncertainty when model errors are spatially correlated; (3) predictions and published maps are checked against 87 independent field soil cores; and (4) the analysis covers two regions, two image dates and leakage-free spatial splits, with every model choice fixed on validation data under rules committed before the experiments were run.
-}
-
-\DIFadd{The scope is deliberately applied: the paper does not propose a new network architecture.
-The contribution is a crediting pipeline whose uncertainty is calibrated, auditable and conservative, together with evidence on where that uncertainty is and is not informative}\DIFaddend .
-\DIFdelbegin \DIFdel{The contribution is
+the simpler global variant on this AOI's test data . The contribution is
 this pre-registered evaluation and its honest limits, not a validated
 point-prediction accuracy claim or a validated pricing model.
-}\DIFdelend 
+}%DIFDELCMD < 
 
-\section{Related Work}
+%DIFDELCMD < %%%
+\DIFdelend \section{Related Work}
 
 \DIFdelbegin %DIFDELCMD < \textbf{Physics-informed GNNs.} %%%
 \DIFdelend \DIFaddbegin \textbf{Physics-informed and graph learning.} \DIFaddend Physics-guided \DIFdelbegin \DIFdel{ML integrates
@@ -299,7 +298,7 @@ a priced instrument via UQ.
 GraphSAGE \mbox{%DIFAUXCMD
 \cite{hamilton2017graphsage} }\hskip0pt%DIFAUXCMD
 learns from node neighborhoods inductively, which suits spatial grids split into separate regions.
-}\DIFaddend 
+}\DIFaddend 
 
 \DIFdelbegin %DIFDELCMD < \textbf{Mangrove carbon stock estimation.} %%%
 \DIFdel{The dominant approach is
@@ -307,18 +306,27 @@ per-pixel tabular regression (random forest, XGBoost) }\DIFdelend \DIFaddbegin \
 \mbox{%DIFAUXCMD
 \cite{simard2019mangrove} }\hskip0pt%DIFAUXCMD
 was inaccessible here (NASA Earthdata
-login required). }\DIFdelend \DIFaddbegin \DIFadd{with random forests or boosted trees \mbox{%DIFAUXCMD
+login required). Radabaugh et al.\ built a field-plot-calibrated, 30\,m
+carbon-stock model for }\DIFdelend \DIFaddbegin \DIFadd{with random forests or boosted trees \mbox{%DIFAUXCMD
 \cite{roy2024mangroveasiapacific}}\hskip0pt%DIFAUXCMD
 .
 Global soil carbon products are themselves machine-learning outputs \mbox{%DIFAUXCMD
 \cite{sanderman2018map}}\hskip0pt%DIFAUXCMD
-, and regional maps such as }\DIFaddend Radabaugh et al.\ \DIFdelbegin \DIFdel{built a field-plot-calibrated, 30\,m
-carbon-stock model for the southwest Florida coast, one sub-region
+, whereas regional maps such as }\DIFaddend the southwest Florida \DIFdelbegin \DIFdel{coast, one sub-region
 matching our pilot AOI \mbox{%DIFAUXCMD
-\cite{radabaugh2023bluecarbon} }\hskip0pt%DIFAUXCMD
-}\DIFdelend \DIFaddbegin \DIFadd{\mbox{%DIFAUXCMD
-\cite{radabaugh2023bluecarbon} }\hskip0pt%DIFAUXCMD
-are calibrated on local field cores.
+\cite{radabaugh2023bluecarbon}}\hskip0pt%DIFAUXCMD
+. Sanderman }\DIFdelend \DIFaddbegin \DIFadd{map of Radabaugh }\DIFaddend et al.\ \DIFdelbegin \DIFdel{produced the global, field-calibrated 30\,m SOC product
+\mbox{%DIFAUXCMD
+\cite{sanderman2023soc} }\hskip0pt%DIFAUXCMD
+we train against.
+A 105-study review confirms
+belowground-carbon and valuation research remain under-studied versus
+aboveground biomass \mbox{%DIFAUXCMD
+\cite{roy2024mangroveasiapacific}}\hskip0pt%DIFAUXCMD
+. None uses a graph
+representation or a physical constraint, or reports a calibrated
+uncertainty interval (the gap this paper addresses).
+}\DIFdelend \DIFaddbegin \DIFadd{are calibrated on local field cores.
 Geomorphic setting and tidal regime control mangrove soil carbon \mbox{%DIFAUXCMD
 \cite{rovai2018controls,krauss2014sealevel}}\hskip0pt%DIFAUXCMD
 , and soil carbon maps can disagree substantially at fine scales \mbox{%DIFAUXCMD
@@ -326,20 +334,8 @@ Geomorphic setting and tidal regime control mangrove soil carbon \mbox{%DIFAUXCM
 .
 Random cross-validation overstates accuracy on such data; spatial blocking is required \mbox{%DIFAUXCMD
 \cite{roberts2017cv,ploton2020spatial}}\hskip0pt%DIFAUXCMD
-}\DIFaddend .
-\DIFdelbegin \DIFdel{Sanderman et
-al.\ produced the global, field-calibrated 30\,m SOC product
-\mbox{%DIFAUXCMD
-\cite{sanderman2023soc} }\hskip0pt%DIFAUXCMD
-we train against. A 105-study review confirms
-belowground-carbon and valuation research remain under-studied versus
-aboveground biomass \mbox{%DIFAUXCMD
-\cite{roy2024mangroveasiapacific}}\hskip0pt%DIFAUXCMD
 .
-None uses a graph
-representation or a physical constraint, or reports a calibrated
-uncertainty interval (the gap this paper addresses).
-}\DIFdelend 
+}\DIFaddend 
 
 \textbf{Uncertainty quantification.} \DIFdelbegin \DIFdel{MC dropout \mbox{%DIFAUXCMD
 \cite{gal2016dropout} }\hskip0pt%DIFAUXCMD
@@ -376,22 +372,45 @@ Spatial dependence weakens exchangeability, which motivates localized (Mondrian)
 Interval quality is scored with the Winkler interval score \mbox{%DIFAUXCMD
 \cite{winkler1972interval,gneiting2007scoring}}\hskip0pt%DIFAUXCMD
 .
-}
+}
 
 \textbf{Crediting and markets.} \DIFadd{Blue carbon credits traded at a weighted average of US\$26.96 per credit in 2022--2023 \mbox{%DIFAUXCMD
 \cite{farahmand2025bluecredits}}\hskip0pt%DIFAUXCMD
 , and registry records report issuances, retirements and buffer deposits per project \mbox{%DIFAUXCMD
 \cite{vrod2026}}\hskip0pt%DIFAUXCMD
 .
-}
+}
 
-\textbf{Research gap.} \DIFadd{The studies above either map carbon without calibrated per-site intervals, quantify uncertainty without connecting it to a crediting rule, or set buffers without reference to estimation error.
+\begin{table}[t]
+\caption{Requirements of model-based crediting covered by prior work}
+\centering
+\setlength{\tabcolsep}{3.2pt}
+\begin{tabular}{lccccc}
+\toprule
+Strand of work & Interval & Rule & Aggregation & Field & Market \\
+\midrule
+Mangrove carbon maps & -- & -- & -- & $\checkmark$ & -- \\
+Conformal prediction in EO & $\checkmark$ & -- & -- & -- & -- \\
+Registry methodologies & -- & $\checkmark$ & -- & $\checkmark$ & -- \\
+Blue carbon market studies & -- & -- & -- & -- & $\checkmark$ \\
+\textbf{This study} & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ \\
+\bottomrule
+\multicolumn{6}{l}{\footnotesize Interval: calibrated per-site interval; Rule: linked to a registry}\\
+\multicolumn{6}{l}{\footnotesize deduction; Aggregation: project rule tested on realized errors;}\\
+\multicolumn{6}{l}{\footnotesize Field/Market: checked against field cores/registry records;}\\
+\multicolumn{6}{l}{\footnotesize EO: earth observation.}
+\end{tabular}
+\label{tab:gap}
+\end{table}
+
+\textbf{Research gap.} \DIFadd{Table~\ref{tab:gap} compares these strands against five requirements of model-based crediting.
+Carbon maps lack calibrated per-site intervals, conformal studies do not connect their intervals to a crediting rule, and registry rules set deductions and buffers without testing them against realized model error.
 No study, to our knowledge, (i) converts calibrated spatial intervals into a registry uncertainty deduction, (ii) tests the registry's aggregation rule against realized errors, and (iii) checks the result against field cores and market records at the same time}\DIFaddend .
 
 \DIFdelbegin %DIFDELCMD < \section{Methodology}
 %DIFDELCMD < %%%
 \DIFdelend \DIFaddbegin \section{Data and Methods}
-\DIFaddend 
+\DIFaddend 
 
 \DIFdelbegin %DIFDELCMD < \subsection{Pilot region and data}
 %DIFDELCMD < %%%
@@ -409,7 +428,8 @@ needed layer: Sentinel-2 L2A via Microsoft Planetary Computer, Global Mangrove W
 \mbox{%DIFAUXCMD
 \cite{bunting2022gmw}}\hskip0pt%DIFAUXCMD
 , the }\DIFdelend \DIFaddbegin \DIFadd{) and the Everglades National Park coast (R2; $-81.20^\circ$ to $-80.90^\circ$, $25.30^\circ$ to $25.60^\circ$).
-The label is the 30\,m soil organic carbon stock (0--100\,cm, t\,C/ha) of }\DIFaddend Sanderman et al.\ \DIFdelbegin \DIFdel{SOC product
+The label is the 30\,m soil organic carbon stock (0--100\,cm, t\,C/ha) of the 2020 global mangrove map of }\DIFaddend Sanderman et al.
+\DIFdelbegin \DIFdel{\ SOC product
 \mbox{%DIFAUXCMD
 \cite{sanderman2023soc}}\hskip0pt%DIFAUXCMD
 , and a NOAA CO-OPS tide gauge (station 8725114).
@@ -421,10 +441,7 @@ et al.\ \mbox{%DIFAUXCMD
 
 %DIFDELCMD < \subsection{Graph construction}
 %DIFDELCMD < %%%
-\DIFdel{Native 30\,m SOC grid cells were }\DIFdelend \DIFaddbegin \DIFadd{\mbox{%DIFAUXCMD
-\cite{sanderman2023soc}}\hskip0pt%DIFAUXCMD
-.
-Native cells are }\DIFaddend aggregated into $5\times5$ blocks (\DIFdelbegin \DIFdel{$\sim$}\DIFdelend \DIFaddbegin \DIFadd{about }\DIFaddend 150\,m\DIFdelbegin \DIFdel{nodes) ; Sentinel-2 bands were resampled onto this grid
+\DIFdel{Native 30\,m SOC grid cells were }\DIFdelend \DIFaddbegin \DIFadd{Native cells are }\DIFaddend aggregated into $5\times5$ blocks (\DIFdelbegin \DIFdel{$\sim$}\DIFdelend \DIFaddbegin \DIFadd{about }\DIFaddend 150\,m\DIFdelbegin \DIFdel{nodes) ; Sentinel-2 bands were resampled onto this grid
 (bilinear) and the GMW mask (nearest-neighbor), so the label was
 never resampled. A node was kept if its block-mean GMW mangrove fraction exceeded }\DIFdelend \DIFaddbegin \DIFadd{) kept where the Global Mangrove Watch 2020 fraction exceeds }\DIFaddend 0.5 \DIFdelbegin \DIFdel{and it had a valid SOC value}\DIFdelend \DIFaddbegin \DIFadd{\mbox{%DIFAUXCMD
 \cite{bunting2022gmw}}\hskip0pt%DIFAUXCMD
@@ -439,7 +456,7 @@ Node features \DIFdelbegin \DIFdel{were NDVI, raw B04/B08/B11 reflectance, }\DIF
 for 6 February 2026, the same quantities for 15 August 2026 with cloud masking, elevation, }\DIFaddend and distance to the tide gauge\DIFdelbegin \DIFdel{; the label
 was mean SOC (t}\DIFdelend \DIFaddbegin \DIFadd{.
 While revising this work, the Sentinel-2 clip used in the earlier version was found to be shifted 9.18}\DIFaddend \,\DIFdelbegin \DIFdel{C/ha, 0--100}\DIFdelend \DIFaddbegin \DIFadd{km north of its true position, so that the mean normalized difference vegetation index (NDVI) of mangrove nodes was 0.003; re-applying the same shift to correctly referenced imagery reproduced the earlier features (correlation 0.91--0.97), and all features were rebuilt (mean NDVI 0.46).
-}
+}
 
 \DIFadd{Splits are spatial: fine cells of about 2.5}\DIFaddend \,\DIFdelbegin \DIFdel{cm).
 An initial contiguous-band split
@@ -458,7 +475,7 @@ cumulative node count rather than superblock count, since mangrove nodes concent
 comparing test-set metrics across model variants to decide the paper's
 central claim, using test data beyond its role as a single untouched
 confirmation.
-We corrected this before any
+We corrected this before any
 experiment below: a fresh validation /test block was carved from
 superblocks never individually inspected for a decision (only touched via
 gradient updates); the previously-inspected split was folded into the new
@@ -519,19 +536,17 @@ This rule selected $\lambda=0.1$ (mean val.\ $R^2=-0.007$, mean val.\
 prior-gen.\ corr.\ $=0.670$), not the ad hoc $\lambda=0.3$ from an
 earlier pilot pass, which the rule did not select (full 7-value table
 in the project's number-source log).
-}\DIFdelend \DIFaddbegin \DIFadd{where $P$ is an equal-weight, coefficient-free combination of tidal inundation frequency (the share of 2025 hourly National Oceanic and Atmospheric Administration (NOAA) water levels above each node's U.S. Geological Survey (USGS) 3DEP lidar elevation, both in NAVD88) and red-edge canopy index (NDRE), reflecting the role of hydroperiod in sediment delivery and carbon preservation \mbox{%DIFAUXCMD
-\cite{krauss2014sealevel}}\hskip0pt%DIFAUXCMD
-.
+}\DIFdelend \DIFaddbegin \DIFadd{where $P$ is an equal-weight, coefficient-free combination of tidal inundation frequency (the share of 2025 hourly National Oceanic and Atmospheric Administration (NOAA) water levels above each node's U.S. Geological Survey (USGS) 3DEP lidar elevation, both in NAVD88) and red-edge canopy index (NDRE), reflecting the role of hydroperiod in sediment delivery and carbon preservation noted in Section~II.
 The prior in Eq.~\ref{eq:loss} replaced the NDVI and gauge-distance proxy of the earlier version.
 The final candidate set added the unweighted mean of the physics-informed GNN and XGBoost (the ensemble), a stacked variant in which the GNN corrects out-of-fold XGBoost predictions, and a GNN trained on both image dates.
-}\DIFaddend 
+}\DIFaddend 
 
 \DIFdelbegin %DIFDELCMD < \subsection{Uncertainty quantification: localized CQR}
 %DIFDELCMD < %%%
 \DIFdel{A quantile-head GraphSAGE (same backbone) was trained with pinball loss
 on the 2.5th, 5th, 95th, and 97.5th percentiles, data loss only (no
 physics loss; combining both was future work).
-Two feature sets,
+Two feature sets,
 NDWI (McFeeters, Green/NIR) and NDMI (Gao, NIR/SWIR), were tested as
 additions to base, five seeds each, on validation only, under the same
 tolerance rule as $\lambda$; neither improved mean validation prior-gen.\
@@ -549,9 +564,7 @@ one
 correction for every node ).A }\emph{\DIFdel{localized (Mondrian)}} %DIFAUXCMD
 \DIFdel{variant instead
 partitioned validation nodes by spatial superblock (Section~III-B) ,
-computing a separate correction per block ($\geq$}\DIFdelend \DIFaddbegin \DIFadd{validation split \mbox{%DIFAUXCMD
-\cite{romano2019cqr}}\hskip0pt%DIFAUXCMD
-, either globally or per spatial block (Mondrian, at least }\DIFaddend 30 \DIFdelbegin \DIFdel{points, else global
+computing a separate correction per block ($\geq$}\DIFdelend \DIFaddbegin \DIFadd{validation split, either globally or per spatial block (Mondrian, at least }\DIFaddend 30 \DIFdelbegin \DIFdel{points, else global
 fallback).
 Both, plus a density-weighted variant (Gaussian kernel,
 bandwidth = median nearest-neighbor distance) , were compared on a
@@ -566,7 +579,7 @@ c_i=\hat{y}_i\,\bigl(1-\max(0,\,U_i-0.20)\bigr)\,(1-b),
 \label{eq:credit}
 \end{equation}
 \DIFadd{where $b$ is the registry's non-permanence buffer, applied unchanged. Estimation uncertainty and non-permanence therefore remain separate factors. Interval quality and deductions are summarized in Table~\ref{tab:uq} and mapped per node in Fig.~\ref{fig:map}.
-}
+}
 
 \subsection{Evaluation protocol}
 \DIFadd{Feature sets, model settings, the physics prior and the interval method were chosen by spatial five-fold cross-validation (CV) on training and validation nodes, using selection rules written and committed before each experiment.
@@ -634,7 +647,7 @@ linear 0.236, baseline GNN 0.276, physics GNN 0.289; negative-prediction
 rate 0.0 for all three, not shown) . The train ranking (physics $>$
 baseline $>$ linear)reversed on test: the no-physics baseline GNN had the best test $R^2$}\DIFdelend \DIFaddbegin \DIFadd{from 0.17 to 0.26.
 The physics prior's correlation with the predictions it constrains was 0.14 on R1 test nodes, against 0.76 for the earlier proxy}\DIFaddend .
-\DIFdelbegin \DIFdel{Edge incoherence (neighboring test-node jumps exceeding
+\DIFdelbegin \DIFdel{Edge incoherence (neighboring test-node jumps exceeding
 the 95th pct.\ of real training-side neighbor differences, threshold
 123.12\,t/ha) was 0.0 for both GNNs, near-zero for linear (graph
 message-passing generically, not the physics term).
@@ -678,7 +691,7 @@ Ensemble (GNN+XGBoost) & \textbf{0.47} & \textbf{0.28}$^\dagger$ & \textbf{0.60}
 \end{tabular}
 \label{tab:acc}
 \end{table}
-\DIFaddend 
+\DIFaddend 
 
 \DIFdelbegin \DIFdel{Table~\ref{tab:cqr} reports both methods on the single test evaluation.
 Global met or exceeded nominal coverage at both levels; localized
@@ -721,7 +734,7 @@ against the $y=x$ perfect-calibration line.
 In that zero-shot setting, conformal intervals calibrated on the source region covered 76--89\% of target validation nodes; recalibrating them on half of the target's validation nodes restored 88--97\%.
 Training }\DIFaddend the physics-informed \DIFdelbegin \DIFdel{loss
 (Eq.
-~\ref{eq:physloss}) improved test }\DIFdelend \DIFaddbegin \DIFadd{GNN on both image dates raised the rank agreement of its predictions across dates from 0.44 to 0.88 and its }\DIFaddend $R^2$ \DIFdelbegin \DIFdel{over a no-physics baseline.The multi-seed check (Section~IV-A)
+~\ref{eq:physloss}) improved test }\DIFdelend \DIFaddbegin \DIFadd{GNN on both image dates raised the rank agreement of its predictions across dates from 0.44 to 0.88 and its }\DIFaddend $R^2$ \DIFdelbegin \DIFdel{over a no-physics baseline.The multi-seed check (Section~IV-A)
 already showed this was fragile (physics-informed mean validation $R^2$
 across 5 seeds ($-0.040$) sat below the baseline's ($+0.005$) even before
 the corrected split and pre-registered $\lambda$), and the final test
@@ -730,7 +743,7 @@ $R^2$ of the three.
 This is the actual finding, not reconciled with the earlier result by reframing; a single seed on a single split was not
 reliable here.
 }\DIFdelend \DIFaddbegin \DIFadd{with August imagery from $-0.29$ to 0.35, for a 0.02 loss with February imagery.
-}\DIFaddend 
+}\DIFaddend 
 
 \DIFdelbegin %DIFDELCMD < \textbf{What does hold up, at a smaller margin.} %%%
 \DIFdel{The physics-informed
@@ -753,33 +766,30 @@ prior. What changed under the corrected protocol is the effect's size, not its d
 Mondrian calibration covered 87.9\% in R1, where only six validation blocks were available.
 Applied per node, the VM0033 rule withheld a median 12.7\% (R1) and 2.1\% (R2) of credits; across all five interval methods, credited stock stayed within 0.84}\DIFaddend --0\DIFdelbegin \DIFdel{.073), not
 the 0.6-point gap the
-single-seed pilot reported.
-This is a direct product of the pre-registered
+single-seed pilot reported. This is a direct product of }\DIFdelend \DIFaddbegin \DIFadd{.90 (R1) and 0.95--0.98 (R2) of the buffer-only amount.
+Over the 2,076 R1 test nodes (about 4,700\,ha), the deducted share equals 0.71 million t\,CO$_2$e of standing stock, or US\$19.2 million at }\DIFaddend the \DIFdelbegin \DIFdel{pre-registered
 protocol working as intended.
-}\DIFdelend \DIFaddbegin \DIFadd{.90 (R1) and 0.95--0.98 (R2) of the buffer-only amount.
-Over the 2,076 R1 test nodes (about 4,700\,ha), the deducted share equals 0.71 million t\,CO$_2$e of standing stock, or US\$19.2 million at the 2022--2023 average credit price (Section~II); this is an upper bound, because credits are issued on stock changes rather than on standing stock.
+}\DIFdelend \DIFaddbegin \DIFadd{2022--2023 average credit price (Section~II); this is an upper bound, because credits are issued on stock changes rather than on standing stock.
 Interval width did not track 2010--2020 mangrove loss (Spearman $-0.06$ in both regions).
-Among the seven blue carbon projects with issued credits (6.62 million), the median buffer was 11.0\% and 73.5\% of credits had been retired \mbox{%DIFAUXCMD
-\cite{vrod2026}}\hskip0pt%DIFAUXCMD
-.
-}\DIFaddend 
+Among the seven blue carbon projects with issued credits (6.62 million), the median buffer was 11.0\% and 73.5\% of credits had been retired, according to the registry records described in Section~II.
+}\DIFaddend 
 
 \DIFdelbegin %DIFDELCMD < \textbf{Localized calibration did not improve on global, and that is
 %DIFDELCMD < itself informative.} %%%
 \DIFdel{Section~III-F pre-registered localized (Mondrian)CQR from validation-internal evidence, before test was read. On test it
-undercovered more than global at both levels (83.4\% vs.\ 90\% nominal;
-92.4\% vs.
-\ 95\%, against global's 91.1\%/96.4\%), likely because only 6
+undercovered more than global at both levels (83.4\% vs.
+\ 90\% nominal;
+92.4\% vs.\ 95\% , against global's 91.1\%/96.4\%), likely because only 6
 spatial superblocks had enough validation nodes ($\geq 30$) for a stable
-local correction. This matches theory: \mbox{%DIFAUXCMD
+local correction.
+This matches theory: \mbox{%DIFAUXCMD
 \cite{mao2024validmodelfree} }\hskip0pt%DIFAUXCMD
 shows that local
 conformal validity needs calibration points dense enough within each
 local region, an }\emph{\DIFdel{infill asymptotic}} %DIFAUXCMD
 \DIFdel{requirement this AOI's
 validation split plausibly did not satisfy, a density limit, not
-evidence against localization.
-Nor is the pattern isolated to this paper:
+evidence against localization. Nor is the pattern isolated to this paper:
 applying Mondrian calibration to real-estate valuation, Hjort }\DIFdelend \DIFaddbegin \begin{table}[t]
 \caption{Intervals (90\%, test) and crediting}
 \centering
@@ -802,7 +812,7 @@ Project coverage, correlated errors$^*$ & 91\% & 100\% \\
 
 \DIFadd{When node uncertainties were aggregated to 2.5\,km pseudo-projects as VM0033 prescribes (root-sum-of-squares, independent errors), the stated project uncertainty covered the realized aggregate error in 18\% (R1, 11 projects) and 33\% (R2, 45 projects) of cases and implied no deduction.
 Treating errors as fully correlated covered 91\% and 100\% and implied median deductions of 14.6\% and 3.1\%.
-}
+}
 
 \subsection{Field soil cores}
 \DIFadd{The 87 mangrove cores of the Coastal Carbon Library \mbox{%DIFAUXCMD
@@ -836,24 +846,27 @@ For the 13 cores sampled to at least 50}\DIFaddend \,\DIFdelbegin \DIFdel{t/ha),
 \caption{Per-node VM0033 uncertainty deduction (Eq.~\ref{eq:credit}) on test nodes of both regions, from 90\% conformal intervals. Gray: training and validation nodes.}
 \label{fig:map}
 \end{figure}
-\DIFaddend 
+\DIFaddend 
 
-\DIFdelbegin \DIFdel{CQR interval width measures present-day estimation confidence, }\DIFdelend \DIFaddbegin \section{Discussion}
+\DIFdelbegin \DIFdel{CQR interval width measures present-day estimation confidence, not
+non-permanence risk (future carbon loss to erosion, disturbance,
+sea-level rise) -- the quantity buffer pools price; this paper does not
+establish the two correlate. We illustrate,
+without validating, how }\DIFdelend \DIFaddbegin \section{Discussion}
 
 \textbf{The physics-informed GNN and tree ensembles are complementary.} \DIFadd{Alone, the physics-informed GNN matched XGBoost in cross-validation (0.41 each), but their mean improved both regions (0.47 and 0.55) and held on test (0.28 and 0.60).
-The GNN contributes neighborhood structure and the hydroperiod prior that the trees do not see, consistent with the control of tidal setting on mangrove soil carbon \mbox{%DIFAUXCMD
-\cite{rovai2018controls}}\hskip0pt%DIFAUXCMD
-, and it was also the most stable graph model across seeds and, once trained on both dates, across seasons.
-The physics prior is now a weak constraint (correlation 0.14 with the predictions), }\DIFaddend not \DIFdelbegin \DIFdel{non-permanence risk (future carbon loss to erosion, disturbance,
-sea-level rise) -- the quantity buffer pools price; this paper does not establish the two correlate. We illustrate, without validating, how }\DIFdelend \DIFaddbegin \DIFadd{a target the model copies.
-}
+The GNN contributes neighborhood structure and the hydroperiod prior that the trees do not see, consistent with the geomorphic and tidal controls on mangrove soil carbon reviewed in Section~II, and it was also the most stable graph model across seeds and, once trained on both dates, across seasons.
+The physics prior is now a weak constraint (correlation 0.14 with the predictions), not a target the model copies.
+}
 
 \textbf{Estimation uncertainty is as large as the buffer the market already holds.} \DIFadd{The }\DIFaddend per-node \DIFdelbegin \DIFdel{estimation confidence could sit
 alongside, not replace, a non-permanence buffer, built on }\emph{\DIFdel{global}}
 %DIFAUXCMD
-\DIFdel{CQR intervals per Section~V's recommendation, not }\DIFdelend \DIFaddbegin \DIFadd{deduction in R1 (12.7\%) is similar to the realized median buffer of issuing blue carbon projects (11.0\%), yet today it is not applied.
+\DIFdel{CQR intervals per Section~V's recommendation, not the localized (Mondrian)
+variant it cautions against.
+A relative interval width is }\DIFdelend \DIFaddbegin \DIFadd{deduction in R1 (12.7\%) is similar to the realized median buffer of issuing blue carbon projects (11.0\%), yet today it is not applied.
 Fig.~\ref{fig:map} shows that the deduction concentrates in specific areas, so it is a location-dependent quantity that a flat buffer cannot represent.
-Because width does not follow observed mangrove loss, }\DIFaddend the \DIFdelbegin \DIFdel{localized (Mondrian) variant it cautions against. A relative interval width is the 90\%-CQR
+Because width does not follow observed mangrove loss, }\DIFaddend the \DIFdelbegin \DIFdel{90\%-CQR
 (global) width divided by the test set's own median (341.1\,t/ha; range
 143.9--552.5\,t/ha). A price multiplier is
 $1 - \alpha(\text{relative width}-1)$, clipped to $[0.5, 1.5]$, with
@@ -863,7 +876,7 @@ Table~\ref{tab:pricing} shows five nodes against Plan Vivo
 V5.0's flat 20\% buffer .
 }\DIFdelend \DIFaddbegin \DIFadd{two discounts measure different risks and belong in separate factors, as in Eq.~\ref{eq:credit}.
 }\textbf{Business implication:} \DIFadd{a registry can adopt the deduction without changing its buffer policy, and an issuer can see in advance which areas carry the largest deduction and where additional field sampling would raise the credited volume most.
-}\DIFaddend 
+}\DIFaddend 
 
 \DIFdelbegin %DIFDELCMD < \begin{table}[htbp]
 %DIFDELCMD < \caption{Pricing proof-of-concept: 5 representative test nodes (global CQR)}
@@ -884,13 +897,9 @@ V5.0's flat 20\% buffer .
 %DIFDELCMD < %%%
 \DIFdelend \DIFaddbegin \textbf{Aggregation under independent errors is the weak point of the registry rule.} \DIFadd{Spatial model errors are correlated, so root-sum-of-squares aggregation shrinks project uncertainty and grants no deduction even where realized errors exceed the allowance.
 A correlation-aware or empirically calibrated aggregation restored nominal coverage.
-The same dependence explains why random validation overstates mapping accuracy \mbox{%DIFAUXCMD
-\cite{ploton2020spatial} }\hskip0pt%DIFAUXCMD
-and why Mondrian calibration undercovered with only six blocks \mbox{%DIFAUXCMD
-\cite{mao2024validmodelfree}}\hskip0pt%DIFAUXCMD
-.
+The same dependence explains why random validation overstates mapping accuracy and why Mondrian calibration undercovered with only six blocks, both anticipated by the spatial validation and conformal studies in Section~II.
 Model-based crediting therefore needs an aggregation rule that accounts for spatial dependence.
-}\DIFaddend 
+}\DIFaddend 
 
 \DIFdelbegin \DIFdel{Concretely, an issuer selling from both the well- (min-width) and poorly-characterized (max-width) node
 above applies the identical 20\% discount today; under
@@ -901,17 +910,15 @@ The flat-buffer value is not arbitrary: it is Plan Vivo V5.0's stated
 buffer, used only as a comparison point (VM0033 instead scores a
 project-specific value via its own risk tool, Section~I).
 Fig.
-~\ref{fig:spatial}
+~\ref{fig:spatial}
 maps this interval width across the full test set, the spatial pattern
 behind the location-differentiated pricing Table~\ref{tab:pricing}
 illustrates.
 }\DIFdelend \DIFaddbegin \DIFadd{35\% bound.
 The value in R1 lies in adaptivity and Winkler score, not sharpness.
 Local calibration is required when a model is moved to a new region, and at core scale even field-calibrated maps barely beat a regional mean, while at site scale the ensemble did.
-Field-calibrated deductions (22--29\%) exceed label-calibrated ones, a reminder that the label product carries its own error, as fine-scale disagreement between soil carbon maps elsewhere has shown \mbox{%DIFAUXCMD
-\cite{holmquist2018tidal}}\hskip0pt%DIFAUXCMD
-.
-}\DIFaddend 
+Field-calibrated deductions (22--29\%) exceed label-calibrated ones, a reminder that the label product carries its own error, in line with the fine-scale disagreement between soil carbon maps reported for United States tidal wetlands.
+}\DIFaddend 
 
 \DIFdelbegin %DIFDELCMD < \begin{figure}[htbp]
 %DIFDELCMD < \centering
@@ -934,7 +941,7 @@ Field-calibrated deductions (22--29\%) exceed label-calibrated ones, a reminder 
 }\textbf{Single tide gauges} \DIFadd{represent each region; R2's is about 70\,km away.
 }\textbf{Field cores are sparse} \DIFadd{(13 deep enough for 0--100\,cm stocks) and may overlap the global map's training data.
 }\textbf{Market outcomes} \DIFadd{were not modeled; prices and buffers come from published records.
-}\DIFaddend 
+}\DIFaddend 
 
 \DIFdelbegin %DIFDELCMD < \textbf{Single-date imagery} %%%
 \DIFdel{constrains the physics term to a
@@ -947,16 +954,15 @@ are proxies (Section~III-E). }%DIFDELCMD < \textbf{Distance-to-gauge is a positi
 \DIFdel{, not a tidal-energy layer.
 }%DIFDELCMD < \textbf{The prior-generalization result
 %DIFDELCMD < is not independent validation} %%%
-\DIFdel{(Sections~III-F, V): it measures transfer, not physical correctness.
-}%DIFDELCMD < \textbf{CQR excluded the physics loss}%%%
-\DIFdel{, a
-disclosed scope choice. }%DIFDELCMD < \textbf{Localized (Mondrian) CQR undercovered on
+\DIFdel{(Sections~III-F, V): it measures transfer,
+not physical correctness. }%DIFDELCMD < \textbf{CQR excluded the physics loss}%%%
+\DIFdel{, a disclosed scope choice. }%DIFDELCMD < \textbf{Localized (Mondrian) CQR undercovered on
 %DIFDELCMD < test} %%%
-\DIFdel{(Section~IV-C, V) , a data-density limit here, not spatial
+\DIFdel{(Section~IV-C, V), a data-density limit here, not spatial
 calibration generally \mbox{%DIFAUXCMD
 \cite{lou2024geoconformal,mao2024validmodelfree}}\hskip0pt%DIFAUXCMD
 .
-}%DIFDELCMD < \textbf{Single region}%%%
+}%DIFDELCMD < \textbf{Single region}%%%
 \DIFdel{; the five-seed check addresses seed variance, not
 regional generalization.
 }%DIFDELCMD < \textbf{The pricing mechanism is illustrative}%%%
@@ -964,15 +970,15 @@ regional generalization.
 with an unfit sensitivity parameter and no market validation.
 }%DIFDELCMD < \textbf{The graph has 2{,}520 directed edges (3.92\%) crossing split
 %DIFDELCMD < boundaries} %%%
-\DIFdel{(9.7\% of nodes, 14.2\% of test nodes, are 1-hop neighbors
+\DIFdel{(9.7\%of nodes, 14.2\% of test nodes, are 1-hop neighbors
 across a split); restricting Table~\ref{tab:threeway} to the 1}%DIFDELCMD < {%%%
-\DIFdel{,}%DIFDELCMD < }%%%
+\DIFdel{, }%DIFDELCMD < }%%%
 \DIFdel{782
 non-boundary test nodes gives lower $R^2$ for all three models (linear
 $-0.504$, baseline GNN $-0.447$, physics GNN $-0.494$) but the same
 ranking, so reported numbers carry a small, non-model-specific optimistic
 bias from this leakage.
-}%DIFDELCMD < \textbf{The single test-side seed, the untested random-forest baseline,
+}%DIFDELCMD < \textbf{The single test-side seed, the untested random-forest baseline,
 %DIFDELCMD < and the pricing mechanism's gaming-risk and registry-adoption questions}
 %DIFDELCMD < %%%
 \DIFdel{remain unaddressed.
@@ -984,10 +990,11 @@ bias from this leakage.
 
 %DIFDELCMD < %%%
 \DIFdel{A pre-registered, two-stage protocol (validation-only selection, single
-held-out test confirmation) caught two overstated results a single run
+held-out test confirmation)caught two overstated results a single run
 would have missed: an earlier single-seed pilot's headline finding, and a
 theoretically-motivated localized calibration refinement favorable on
-validation-internal evidence alone. What survives (the }\DIFdelend \DIFaddbegin \DIFadd{Calibrated per-node uncertainty from a }\DIFaddend physics-informed \DIFdelbegin \DIFdel{model's smaller but real prior-generalization advantage, }\DIFdelend \DIFaddbegin \DIFadd{GNN and XGBoost ensemble can supply the VM0033 uncertainty deduction.
+validation-internal evidence alone.
+What survives (the }\DIFdelend \DIFaddbegin \DIFadd{Calibrated per-node uncertainty from a }\DIFaddend physics-informed \DIFdelbegin \DIFdel{model's smaller but real prior-generalization advantage, }\DIFdelend \DIFaddbegin \DIFadd{GNN and XGBoost ensemble can supply the VM0033 uncertainty deduction.
 Across two regions and two image dates, the ensemble reached test $R^2=0.28$ and 0.60, intervals reached 89--92\% coverage, and the deduction (median 12.7\% in R1) is comparable to the 11.0\% buffers that issuing projects hold.
 The methodology's independent-error aggregation covered only 18--33\% of realized project errors, and against 87 field cores the ensemble's site-level error (10.1\%) was below both published maps and a regional mean.
 Future work will test a correlation-aware aggregation with registry project data, add regions with denser field cores, }\DIFaddend and \DIFdelbegin \DIFdel{honestly
@@ -1000,11 +1007,7 @@ replace, flat buffer pools, deployed here on the simpler,
 better-calibrated global variant. Future work : a second
 Sentinel-2 date, a higher-volume or second-region localized-conformal
 test, deep-ensemble/MC-dropout comparisons, and market-outcome validation
-of the pricing mechanism against non-permanence risk}\DIFdelend \DIFaddbegin \DIFadd{replace the steady-state prior with repeated elevation and accretion measurements.
-}
-
-\section*{\DIFadd{Code Availability}}
-\DIFadd{Code, data pipeline, selection rules and results: }\url{https://github.com/Nahla-Nabil/PIGNN-UQ}\DIFaddend .
+of the pricing mechanism against non-permanence risk}\DIFdelend \DIFaddbegin \DIFadd{replace the steady-state prior with repeated elevation and accretion measurements}\DIFaddend .
 
 \bibliographystyle{IEEEtran}
 \bibliography{references}

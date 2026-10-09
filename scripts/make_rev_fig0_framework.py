@@ -1,7 +1,8 @@
 """Framework figure (paper/figures/rev_fig0_framework.pdf): data -> graph ->
 models -> conformal intervals -> VM0033 deduction -> credited stock, with the
 independent checks (field cores, registry records, mangrove loss) alongside.
-Single-column IEEE width, TrueType fonts."""
+Single-column IEEE width, TrueType fonts; gradient fills (blue = learning,
+pink = crediting, yellow-green = independent checks)."""
 import pathlib
 
 import matplotlib
@@ -9,17 +10,34 @@ matplotlib.use("Agg")
 matplotlib.rcParams["pdf.fonttype"] = 42
 matplotlib.rcParams["ps.fonttype"] = 42
 import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
 
 OUT = pathlib.Path(__file__).resolve().parents[1] / "paper" / "figures" / "rev_fig0_framework.pdf"
-BLUE, ORANGE, GREEN, GREY, DARK = "#D6E6F5", "#FBE3C4", "#D9EFD9", "#ECECEC", "#333333"
+BLUE = ("#EAF3FC", "#A9CBEF")
+PINK = ("#FDEEF4", "#F2B3CB")
+CHECK = ("#FBF0C2", "#C9E8C9")
+DARK = "#2B2B2B"
 
 
-def box(ax, x, y, w, h, title, body, color):
-    ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.008,rounding_size=0.015",
-                                fc=color, ec=DARK, lw=0.6))
-    ax.text(x + w / 2, y + h - 0.035, title, ha="center", va="top", fontsize=6.3, weight="bold", color=DARK)
-    ax.text(x + w / 2, y + h - 0.125, body, ha="center", va="top", fontsize=5.2, color=DARK, linespacing=1.25)
+def gradient(ax, patch, colors, vertical=True):
+    """Fill a patch with a two-color linear gradient (top -> bottom or left -> right)."""
+    ax.add_patch(patch)
+    x0, y0, w, h = patch.get_bbox().bounds if hasattr(patch, "get_bbox") else (0, 0, 1, 1)
+    ramp = np.linspace(0, 1, 64)
+    img = ramp[:, None] if vertical else ramp[None, :]
+    im = ax.imshow(img, cmap=LinearSegmentedColormap.from_list("g", colors), extent=(x0, x0 + w, y0, y0 + h),
+                   origin="upper" if vertical else "lower", aspect="auto", zorder=patch.get_zorder() - 0.1,
+                   interpolation="bicubic")
+    im.set_clip_path(patch)
+
+
+def box(ax, x, y, w, h, title, body, colors):
+    gradient(ax, FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.008,rounding_size=0.015",
+                                fc="none", ec=DARK, lw=0.6, zorder=2), colors)
+    ax.text(x + w / 2, y + h - 0.035, title, ha="center", va="top", fontsize=6.3, weight="bold", color=DARK, zorder=3)
+    ax.text(x + w / 2, y + h - 0.125, body, ha="center", va="top", fontsize=5.2, color=DARK, linespacing=1.25, zorder=3)
 
 
 def arrow(ax, x0, y0, x1, y1, style="-|>", ls="-"):
@@ -46,18 +64,19 @@ def main():
 
     # row 2: intervals -> deduction -> credits
     box(ax, 0.69, 0.08, 0.30, 0.40, "90% intervals",
-        "conformalized quantile\nregression, global or\nMondrian calibration", ORANGE)
+        "conformalized quantile\nregression, global or\nMondrian calibration", PINK)
     box(ax, 0.355, 0.08, 0.29, 0.40, "VM0033 deduction",
-        "$U_i=(u_i-l_i)/2\\hat y_i$\ndeduct $\\max(0,U_i-0.20)$\n(Eq. 2)", ORANGE)
+        "$U_i=(u_i-l_i)/2\\hat y_i$\ndeduct $\\max(0,U_i-0.20)$\n(Eq. 2)", PINK)
     box(ax, 0.01, 0.08, 0.30, 0.40, "Credited stock",
-        "$\\times\\,(1-b)$: registry\nnon-permanence buffer,\napplied unchanged", ORANGE)
+        "$\\times\\,(1-b)$: registry\nnon-permanence buffer,\napplied unchanged", PINK)
     arrow(ax, 0.84, 0.56, 0.84, 0.48)
     arrow(ax, 0.69, 0.28, 0.645, 0.28)
     arrow(ax, 0.355, 0.28, 0.31, 0.28)
 
+    gradient(ax, FancyBboxPatch((0.008, 0.0), 0.984, 0.05, boxstyle="round,pad=0.006,rounding_size=0.012",
+                                fc="none", ec=DARK, lw=0.5, zorder=2), CHECK, vertical=False)
     ax.text(0.5, 0.025, "Independent checks: 87 field cores (CCN), registry buffers (VROD), 2010-2020 mangrove loss",
-            ha="center", va="center", fontsize=5.0, style="italic", color=DARK,
-            bbox=dict(boxstyle="round,pad=0.25", fc=GREEN, ec=DARK, lw=0.5))
+            ha="center", va="center", fontsize=4.8, style="italic", color=DARK, zorder=3)
     fig.savefig(OUT)
     fig.savefig(OUT.with_suffix(".png"), dpi=220)
     print("wrote", OUT)

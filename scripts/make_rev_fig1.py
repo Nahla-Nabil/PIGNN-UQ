@@ -27,7 +27,8 @@ FAMS = ["linear", "rf_coords", "rf", "xgb", "gnn", "phys_gnn", "ens"]
 LABELS = {"linear": "Linear", "rf_coords": "RF (lon/lat)", "rf": "RF", "xgb": "XGBoost", "gnn": "GNN",
           "phys_gnn": "Phys-GNN", "ens": "Phys-GNN\n+XGBoost"}
 UQ = ["CQR-GNN", "CQR-PhysGNN", "CQR-XGB", "NCP-RF", "Ens-Q"]
-C = {"cv": "#999999", "r1": "#0072B2", "r2": "#E69F00", "pool": "#56B4E9", "zero": "#D55E00"}
+# blue / pink / yellow / green palette shared with Figs. 1 and 3
+C = {"cv": "#F2C14E", "r1": "#3B6FB6", "r2": "#E8749A", "pool": "#9CC3E6", "zero": "#5BAA7A"}
 
 
 def main():
