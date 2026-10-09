@@ -54,7 +54,7 @@ def main():
 
     # row 1: inputs -> graph -> models
     box(ax, 0.01, 0.56, 0.30, 0.42, "Inputs",
-        "Sentinel-2 (Feb, Aug 2026)\n3DEP lidar + NOAA tides\nSOC label (Sanderman)\nGMW mangrove mask", BLUE)
+        "Sentinel-2 (Feb, Aug 2026)\n3DEP lidar + NOAA tides\nSOC label (Maxwell)\nGMW mangrove mask", BLUE)
     box(ax, 0.355, 0.56, 0.29, 0.42, "Spatial graph",
         "150 m nodes, 8 neighbors\nR1: 10,124  R2: 22,326\nsplit-induced subgraphs\n(no cross-split edge)", BLUE)
     box(ax, 0.69, 0.56, 0.30, 0.42, "Models",

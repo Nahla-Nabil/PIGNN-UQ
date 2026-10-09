@@ -512,3 +512,19 @@ result was seen):** F2's rule is applied jointly to both regions: the lowest
 ≥ 88% in **both** regions. For GNN winners, the NCP point model early-stops
 on an inner 15% train holdout so val stays calibration-only (as C1). F3 uses
 the D-b node matching (`rev_d_field_cores.csv`) and the CCN `site_id`.
+
+## Addendum G (2026-10-10, exploratory, written after all test reads)
+
+**G1. Label-product intervals.** While re-verifying references, the label
+dataset (Zenodo 7729492; Maxwell et al. 2023, Data in Brief) was confirmed to
+ship per-pixel lower and upper 95% prediction limits. `scripts/run_rev_g_label_pi.py`
+checks them against the CCN field cores already matched in Addendum D and
+converts them to the VM0033 deduction (95% half-width rescaled to 90% under a
+normal approximation). No test labels and no model fitting are involved.
+Result (`results/rev_g_label_pi.json`): coverage 97% of 68 core locations and
+100% of the 13 deep cores; median relative half-width 1.01 (95%), implied
+median deduction about 65% in both regions. Reported as exploratory.
+
+**G2. Attribution correction.** The label product was cited as "Sanderman et
+al." in earlier drafts; its Data in Brief description is Maxwell et al. (2023).
+Text, figure and bibliography were corrected; no number changed.

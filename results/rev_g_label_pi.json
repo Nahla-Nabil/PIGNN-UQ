@@ -1,0 +1,20 @@
+{
+  "field_coverage_all": {
+    "n": 68,
+    "coverage": 0.9705882352941176
+  },
+  "field_coverage_reliable": {
+    "n": 13,
+    "coverage": 1.0
+  },
+  "r1": {
+    "median_rel_halfwidth_95": 1.0148146092468238,
+    "median_rel_halfwidth_90_normal": 0.8516676279337247,
+    "median_vm0033_deduction": 0.6516676279337247
+  },
+  "r2": {
+    "median_rel_halfwidth_95": 1.0135371280545429,
+    "median_rel_halfwidth_90_normal": 0.8505955213963866,
+    "median_vm0033_deduction": 0.6505955213963867
+  }
+}

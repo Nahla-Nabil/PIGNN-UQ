@@ -5,6 +5,7 @@
 \usepackage{booktabs,tabularx,array}
 \usepackage{xcolor}
 \usepackage[hidelinks]{hyperref}
+\hypersetup{pdftitle={Response to the Reviewers, Paper 1571347280}, pdfauthor={Nahla Nabil Skaik}}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{5pt}
 \newcommand{\rc}[1]{\par\textit{Comment: #1}\par}
@@ -20,17 +21,17 @@ Nahla Nabil Skaik, Faculty of Computer Studies, Arab Open University, Kingdom of
 
 I thank the three reviewers for their careful reading and detailed comments. The revision addresses every point raised, and in doing so it changed the paper substantially. The main changes are summarized first, followed by point-by-point responses. Section, table and figure numbers refer to the revised manuscript.
 
-\textbf{Revised title.} \emph{Physics-Informed Graph Neural Networks with Uncertainty Quantification for Conservative, Registry-Compatible Blue Carbon Crediting.} The earlier subtitle presented the evaluation protocol as the contribution; following Reviewer~1, the protocol is now the method of evidence and the contribution is the crediting pipeline and its empirical tests.
+\textbf{Revised title.} \emph{PIGNN-UQ: Physics-Informed Graph Neural Networks with Uncertainty Quantification for Registry-Compatible Blue Carbon Crediting.} PIGNN-UQ names the proposed pipeline. The earlier subtitle presented the evaluation protocol as the contribution; following Reviewer~1, the protocol is now the method of evidence and the contribution is the crediting pipeline and its empirical tests.
 
 \textbf{Main changes.}
 \begin{enumerate}\setlength{\itemsep}{1pt}
-\item \textbf{A data error was found and corrected.} While addressing the negative $R^2$, I found that the Sentinel-2 clip used in the submitted version was shifted 9.18\,km north of its true position (the mean NDVI of mangrove nodes was 0.003). Re-applying the same shift to correctly referenced imagery reproduced the submitted features (correlation 0.91--0.97). All features were rebuilt from correctly referenced imagery (mean NDVI 0.46). With every other setting unchanged, this correction alone raised the GNN's cross-validated $R^2$ from 0.17 to 0.26 (Section~III-A, Section~IV-A).
+\item \textbf{A data error was found and corrected.} While addressing the negative $R^2$, I found that the Sentinel-2 clip used in the submitted version was shifted 9.18\,km north of its true position (the mean NDVI of mangrove nodes was 0.003). Re-applying the same shift to correctly referenced imagery reproduced the submitted features (correlation 0.91 to 0.97). All features were rebuilt from correctly referenced imagery (mean NDVI 0.46). With every other setting unchanged, this correction alone raised the GNN's cross-validated $R^2$ from 0.17 to 0.26 (Section~III-A, Section~IV-A).
 \item \textbf{Stronger and fairer models:} random forest, XGBoost, spatial-lag and location-only baselines, and a physics-informed GNN with a new hydroperiod prior. The selected ensemble of the physics-informed GNN and XGBoost reached test $R^2=0.28$ and 0.60 in the two regions (Table~II).
 \item \textbf{A second region and a second date}: the Everglades coast (22,326 nodes) and August 2026 imagery (Section~III-A, IV-B).
 \item \textbf{A registry rule instead of an ad hoc multiplier}: the Verra VM0033 uncertainty deduction (Eq.~2), kept separate from the non-permanence buffer and checked against registry records and observed mangrove loss (Section~III-C, IV-C).
 \item \textbf{Independent validation}: 87 field soil cores from the Smithsonian Coastal Carbon Library and a field-calibrated regional map (Section~IV-D).
 \item \textbf{Presentation}: a comparison table (Table~I) states the research gap against prior work, a pipeline figure (Fig.~1) shows how calibrated intervals become the registry deduction, the business effect is quantified (Section~IV-C), and references are numbered and cited in order of first appearance.
-\item \textbf{Protocol}: all selection rules were committed before the experiments they govern. The test split was read once for all pre-specified models; one further model (the ensemble), chosen on cross-validation alone, was evaluated in a second, declared read. Both are reported (Section~III-D, Table~II). Code, rules and every result file are archived and available from the author on request.
+\item \textbf{Protocol}: all selection rules were committed before the experiments they govern. The test split was read once for all pre-specified models; one further model (the ensemble), chosen on cross-validation alone, was evaluated in a second, declared read. Both are reported (Section~III-D, Table~II). Code, rules and every result file are available at \url{https://github.com/Nahla-Nabil/PIGNN-UQ}.
 \end{enumerate}
 
 \section*{Reviewer 1}
@@ -45,10 +46,10 @@ I thank the three reviewers for their careful reading and detailed comments. The
 \resp Agreed. The prior is no longer used as evidence. It was replaced by a physically grounded hydroperiod prior (tidal inundation frequency from lidar elevation and a year of tide-gauge records, plus a red-edge index), and its correlation with the predictions it constrains is now 0.14 (against 0.76 before), so the model no longer copies it. Evidence comes instead from independent field cores (Section~IV-D).
 
 \rc{The CQR intervals, which do not even use the physics-informed model, are several times wider than the label's standard deviation.}
-\resp A quantile version of the physics-informed GNN was added, and crediting is reported under all five interval methods (credited stock 0.84--0.90 and 0.95--0.98 of the buffer-only amount). On width: a 90\% interval of a variable with standard deviation $\sigma$ spans about $3.29\sigma$, so the right reference is a trivial conformal interval from a constant predictor. Against that reference, the selected intervals are 32\% narrower in Region~2 and as wide in Region~1, where they score 18\% better on the Winkler score and their width ranks the actual errors (Spearman 0.54). Section~V shows that the achievable narrowing is bounded by accuracy (about 35\% in Region~2, where 32\% was reached).
+\resp A quantile version of the physics-informed GNN was added, and crediting is reported under all five interval methods (credited stock 0.84 to 0.90 and 0.95 to 0.98 of the buffer-only amount). On width: a 90\% interval of a variable with standard deviation $\sigma$ spans about $3.29\sigma$, so the right reference is a trivial conformal interval from a constant predictor. Against that reference, the selected intervals are 32\% narrower in Region~2 and as wide in Region~1, where they score 18\% better on the Winkler score and their width ranks the actual errors (Spearman 0.54). Section~V shows that the achievable narrowing is bounded by accuracy (about 35\% in Region~2, where 32\% was reached).
 
 \rc{The pricing mechanism rests on arbitrary parameters and conflates estimation uncertainty with non-permanence risk.}
-\resp The multiplier and its free parameter were removed. Credits now follow the VM0033 uncertainty deduction (Eq.~2), whose only constant is the methodology's own 20\% allowance, and the registry's non-permanence buffer is applied unchanged as a separate factor. Interval width does not track 2010--2020 mangrove loss (Spearman $-0.06$ in both regions), which supports keeping the two factors separate.
+\resp The multiplier and its free parameter were removed. Credits now follow the VM0033 uncertainty deduction (Eq.~2), whose only constant is the methodology's own 20\% allowance, and the registry's non-permanence buffer is applied unchanged as a separate factor. Interval width does not track mangrove loss between 2010 and 2020 (Spearman $-0.06$ in both regions), which supports keeping the two factors separate.
 
 \rc{The paper uses a single region and a single date.}
 \resp A second region (Everglades coast) and a second Sentinel-2 date were added. A single model trained on both regions reaches cross-validated $R^2=0.37$ and 0.53; training on both dates raises the agreement of predictions across dates from 0.44 to 0.88 (Section~IV-B, Fig.~2b).
@@ -74,14 +75,14 @@ I thank the three reviewers for their careful reading and detailed comments. The
 \resp Both were added, together with spatial-lag and location-only variants (Table~II). XGBoost outperformed the physics-informed GNN alone in Region~1, and their ensemble outperformed both (0.28 against 0.20 and 0.17), which indicates that the graph model contributes information the trees do not capture.
 
 \rc{The pricing mechanism remains at the proof-of-concept stage. The multiplier parameters are arbitrary and have not been validated against market outcomes or non-permanence risks.}
-\resp The multiplier was replaced by the VM0033 deduction. Against market records, the per-node deduction (median 12.7\% in Region~1) is comparable to the 11.0\% median buffer held by the seven blue carbon projects that have issued credits, of which 73.5\% have been retired; the market price reference is US\$26.96 per credit. Against non-permanence, interval width was compared with observed 2010--2020 mangrove loss. Transaction-level market outcomes are not available and are stated as a limitation.
+\resp The multiplier was replaced by the VM0033 deduction. Against market records, the per-node deduction (median 12.7\% in Region~1) is comparable to the 11.0\% median buffer held by the seven blue carbon projects that have issued credits, of which 73.5\% have been retired; the market price reference is US\$26.96 per credit. Against non-permanence, interval width was compared with observed mangrove loss between 2010 and 2020. The label map's own 95\% prediction limits were also tested: they contain all 13 deep field cores but are so wide that they would imply a deduction of about 65\%, against 12.7\% for the calibrated intervals (Section~IV-D). Transaction-level market outcomes are not available and are stated as a limitation.
 
 \section*{Reviewer 3}
 
 \rc{The introduction clearly describes the research problem \dots\ references are current and relevant \dots\ the detailed description of the methodology contributes to reproducibility.}
-\resp Thank you. The revision keeps the structured description of methods and adds current references (2018--2026) on spatial validation, soil carbon controls, conformal prediction and carbon markets. All code, data-processing steps and selection rules are archived and available on request to support reproducibility.
+\resp Thank you. The revision keeps the structured description of methods and adds current references (2018 to 2026) on spatial validation, soil carbon controls, conformal prediction and carbon markets. All code, data-processing steps and selection rules are released to support reproducibility.
 
 \section*{Compliance with the chairs' instructions}
-The revised manuscript uses the IEEE two-column conference template, is five pages without page numbers, and embeds all fonts. Every reference is cited in the text, in order of first appearance, and was verified against its DOI or source; more than half are from 2016 or later; there are no self-citations and no Wikipedia sources. Table captions are placed above the tables and figure captions below the figures, and each table and figure is cited in the text before it appears.
+The revised manuscript uses the IEEE two-column conference template, is five pages without page numbers, and embeds all fonts. Every reference is cited in the text, in order of first appearance, and was verified against its DOI or source (Crossref, DataCite or the publisher's page); more than half are from 2016 or later; there are no self-citations and no Wikipedia sources. Table captions are placed above the tables and figure captions below the figures, and each table and figure is cited in the text before it appears.
 
 \end{document}
