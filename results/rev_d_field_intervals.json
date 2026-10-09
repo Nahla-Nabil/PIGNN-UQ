@@ -1,0 +1,29 @@
+{
+  "n_locations_total": 68,
+  "n_reliable_stock": 13,
+  "cqr_sanderman_cal_coverage_of_field": {
+    "n": 2,
+    "coverage": 1.0
+  },
+  "field_cal_xgb": {
+    "n": 13,
+    "loso_coverage": 0.9230769230769231,
+    "k_all": 0.48766446717378137,
+    "k_loso_median": 0.48766446717378137,
+    "vm0033_deduction_field_cal": 0.28766446717378136
+  },
+  "field_cal_rf": {
+    "n": 13,
+    "loso_coverage": 0.9230769230769231,
+    "k_all": 0.45833756349742394,
+    "k_loso_median": 0.45833756349742394,
+    "vm0033_deduction_field_cal": 0.2583375634974239
+  },
+  "field_cal_phys_gnn": {
+    "n": 13,
+    "loso_coverage": 0.8461538461538461,
+    "k_all": 0.4188109643590262,
+    "k_loso_median": 0.4188109643590262,
+    "vm0033_deduction_field_cal": 0.2188109643590262
+  }
+}
