@@ -1,0 +1,117 @@
+{
+  "H1_project_coverage": [
+    {
+      "region": "r1",
+      "aggregation": "independent (VM0033 Eq.87/88)",
+      "k": 2,
+      "n": 11,
+      "coverage": 0.18181818181818182,
+      "ci95": [
+        0.02283119829995966,
+        0.5177558523601726
+      ]
+    },
+    {
+      "region": "r1",
+      "aggregation": "fully correlated",
+      "k": 10,
+      "n": 11,
+      "coverage": 0.9090909090909091,
+      "ci95": [
+        0.5872200830116173,
+        0.9977010277861857
+      ]
+    },
+    {
+      "region": "r1",
+      "aggregation": "empirical project conformal",
+      "k": 10,
+      "n": 11,
+      "coverage": 0.9090909090909091,
+      "ci95": [
+        0.5872200830116173,
+        0.9977010277861857
+      ]
+    },
+    {
+      "region": "r2",
+      "aggregation": "independent (VM0033 Eq.87/88)",
+      "k": 15,
+      "n": 45,
+      "coverage": 0.3333333333333333,
+      "ci95": [
+        0.2000056880106949,
+        0.48950363785836143
+      ]
+    },
+    {
+      "region": "r2",
+      "aggregation": "fully correlated",
+      "k": 45,
+      "n": 45,
+      "coverage": 1.0,
+      "ci95": [
+        0.9212948995931569,
+        1.0
+      ]
+    },
+    {
+      "region": "r2",
+      "aggregation": "empirical project conformal",
+      "k": 41,
+      "n": 45,
+      "coverage": 0.9111111111111111,
+      "ci95": [
+        0.7877882630456604,
+        0.9752470422165309
+      ]
+    }
+  ],
+  "H2_field_sites": {
+    "ens_minus_sanderman": {
+      "n_sites": 25,
+      "median_diff_pct_points": -3.9816122424385387,
+      "boot_ci95": [
+        -8.099952533446961,
+        8.226258963708197
+      ],
+      "share_sites_ensemble_closer": 0.4
+    },
+    "ens_minus_radabaugh": {
+      "n_sites": 25,
+      "median_diff_pct_points": -4.97778228138249,
+      "boot_ci95": [
+        -12.793104843820336,
+        5.85607638298757
+      ],
+      "share_sites_ensemble_closer": 0.68
+    },
+    "ens_minus_const": {
+      "n_sites": 25,
+      "median_diff_pct_points": -4.88563339439804,
+      "boot_ci95": [
+        -10.56077920590964,
+        4.614266102201071
+      ],
+      "share_sites_ensemble_closer": 0.44
+    },
+    "ens_minus_pred_xgb": {
+      "n_sites": 25,
+      "median_diff_pct_points": -6.4016255605338195,
+      "boot_ci95": [
+        -12.121707884899884,
+        1.616688511103657
+      ],
+      "share_sites_ensemble_closer": 0.56
+    },
+    "ens_minus_pred_phys_gnn": {
+      "n_sites": 25,
+      "median_diff_pct_points": -1.4296278034651806,
+      "boot_ci95": [
+        -3.263767575164003,
+        4.367626139411504
+      ],
+      "share_sites_ensemble_closer": 0.48
+    }
+  }
+}

@@ -528,3 +528,19 @@ median deduction about 65% in both regions. Reported as exploratory.
 **G2. Attribution correction.** The label product was cited as "Sanderman et
 al." in earlier drafts; its Data in Brief description is Maxwell et al. (2023).
 Text, figure and bibliography were corrected; no number changed.
+
+## Addendum H (2026-10-10, exploratory, after a simulated IEEE review)
+
+`scripts/run_rev_h_intervals_on_results.py` adds sampling uncertainty to numbers
+already reported; no model is refit and no test label is read again.
+H1: exact 95% intervals for project coverage (validation pseudo-projects):
+independent rule 2/11 (2-52%) in R1 and 15/45 (20-49%) in R2; fully correlated
+bound 10/11 and 45/45; empirical project conformal 10/11 and 41/45.
+H2: paired site bootstrap (25 sites, 10,000 resamples) of median-error
+differences: every interval includes zero (ensemble minus Maxwell map -4.0
+points, -8.1 to 8.2). The paper now reports the field advantage as within
+sampling uncertainty. Wording changes made in the same pass: map-label
+calibration stated explicitly, the second test read named in the abstract,
+Eq. 1 symbols defined (lambda = 0.1 selected by CV, w = 0.1), the trivial
+interval defined, the standing-stock value labelled illustrative, and the
+registry implication made conditional on validation with project data.

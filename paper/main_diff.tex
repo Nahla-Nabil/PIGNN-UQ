@@ -1,7 +1,7 @@
 \documentclass[conference]{IEEEtran}
 %DIF LATEXDIFF DIFFERENCE FILE
-%DIF DEL /tmp/main_submitted.tex   Sat Oct 10 02:15:16 2026
-%DIF ADD main.tex                  Sat Oct 10 02:13:38 2026
+%DIF DEL /tmp/main_submitted.tex   Sat Oct 10 09:15:26 2026
+%DIF ADD main.tex                  Sat Oct 10 09:13:07 2026
 \IEEEoverridecommandlockouts
 \usepackage{cite}
 \usepackage{amsmath,amssymb,amsfonts}
@@ -172,23 +172,23 @@ can supply a per-site confidence signal that complements, rather than
 replaces, this buffer, on a 10,124-node spatial graph of the Ten
 Thousand Islands mangrove fringe, southwest Florida
 (Sentinel-2, Global Mangrove Watch, field-calibrated }\DIFdelend \DIFaddbegin \DIFadd{with gradient-boosted trees to map }\DIFaddend soil organic carbon \DIFdelbegin \DIFdel{). Model selection (physics-loss weight,feature set,calibration
-method)was pre-registered on validation data and confirmed once on a held-out test block.
-A five-seed check found the }\DIFdelend \DIFaddbegin \DIFadd{over two southwest Florida mangrove regions (10,124 and 22,326 nodes of 150\,m), and conformal prediction turns each estimate into a calibrated 90\% interval that feeds the uncertainty deduction of the Verra VM0033 methodology.
-Spatial cross-validation selected the mean of the }\DIFaddend physics-informed \DIFdelbegin \DIFdel{loss's
+method)was pre-registered on validation data and confirmed once on a }\DIFdelend \DIFaddbegin \DIFadd{over two southwest Florida mangrove regions (10,124 and 22,326 nodes of 150\,m), and conformal prediction turns each estimate into a 90\% interval, calibrated on }\DIFaddend held-out \DIFdelbegin \DIFdel{test block.
+A five-seed check found }\DIFdelend \DIFaddbegin \DIFadd{global-map labels, that feeds the uncertainty deduction of the Verra VM0033 methodology.
+The mean of }\DIFaddend the physics-informed \DIFdelbegin \DIFdel{loss's
 point-accuracy advantage over a no-physics GNN did not replicate: on
-test , the no-physics GNN has the best }\DIFdelend \DIFaddbegin \DIFadd{network and XGBoost, which reached a test }\DIFaddend $R^2$ of \DIFdelbegin \DIFdel{three models ($-0.383$
-vs.\ $-0.430$ physics-informed and $-0.450$ linear).
-Its predictions do
+test , the no-physics GNN has the best }\DIFdelend \DIFaddbegin \DIFadd{network and XGBoost, selected by spatial cross-validation, reached a test }\DIFaddend $R^2$ of \DIFdelbegin \DIFdel{three models ($-0.383$
+vs.\ $-0.430$ physics-informed and $-0.450$ linear). Its predictions do
 correlate most strongly with the imposed physical prior on held-out
-nodes($0.755$ vs.\ $0.682$/$0.686$), evidence the constraint transfers
+nodes ($0.755$ vs.\ $0.682$/$0.686$), evidence the constraint transfers
 under spatial shift, not independent physical validation, and a real but
 much smaller margin than an earlier single-seed pilot suggested.
 Global
-CQR calibration reached 91.1\%/96.4\% coverage at 90\%/95\% nominal; a spatially localized (Mondrian) variant undercovered more on test
-(83.4\% }\DIFdelend \DIFaddbegin \DIFadd{0.28 and 0.60, against 0.20 and 0.59 for XGBoost alone.
-The intervals covered 91.5\% and 89.1\% of test nodes}\DIFaddend , \DIFdelbegin \DIFdel{92.4\% ), a genuine negative result consistent with
-spatial-conformal theory's local-density requirement.
-A pricing
+CQR calibration reached 91.1\% /96.4\% coverage at 90\%/}\DIFdelend \DIFaddbegin \DIFadd{0.28 and 0.60 (declared second test read), against 0.20 and 0.59 for XGBoost.
+The intervals covered 91.5\% and 89.1\% of test nodes, and their width tracked absolute error (Spearman 0.54 in the first region).
+The registry rule withheld a median 12.7\% and 2.1\% of credits per node, of the same order as the 11.0\% median buffer of the seven issuing blue carbon projects; the label map's own uncalibrated intervals would withhold about 65\%.
+The methodology's independent-error aggregation covered only 18\% and 33\% of realized project-level errors (upper }\DIFaddend 95\DIFdelbegin \DIFdel{\% nominal; a
+spatially localized (Mondrian) variant undercovered more on test (83.4\% , 92.4\% ), a genuine negative result consistent with
+spatial-conformal theory's local-density requirement. A pricing
 proof-of-concept built on the better-calibrated global intervals maps
 interval width to a multiplier ranging $0.50$--$1.50$ across five test
 nodes, against Plan Vivo's fixed $0.800$ flat-buffer multiplier.
@@ -196,11 +196,9 @@ Point-prediction accuracy remains weak throughout; the contribution is
 the pre-registered protocol itself, which caught both a single-run
 estimate and a calibration refinement overstating their reliability, not
 validated point accuracy or a validated pricing model.
-}\DIFdelend \DIFaddbegin \DIFadd{and their width ranked absolute errors with a Spearman correlation of 0.54 in the first region.
-The registry rule withheld a median 12.7\% and 2.1\% of credits per node, close to the 11.0\% median buffer held by the seven blue carbon projects that have issued credits, whereas the label map's own uncalibrated intervals would withhold about 65\%.
-Aggregating node uncertainty under the methodology's independent-error assumption covered only 18\% and 33\% of realized project-level errors, while a correlation-aware aggregation covered at least 91\%.
-At 25 field sites with 87 soil cores, the median error of the ensemble was 10.1\%, below a regional mean (15.0\%) and two published carbon maps (14.1\% and 15.1\%).
-These results support crediting rules that keep estimation uncertainty separate from non-permanence risk and aggregate it under spatially correlated errors.
+}\DIFdelend \DIFaddbegin \DIFadd{\% bounds 52\% and 49\%); empirical project-level calibration covered 91\%.
+Against 87 soil cores at 25 sites, the ensemble had the lowest median error (10.1\%, against 14.1\% to 15.1\% for two published maps and a regional mean), though within sampling uncertainty.
+These results motivate registry-scale tests of crediting rules that keep estimation uncertainty separate from non-permanence risk and aggregate it under spatially correlated errors.
 }\DIFaddend \end{abstract}
 
 \begin{IEEEkeywords}
@@ -247,11 +245,11 @@ applied to mass-conserving flood forecasting
 \mbox{%DIFAUXCMD
 \cite{taghizadeh2025floodpignn,dualfloodgnn2025} }\hskip0pt%DIFAUXCMD
 but not, to our
-knowledge, blue carbon, with }\DIFdelend \DIFaddbegin \DIFadd{(GNN) that encodes neighborhood structure and a tidal-inundation prior, tree ensembles as strong tabular baselines, and conformalized quantile regression for }\DIFaddend distribution-free \DIFdelbegin \DIFdel{uncertainty calibration
+knowledge, blue carbon, with distribution-free uncertainty calibration
 to test whether estimation confidence can complement, not replace, a
-flat }\DIFdelend \DIFaddbegin \DIFadd{intervals.
+flat }\DIFdelend \DIFaddbegin \DIFadd{(GNN) that encodes neighborhood structure and a tidal-inundation prior, tree ensembles as strong tabular baselines, and conformalized quantile regression for intervals calibrated on held-out data.
 This study departs from earlier work in four ways: (1) the interval of every node is converted into the VM0033 deduction, kept separate from the }\DIFaddend non-permanence \DIFdelbegin \DIFdel{discount.
-}\DIFdelend \DIFaddbegin \DIFadd{buffer and compared with the buffers held by issuing projects; (2) the methodology's own aggregation rule is tested empirically and shown to understate project-level uncertainty when model errors are spatially correlated; (3) predictions and published maps are checked against 87 independent field soil cores; and (4) the analysis covers two regions, two image dates and leakage-free spatial splits, with every model choice fixed on validation data under rules committed before the experiments were run.
+}\DIFdelend \DIFaddbegin \DIFadd{buffer and compared with the buffers held by issuing projects; (2) the methodology's own aggregation rule is tested empirically and shown to understate project-level uncertainty when model errors are spatially correlated; (3) predictions and published maps are checked against 87 independent field soil cores; and (4) the analysis covers two regions, two image dates and leakage-free spatial splits, with model choices fixed on validation data under rules committed in advance.
 }
 
 \DIFadd{The scope is deliberately applied: the paper does not propose a new network architecture.
@@ -357,21 +355,20 @@ full models, as in climate-downscaling \mbox{%DIFAUXCMD
 .
 CQR \mbox{%DIFAUXCMD
 \cite{romano2019cqr} }\hskip0pt%DIFAUXCMD
-turns a point predictor into calibrated intervals with a coverage guarantee that holds without distributional
-assumptions, so long as calibration and test data are exchangeable, validated for earth observation \mbox{%DIFAUXCMD
-\cite{eo_conformal2024}}\hskip0pt%DIFAUXCMD
-; that guarantee
-is conditional on exchangeability spatial autocorrelation can violate. GeoConformal Prediction
-\mbox{%DIFAUXCMD
-\cite{lou2024geoconformal} }\hskip0pt%DIFAUXCMD
-addresses this with a spatially localized
-framework, motivating the Mondrian variant we test (Section~III-F) }\DIFdelend \DIFaddbegin \DIFadd{Split conformal prediction gives finite-sample coverage under exchangeability \mbox{%DIFAUXCMD
+turns a point predictor into calibrated
+intervals with a coverage guarantee that holds without distributional
+assumptions, so long as calibration and test data are exchangeable,
+validated for }\DIFdelend \DIFaddbegin \DIFadd{Split conformal prediction gives finite-sample coverage under exchangeability \mbox{%DIFAUXCMD
 \cite{lei2018conformal}}\hskip0pt%DIFAUXCMD
 , and conformalized quantile regression adapts the interval width to each input \mbox{%DIFAUXCMD
 \cite{romano2019cqr} }\hskip0pt%DIFAUXCMD
-and has been applied to earth observation \mbox{%DIFAUXCMD
-\cite{eo_conformal2024}}\hskip0pt%DIFAUXCMD
-.
+and has been applied to }\DIFaddend earth observation \cite{eo_conformal2024}\DIFdelbegin \DIFdel{; that guarantee
+is conditional on exchangeabilityspatial autocorrelation can violate.
+GeoConformal Prediction
+\mbox{%DIFAUXCMD
+\cite{lou2024geoconformal} }\hskip0pt%DIFAUXCMD
+addresses this with a spatially localized
+framework, motivating the Mondrian variant we test (Section~III-F) }\DIFdelend \DIFaddbegin \DIFadd{.
 Spatial dependence weakens exchangeability, which motivates localized (Mondrian) calibration \mbox{%DIFAUXCMD
 \cite{vovk2005alrw,lou2024geoconformal}}\hskip0pt%DIFAUXCMD
 , whose validity needs dense calibration data in each region \mbox{%DIFAUXCMD
@@ -411,7 +408,6 @@ Blue carbon market studies & $\times$ & $\times$ & $\times$ & $\times$ & $\check
 \end{table}
 
 \textbf{Research gap.} \DIFadd{Table~\ref{tab:gap} compares these strands against five requirements of model-based crediting.
-Carbon maps lack calibrated per-site intervals, conformal studies do not connect their intervals to a crediting rule, and registry rules set deductions and buffers without testing them against realized model error.
 No study, to our knowledge, (i) converts calibrated spatial intervals into a registry uncertainty deduction, (ii) tests the registry's aggregation rule against realized errors, and (iii) checks the result against field cores and market records at the same time}\DIFaddend .
 
 \DIFdelbegin %DIFDELCMD < \section{Methodology}
@@ -462,33 +458,27 @@ Node features \DIFdelbegin \DIFdel{were NDVI, raw B04/B08/B11 reflectance, }\DIF
 \cite{drusch2012sentinel2} }\hskip0pt%DIFAUXCMD
 for 6 February 2026 and, with cloud masking, for 15 August 2026, together with elevation }\DIFaddend and distance to the tide gauge\DIFdelbegin \DIFdel{; the label
 was mean SOC (t}\DIFdelend \DIFaddbegin \DIFadd{.
-While revising this work, the Sentinel-2 clip used in the earlier version was found to be shifted 9.18}\DIFaddend \,\DIFdelbegin \DIFdel{C/ha, 0--100}\DIFdelend \DIFaddbegin \DIFadd{km north of its true position, so that the mean normalized difference vegetation index (NDVI) of mangrove nodes was 0.003.
-Re-applying the same shift to correctly referenced imagery reproduced the earlier features (correlation 0.91 to 0.97), and all features were rebuilt (mean NDVI 0.46).
-}
-
-\DIFadd{Splits are spatial: fine cells of about 2.5}\DIFaddend \,\DIFdelbegin \DIFdel{cm).
-An initial contiguous-band split
+While revising this work, the Sentinel-2 clip of the earlier version was found shifted 9.18}\DIFaddend \,\DIFdelbegin \DIFdel{C/ha, 0--100\,cm) . An initial contiguous-band split
 gave negative test $R^2$ for every model family, since the held-out band straddled a real regional carbon-density gradient
 (Radabaugh et al.'s sub-regional figures range $265.1\pm43.2$ to $409\pm104.4$\,Mg\,C\,ha$^{-1}$ \mbox{%DIFAUXCMD
 \cite{radabaugh2023bluecarbon}}\hskip0pt%DIFAUXCMD
 ). We
 replaced this with an $8\times8$ checkerboard grid of spatial superblocks
-($\sim$}\DIFdelend \DIFaddbegin \DIFadd{km are assigned whole to training, validation or test (R1: }\DIFaddend 6\DIFdelbegin \DIFdel{\,km each, far larger than the 150\,m node spacing) , assigned by
-cumulative node count rather than superblock count, since mangrove nodes concentrate in a thin coastal fringe.
-}%DIFDELCMD < 
+($\sim$6\,km each, far larger than the 150\,m node spacing), assigned by
+cumulative node count rather than superblock count, since mangrove nodes
+concentrate in a thin coastal fringe}\DIFdelend \DIFaddbegin \DIFadd{km north (mean normalized difference vegetation index (NDVI) of mangrove nodes 0.003); the shift was reproduced on correctly referenced imagery (correlation 0.91 to 0.97), and all features were rebuilt (mean NDVI 0.46)}\DIFaddend .
 
-%DIFDELCMD < \subsection{Test-set protocol and pre-registered selection}
+\DIFdelbegin %DIFDELCMD < \subsection{Test-set protocol and pre-registered selection}
 %DIFDELCMD < %%%
 \DIFdel{An early version of this evaluation used one fixed split, directly
 comparing test-set metrics across model variants to decide the paper's
 central claim, using test data beyond its role as a single untouched
-confirmation.
-We corrected this before any
+confirmation. We corrected this before any
 experiment below: a fresh validation /test block was carved from
 superblocks never individually inspected for a decision (only touched via
 gradient updates); the previously-inspected split was folded into the new
 training pool, since training on previously-seen data does not leak, but
-evaluating on it again would. The corrected split is 6}%DIFDELCMD < {%%%
+evaluating on it again would. The corrected split is }\DIFdelend \DIFaddbegin \DIFadd{Splits are spatial: fine cells of about 2.5\,km are assigned whole to training, validation or test (R1: }\DIFaddend 6\DIFdelbegin %DIFDELCMD < {%%%
 \DIFdel{,}%DIFDELCMD < }%%%
 \DIFdelend \DIFaddbegin \DIFadd{,}\DIFaddend 465\DIFdelbegin \DIFdel{train }\DIFdelend /1\DIFdelbegin %DIFDELCMD < {%%%
 \DIFdel{,}%DIFDELCMD < }%%%
@@ -511,9 +501,12 @@ protocol makes defensible, surfacing a genuine instability a fixed split could n
 The graph model is a two-layer GraphSAGE network (hidden size }\DIFaddend 16, dropout 0.3\DIFdelbegin \DIFdel{), Adam(lr $=0.01$, weight decay $10^{-3}$)}\DIFdelend , \DIFaddbegin \DIFadd{Adam, learning rate 0.01, }\DIFaddend early stopping on \DIFdelbegin \DIFdel{validation MSE (patience 30).
 Baseline and }\DIFdelend \DIFaddbegin \DIFadd{held-out groups).
 The }\DIFaddend physics-informed \DIFdelbegin \DIFdel{variants
-differed only in loss function, isolating the physics term's effect. The full mass-balance relationship is
-$dC/dt = \text{Accretion} - \text{Export} - \text{Decomposition}$; a single Sentinel-2 date and no flux-tower data ruled out estimating this
-directly. We imposed a }\DIFdelend \DIFaddbegin \DIFadd{variant adds a }\DIFaddend steady-state prior\DIFdelbegin \DIFdel{instead: predicted stock was
+differed only in loss function,
+isolating the physics term's effect. The
+full mass-balance relationship is
+$dC/dt = \text{Accretion} - \text{Export} - \text{Decomposition}$; a
+single Sentinel-2 date and no flux-tower data ruled out estimating this
+directly. We imposed a steady-state priorinstead: predicted stock was
 softly encouraged toward an equal-weighted, min-max-normalized (training
 data only) combination of an accretion proxy (NDVI) and an export proxy
 (tide-gauge distance, a positional stand-in for tidal energy absent a
@@ -523,14 +516,15 @@ reduces its test prior-generalization correlation only modestly ($0.682$
 to $0.654$), so this is not narrowly a feature-overlap artifact.
 A second
 term penalized negative
-predictions, a mass-balance corollary, not independent.Both combined into one physics loss, added to the standard MSE data loss,
+predictions, a mass-balance corollary, not independent.
+Both combined into one physics loss, added to the standard MSE data loss,
 with no fitted coefficients inside the proxy itself:
 }%DIFDELCMD < \begin{equation}
 %DIFDELCMD < \mathcal{L}_{\text{phys}} = \lambda \cdot \text{MSE}(\hat y, \text{proxy})
 %DIFDELCMD < + w_{\text{nonneg}} \cdot \text{mean}\!\left(\text{ReLU}(-\hat y_{\text{raw}})^2\right)
 %DIFDELCMD < \label{eq:physloss}
 %DIFDELCMD < \end{equation}%%%
-\DIFdelend \DIFaddbegin \DIFadd{,
+\DIFdelend \DIFaddbegin \DIFadd{variant adds a steady-state prior,
 }\begin{equation}
 \mathcal{L}=\mathrm{MSE}(\hat{y},y)+\lambda\,\mathrm{MSE}(\hat{y}_z,P_z)+w\,\overline{\mathrm{ReLU}(-\hat{y})^2},
 \label{eq:loss}
@@ -540,50 +534,47 @@ with no fitted coefficients inside the proxy itself:
 $\{0.01, 0.05, 0.1, 0.3, 0.5, 1.0, 2.0\}$, five seeds each, on validation
 only, selecting the value with best mean validation prior-generalization
 correlation within 0.05 of the best mean validation $R^2$.
-This rule selected $\lambda=0.1$ (mean val.\ $R^2=-0.007$, mean val.\
+This rule selected }\DIFdelend \DIFaddbegin \DIFadd{where $\hat{y}_z$ and $P_z$ are the standardized prediction and prior, }\DIFaddend $\lambda=0.1$ (\DIFdelbegin \DIFdel{mean val.\ $R^2=-0.007$, mean val.\
 prior-gen.\ corr.\ $=0.670$), not the ad hoc $\lambda=0.3$ from an
 earlier pilot pass, which the rule did not select (full 7-value table
 in the project's number-source log).
-}\DIFdelend \DIFaddbegin \DIFadd{where $P$ is an equal-weight, coefficient-free combination of tidal inundation frequency (the share of 2025 hourly National Oceanic and Atmospheric Administration (NOAA) water levels above each node's U.S. Geological Survey (USGS) 3DEP lidar elevation, both in NAVD88) and red-edge canopy index (NDRE), reflecting the role of hydroperiod in sediment delivery and carbon preservation.
-The prior in Eq.~\ref{eq:loss} replaced the NDVI and gauge-distance proxy of the earlier version.
-The final candidate set added the unweighted mean of the physics-informed GNN and XGBoost (the ensemble), a stacked variant in which the GNN corrects out-of-fold XGBoost predictions, and a GNN trained on both image dates.
-Table~\ref{tab:acc} lists every candidate with its accuracy.
-}\DIFaddend 
+}%DIFDELCMD < 
 
-\DIFdelbegin %DIFDELCMD < \subsection{Uncertainty quantification: localized CQR}
+%DIFDELCMD < \subsection{Uncertainty quantification: localized CQR}
 %DIFDELCMD < %%%
 \DIFdel{A quantile-head GraphSAGE (same backbone) was trained with pinball loss
-on the 2.5th, 5th, 95th, and 97.5th percentiles, data loss only (no
+on the 2.5th, 5th}\DIFdelend \DIFaddbegin \DIFadd{chosen by CV from 0.1}\DIFaddend , \DIFdelbegin \DIFdel{95th, and 97.5th percentiles, data loss only (no
 physics loss; combining both was future work).
 Two feature sets,
 NDWI (McFeeters, Green/NIR) and NDMI (Gao, NIR/SWIR), were tested as
 additions to base, five seeds each, on validation only, under the same
-tolerance rule as $\lambda$; neither improved mean validation prior-gen.\
-correlation within tolerance, so base was retained (Section~IV-A).
-}%DIFDELCMD < 
+tolerance ruleas $\lambda$; neither improved mean validation prior-gen.\
+correlation within tolerance,
+so base was retained (Section~IV-A).}\DIFdelend \DIFaddbegin \DIFadd{0.3 and 1) and $w=0.1$ weight the prior and non-negativity terms, and $P$ is the mean of min-max scaled tidal inundation frequency (the share of 2025 hourly National Oceanic and Atmospheric Administration (NOAA) water levels above each node's U.S. Geological Survey (USGS) 3DEP lidar elevation, both in NAVD88) and red-edge canopy index (NDRE), reflecting the role of hydroperiod in sediment delivery and carbon preservation.
+The prior acts as a soft domain constraint rather than a governing equation, and it replaced the NDVI and gauge-distance proxy of the earlier version.
+The final candidate set added the unweighted mean of the physics-informed GNN and XGBoost (the ensemble), a stacked variant in which the GNN corrects out-of-fold XGBoost predictions, and a GNN trained on both image dates.
+Table~\ref{tab:acc} lists every candidate with its accuracy.
+}\DIFaddend 
 
-%DIFDELCMD < %%%
-\DIFdel{Split-conformal calibration used the validation set: the conformity score
+\DIFdelbegin \DIFdel{Split-conformal calibration used the validation set: the conformity score
 $E_i=\max(q_{\text{lo}}(x_i)-y_i,\, y_i-q_{\text{hi}}(x_i))$ was computed
-there, and }\DIFdelend \DIFaddbegin \subsection{Uncertainty and crediting}
-\DIFadd{Quantile models (GNN, physics-informed GNN, XGBoost), normalized conformal random forest and a quantile ensemble were calibrated by split conformal prediction on }\DIFaddend the \DIFdelbegin \DIFdel{$\lceil (n+1)(1-\alpha)\rceil/n$ quantile of
+there, }\DIFdelend \DIFaddbegin \subsection{Uncertainty and crediting}
+\DIFadd{Quantile models (GNN, physics-informed GNN, XGBoost), normalized conformal random forest and a quantile ensemble were calibrated by split conformal prediction on the validation split, either globally or per spatial block (Mondrian, at least 30 calibration nodes per block).
+The trivial interval is the training mean $\pm$ the conformal quantile of $|y-\bar{y}|$ on the same calibration nodes, }\DIFaddend and \DIFaddbegin \DIFadd{deductions are clipped to }[\DIFadd{0, 1}]\DIFadd{.
+For node $i$ with estimate $\hat{y}_i$ and 90\% interval $[l_i,u_i]$, }\DIFaddend the \DIFdelbegin \DIFdel{$\lceil (n+1)(1-\alpha)\rceil/n$ quantile of
 $\{E_i\}$ adjusted the interval bounds (}\emph{\DIFdel{global}} %DIFAUXCMD
-\DIFdel{calibration,
-one
-correction for every node ).A }\emph{\DIFdel{localized (Mondrian)}} %DIFAUXCMD
+\DIFdel{calibration, one
+correction for every node). A }\emph{\DIFdel{localized (Mondrian)}} %DIFAUXCMD
 \DIFdel{variant instead
-partitioned validation nodes by spatial superblock (Section~III-B) ,
-computing a separate correction per block ($\geq$}\DIFdelend \DIFaddbegin \DIFadd{validation split, either globally or per spatial block (Mondrian, at least }\DIFaddend 30 \DIFdelbegin \DIFdel{points, else global
+partitioned validation nodes by spatial superblock (Section~III-B) }\DIFdelend \DIFaddbegin \DIFadd{relative uncertainty $U_i=(u_i-l_i)/(2\hat{y}_i)$ enters the VM0033 rule}\DIFaddend ,
+\DIFdelbegin \DIFdel{computing a separate correction per block ($\geq$30 points, else global
 fallback).
 Both, plus a density-weighted variant (Gaussian kernel,
 bandwidth = median nearest-neighbor distance) , were compared on a
 validation-internal holdout (val split 50/50 into calibration/check, never reading test ; Section~IV-B).
 Localized (Mondrian) was carried
 forward to test; global was the comparator, density-weighted a
-non-adopted check}\DIFdelend \DIFaddbegin \DIFadd{calibration nodes per block).
-A constant predictor with conformal calibration is reported as the trivial interval.
-For node $i$ with estimate $\hat{y}_i$ and 90\% interval $[l_i,u_i]$, the relative uncertainty $U_i=(u_i-l_i)/(2\hat{y}_i)$ enters the VM0033 rule,
-}\begin{equation}
+non-adopted check}\DIFdelend \DIFaddbegin \begin{equation}
 c_i=\hat{y}_i\,\bigl(1-\max(0,\,U_i-0.20)\bigr)\,(1-b),
 \label{eq:credit}
 \end{equation}
@@ -612,21 +603,24 @@ In R1 the ensemble reached test $R^2=0.277\pm0.035$ (mean }\DIFaddend $\pm$ \DIF
 \ dev.\
 for validation $R^2$ and prior-gen.\ correlation. Baseline GNN: $R^2$
 mean $=0.005$, std $=0.019$; corr.\ mean $=0.544$, std $=0.056$.
-Physics-informed GNN: $R^2$ mean $=-0.040$, std $=0.026$; corr.\ mean
+Physics-informed GNN: $R^2$ }\DIFdelend \DIFaddbegin \DIFadd{standard deviation (SD) over three seeds; }\DIFaddend mean \DIFdelbegin \DIFdel{$=-0.040$, std $=0.026$; corr.\ mean
 $=0.632$, std $=0.137$. Linear regression is deterministic: $R^2=-0.030$,
-corr.\ $=0.486$ (no error bar; no seed dependence to show). The
-$\lambda$ sweep and NDWI/NDMI ablation (Section~III-E/F) selected
+corr.\ $=0.486$ (no error bar; no seed dependence to show) . The
+$\lambda$ sweep and NDWI/NDMI ablation (Section~III-E/F)selected
 $\lambda=0.1$ and the base feature set mechanically, by the rules stated
 where each is defined.
 }%DIFDELCMD < 
 
 %DIFDELCMD < \subsection{Localized vs.\ global CQR (validation-internal, pre-test)}
 %DIFDELCMD < %%%
-\DIFdel{On the validation-internal calibration/check split (Section~III-F), at
+\DIFdel{On the validation-internal calibration/check split(Section~III-F), at
 90 and 95\% nominal respectively: global calibration reached 88.0 and
-95.6\% empirical coverage (mean width 307.6 and 367.8}\DIFdelend \DIFaddbegin \DIFadd{standard deviation (SD) over three seeds; mean absolute error (MAE) 58.1}\DIFaddend \,t\DIFdelbegin \DIFdel{/ha) ; localized
-(Mondrian) reached 92.2 and 95.6\% (width 305.3 and 358.2}\DIFdelend \,\DIFdelbegin \DIFdel{t}\DIFdelend \DIFaddbegin \DIFadd{C}\DIFaddend /ha)\DIFdelbegin \DIFdel{;
-density-weighted reached 81.1 and 84.7\% (width 220.2 and 241.5\,t/ha) ,
+95.6\% empirical coverage (mean width 307.6 and 367.8}\DIFdelend \DIFaddbegin \DIFadd{absolute error (MAE) 58.1}\DIFaddend \,t\DIFdelbegin \DIFdel{/ha) ; localized
+(Mondrian) reached 92.2 and 95.6\% (width 305.3 and 358.2}\DIFdelend \,\DIFdelbegin \DIFdel{t}\DIFdelend \DIFaddbegin \DIFadd{C}\DIFaddend /\DIFdelbegin \DIFdel{ha);
+density-weighted reached 81.1 }\DIFdelend \DIFaddbegin \DIFadd{ha), against 0.203 for XGBoost and 0.170 for the physics-informed GNN, whose seed SD (0.054) was a quarter of the plain GNN's (0.236).
+A constant training mean scored $-0.11$, and the location-only model $-0.79$ despite a cross-validated $R^2$ of 0.42, so location alone did not transfer to unseen blocks.
+In R2 all non-linear models scored between 0.56 }\DIFaddend and \DIFdelbegin \DIFdel{84.7\% (width 220.2 }\DIFdelend \DIFaddbegin \DIFadd{0.60.
+On interior test nodes at least two hops from any other split, the ensemble kept $R^2=0.19$ (R1) }\DIFaddend and \DIFdelbegin \DIFdel{241.5\,t/ha),
 narrower but visibly undercovering both levels.
 }%DIFDELCMD < 
 
@@ -648,20 +642,16 @@ narrower but visibly undercovering both levels.
 %DIFDELCMD < 
 
 %DIFDELCMD < %%%
-\DIFdel{Table~\ref{tab:threeway} reports the single test evaluation (train $R^2$:
-linear }\DIFdelend \DIFaddbegin \DIFadd{, against 0.203 for XGBoost and 0.170 for the physics-informed GNN, whose seed SD (0.054) was a quarter of the plain GNN's (}\DIFaddend 0.236\DIFdelbegin \DIFdel{, baseline GNN 0.276, physics GNN 0.289; negative-prediction
-rate 0.0 for all three, not shown) . The train ranking (physics $>$
-baseline $>$ linear)reversed on test: the no-physics baseline GNN had the best test }\DIFdelend \DIFaddbegin \DIFadd{).
-A constant training mean scored $-0.11$, and the location-only model $-0.79$ despite a cross-validated }\DIFaddend $R^2$ \DIFaddbegin \DIFadd{of 0.42, so location alone did not transfer to unseen blocks.
-In R2 all non-linear models scored between 0.56 and 0.60.
-On interior test nodes at least two hops from any other split, the ensemble kept $R^2=0.19$ (R1) and 0.58 (R2).
-With all other settings fixed, correcting the image georeferencing alone raised the GNN's cross-validated $R^2$ from 0.17 to 0.26.
-The physics prior's correlation with the predictions it constrains was 0.14 on R1 test nodes, against 0.76 for the earlier proxy}\DIFaddend .
-\DIFdelbegin \DIFdel{Edge incoherence (neighboring test-node jumps exceeding
+\DIFdel{Table~\ref{tab:threeway} reports the single test evaluation (train }\DIFdelend \DIFaddbegin \DIFadd{0.58 (R2).
+With all other settings fixed, correcting the image georeferencing alone raised the GNN's cross-validated }\DIFaddend $R^2$ \DIFdelbegin \DIFdel{:
+linear 0.236, baseline GNN 0.276, physics GNN 0.289; negative-prediction
+rate 0.0 for all three, not shown}\DIFdelend \DIFaddbegin \DIFadd{from 0.17 to 0.26, and adding the prior raised it from 0.39 to 0.41, within one standard error (0.03}\DIFaddend ).
+The \DIFdelbegin \DIFdel{train ranking (physics $>$
+baseline $>$ linear) reversed on test: the no-physics baseline GNN had the
+best test $R^2$. Edge incoherence (neighboring test-node jumps exceeding
 the 95th pct.\ of real training-side neighbor differences, threshold
 123.12\,t/ha) was 0.0 for both GNNs, near-zero for linear (graph
-message-passing generically, not the physics term).
-}\DIFdelend 
+message-passing generically, not the physics term)}\DIFdelend \DIFaddbegin \DIFadd{physics prior's correlation with the predictions it constrains was 0.14 on R1 test nodes, against 0.76 for the earlier proxy}\DIFaddend .
 
 \DIFdelbegin %DIFDELCMD < \begin{table}[htbp]
 %DIFDELCMD < \caption{CQR coverage, test split (evaluated once), global vs.\ localized}
@@ -705,22 +695,24 @@ Ensemble (GNN+XGBoost) & \textbf{0.47} & \textbf{0.28}$^\dagger$ & \textbf{0.60}
 
 \DIFdelbegin \DIFdel{Table~\ref{tab:cqr} reports both methods on the single test evaluation.
 Global met or exceeded nominal coverage at both levels; localized
-(Mondrian) , pre-registered (Section~III-F)as the method to carry
+(Mondrian) }\DIFdelend \DIFaddbegin \begin{figure*}[t]
+\centering
+\includegraphics[width=0.97\linewidth]{figures/rev_fig1_results.pdf}
+\caption{(a) $R^2$ by model (R1 CV with fold range; test mean $\pm$ SD over 3 seeds). (b) Ensemble generalization. (c) 90\% Winkler score on test; dashed: trivial interval; labels: coverage (\%). CQR: conformalized quantile regression; NCP: normalized conformal; Ens-Q: quantile ensemble.}
+\label{fig:results}
+\end{figure*}
+
+\subsection{Generalization and stability}
+\DIFadd{A single ensemble trained on both regions reached cross-validated $R^2=0.37$ (R1) and 0.53 (R2)}\DIFaddend , \DIFdelbegin \DIFdel{pre-registered (Section~III-F)as the method to carry
 forward, undercovered more at both levels, despite matching/exceeding
 global there (Section~IV-B).One test node (of 2}%DIFDELCMD < {%%%
 \DIFdel{,}%DIFDELCMD < }%%%
 \DIFdel{076)got an inverted (empty)interval under block-local correction at both levels, floored to zero
 width and excluded from Section~VI's pricing examples; either way it
 counted as a coverage miss.
-Fig.~\ref{fig:results}(b) plots both
-against the $y=x$ perfect-calibration line.
-}\DIFdelend \DIFaddbegin \begin{figure*}[t]
-\centering
-\includegraphics[width=0.97\linewidth]{figures/rev_fig1_results.pdf}
-\caption{(a) $R^2$ by model (R1 CV with fold range; test mean $\pm$ SD over 3 seeds). (b) Ensemble generalization. (c) 90\% Winkler score on test; dashed: trivial interval; labels: coverage (\%).}
-\label{fig:results}
-\end{figure*}
-\DIFaddend 
+Fig.~\ref{fig:results}(b) plots both against the $y=x$ perfect-calibration line}\DIFdelend \DIFaddbegin \DIFadd{against 0.47 and 0.55 for region-specific models, whereas models applied to a region they had not seen scored below zero (Fig.~\ref{fig:results}(b)).
+In that zero-shot setting, conformal intervals calibrated on the source region covered 76\% to 89\% of target validation nodes, and recalibrating them on half of the target's validation nodes restored 88\% to 97\%.
+Training the physics-informed GNN on both image dates raised the rank agreement of its predictions across dates from 0.44 to 0.88}\DIFaddend .
 
 \DIFdelbegin %DIFDELCMD < \begin{figure*}[t]
 %DIFDELCMD < \centering
@@ -738,12 +730,8 @@ against the $y=x$ perfect-calibration line.
 
 %DIFDELCMD < \textbf{The physics term's point-accuracy advantage did not replicate.}
 %DIFDELCMD < %%%
-\DIFdel{An earlier single-seed pilot found the }\DIFdelend \DIFaddbegin \subsection{Generalization and stability}
-\DIFadd{A single ensemble trained on both regions reached cross-validated $R^2=0.37$ (R1) and 0.53 (R2), against 0.47 and 0.55 for region-specific models, whereas models applied to a region they had not seen scored below zero (Fig.~\ref{fig:results}(b)).
-In that zero-shot setting, conformal intervals calibrated on the source region covered 76\% to 89\% of target validation nodes, and recalibrating them on half of the target's validation nodes restored 88\% to 97\%.
-Training the }\DIFaddend physics-informed \DIFdelbegin \DIFdel{loss
-(Eq.
-~\ref{eq:physloss}) improved test }\DIFdelend \DIFaddbegin \DIFadd{GNN on both image dates raised the rank agreement of its predictions across dates from 0.44 to 0.88 and its }\DIFaddend $R^2$ \DIFdelbegin \DIFdel{over a no-physics baseline.The multi-seed check (Section~IV-A)
+\DIFdel{An earlier single-seed pilot found the physics-informed loss
+(Eq.~\ref{eq:physloss}) improved test $R^2$ over a no-physics baseline.The multi-seed check (Section~IV-A)
 already showed this was fragile (physics-informed mean validation $R^2$
 across 5 seeds ($-0.040$) sat below the baseline's ($+0.005$) even before
 the corrected split and pre-registered $\lambda$), and the final test
@@ -751,78 +739,45 @@ evaluation confirms it: the no-physics baseline GNNhas the best test
 $R^2$ of the three.
 This is the actual finding, not reconciled with the earlier result by reframing; a single seed on a single split was not
 reliable here.
-}\DIFdelend \DIFaddbegin \DIFadd{with August imagery from $-0.29$ to 0.35, for a 0.02 loss with February imagery.
-}\DIFaddend 
+}%DIFDELCMD < 
 
-\DIFdelbegin %DIFDELCMD < \textbf{What does hold up, at a smaller margin.} %%%
+%DIFDELCMD < \textbf{What does hold up, at a smaller margin.} %%%
 \DIFdel{The physics-informed
 model's predictions correlate with the imposed mass-balance proxy more
 strongly than either non-physics model on every evaluation in this paper, multi-seed validation (0.632 vs.\ 0.544/0.486)and the single test
-evaluation (0.755 vs.\ 0.682/0.686).
+evaluation (0.755 }\DIFdelend \DIFaddbegin \subsection{Intervals and crediting}
+\DIFadd{Table~\ref{tab:uq} and Fig.~\ref{fig:results}(c) summarize the selected intervals (conformalized quantile GNN, global calibration).
+In R1 the intervals matched the trivial interval's width but scored 18\% better on the Winkler score, and their width ranked absolute errors ($\rho=0.54$, 95\% confidence interval 0.51 to 0.58).
+In R2 they were 32\% narrower than the trivial interval (191 }\DIFaddend vs.\ \DIFdelbegin \DIFdel{0.682/0.686).
 This requires the same precise
 interpretation as before: the proxy correlated against is the exact
 quantity the physics loss trained toward, so this is a }\emph{\DIFdel{prior-generalization}} %DIFAUXCMD
-\DIFdel{check (whether the constraint transfers to
-held-out nodes) , not independent physical validation, which this AOI's
-single-date}\DIFdelend \DIFaddbegin \subsection{Intervals and crediting}
-\DIFadd{Table~\ref{tab:uq} and Fig.~\ref{fig:results}(c) summarize the selected intervals (conformalized quantile GNN, global calibration).
-In R1 the intervals matched the trivial interval's width but scored 18\% better on the Winkler score, and their width ranked absolute errors ($\rho=0.54$}\DIFaddend , \DIFdelbegin \DIFdel{flux-tower-free data cannot supply.
-Whether this correlation
-reflects genuine physical behavior, not just successful optimization
+\DIFdel{check (whether the constraint transfers to held-out nodes) , not independent physical validation, which this AOI's
+single-date,flux-tower-free data cannot supply. Whether this correlation
+reflects genuine physical behavior,not just successful optimization
 against its own training target, is this paper's most significant open
 question. Resolving it would require flux-tower or repeated field-plot
 carbon-flux measurements at this AOI, which do not currently exist, the clearest concrete next step for extending this work beyond a proxy-based
 prior.
-What changed under the corrected protocol is the effect's size,not its direction: a real but modest margin on test (0.069--0.073), not
+What changed under the corrected protocol is the effect's size, not its direction: a real but modest margin on test (0.069--0.073), not
 the 0.6-point gap the
-single-seed pilot reported. This is a direct product of the pre-registered
-protocol working as intended.
-}%DIFDELCMD < 
-
-%DIFDELCMD < \textbf{Localized calibration did not improve on global, and that is
-%DIFDELCMD < itself informative.} %%%
-\DIFdel{Section~III-F pre-registered localized (Mondrian)CQR from validation-internal evidence, before test was read.
-On test it
-undercovered more than global at both levels (83.4\% vs.
-\ 90\% nominal;
-92.4\% vs.\ }\DIFdelend 95\DIFdelbegin \DIFdel{\%, against global's 91.1\% /96.4\% ), likely because only 6
-spatial superblocks had enough validation nodes ($\geq 30$)for a stable
-local correction.
-This matches theory: \mbox{%DIFAUXCMD
-\cite{mao2024validmodelfree} }\hskip0pt%DIFAUXCMD
-shows that local
-conformal validity needs calibration points dense enough within each
-local region, an }\emph{\DIFdel{infill asymptotic}} %DIFAUXCMD
-\DIFdel{requirement this AOI's
-validation split plausibly did not satisfy, a density limit, not
-evidence against localization.
-Nor is the pattern isolated to this paper:
-applying Mondrian calibration to real-estate valuation, Hjort et al}\DIFdelend \DIFaddbegin \DIFadd{\% confidence interval 0.51 to 0.58).
-In R2 they were 32\% narrower than the trivial interval (191 vs}\DIFaddend .\ \DIFdelbegin \DIFdel{\mbox{%DIFAUXCMD
-\cite{hjort2023spatialavm} }\hskip0pt%DIFAUXCMD
-report "little to no improvement" over global
-in one scenario, cautioning that an apparent gain can instead reflect a
-non-conformity score failing to capture spatial trends.
-Localization
-gains in asset-pricing conformal calibration are setting-dependent, not
-automatic. }%DIFDELCMD < \textbf{Business implication:} %%%
-\DIFdel{global (simpler, the only
-method meeting nominal coverage on test) is defensible for near-term
-deployment; Section~VI's pricing PoC uses global intervals accordingly.
-Both methods still produce test-set widths (318--383}\DIFdelend \DIFaddbegin \DIFadd{282}\DIFaddend \,t\DIFdelbegin \DIFdel{/ha)several times the label's std.
-\ dev.\ }\DIFdelend \DIFaddbegin \DIFadd{\,C/ha).
+single-seed pilot reported. This is a direct product of }\DIFdelend \DIFaddbegin \DIFadd{282\,t\,C/ha).
 Mondrian calibration covered 87.9\% in R1, where only six validation blocks were available.
 Applied per node, the VM0033 rule withheld a median 12.7\% (R1) and 2.1\% (R2) of credits.
-Across all five interval methods, credited stock stayed within 0.84 to 0.90 }\DIFaddend (\DIFdelbegin \DIFdel{87.6}\DIFdelend \DIFaddbegin \DIFadd{R1) and 0.95 to 0.98 (R2) of the buffer-only amount.
-Over the 2,076 R1 test nodes (about 4,700}\DIFaddend \,\DIFdelbegin \DIFdel{t/}\DIFdelend ha), \DIFdelbegin \DIFdel{wide, not falsely confident}\DIFdelend \DIFaddbegin \DIFadd{the deducted share equals 0.71 million t\,CO$_2$e of standing stock, or US\$19.2 million at the 2022 and 2023 average credit price (Section~II)}\DIFaddend .
-\DIFaddbegin \DIFadd{This is an upper bound, because credits are issued on stock changes rather than on standing stock.
+Across all five interval methods, credited stock stayed within 0.84 to 0.90 (R1) and 0.95 to 0.98 (R2) of the buffer-only amount.
+As an illustrative standing-stock exposure, not credit issuance, the deducted share over the 2,076 R1 test nodes (about 4,700\,ha) equals 0.71 million t\,CO$_2$e, or US\$19.2 million at }\DIFaddend the \DIFdelbegin \DIFdel{pre-registered
+protocol working as intended.
+}\DIFdelend \DIFaddbegin \DIFadd{2022 and 2023 average credit price (Section~II).
+This is an upper bound, because credits are issued on stock changes rather than on standing stock.
 Interval width did not track mangrove loss between 2010 and 2020 (Spearman $-0.06$ in both regions).
 Among the seven blue carbon projects with issued credits (6.62 million), the median buffer was 11.0\% and 73.5\% of credits had been retired (registry records, Section~II).
 }\DIFaddend 
 
-\DIFdelbegin %DIFDELCMD < \section{Pricing Proof-of-Concept}
-%DIFDELCMD < %%%
-\DIFdelend \DIFaddbegin \begin{table}[t]
+\DIFdelbegin %DIFDELCMD < \textbf{Localized calibration did not improve on global, and that is
+%DIFDELCMD < itself informative.} %%%
+\DIFdel{Section~III-F pre-registered localized (Mondrian)CQR from validation-internal evidence, before test was read. On test it
+undercovered more than global at both levels (83.4\%vs.\ 90\% nominal;
+92.4\%vs.\ 95\%, against global's 91.1\%/96.4}\DIFdelend \DIFaddbegin \begin{table}[t]
 \caption{Intervals (90\%, test) and crediting}
 \centering
 \begin{tabular}{lcc}
@@ -835,43 +790,73 @@ Winkler score / trivial & 306 / 372 & 247 / 369 \\
 $\rho$(width, abs.\ error) & 0.54 & 0.15 \\
 Median VM0033 deduction per node & 12.7\% & 2.1\% \\
 Project coverage, independent errors$^*$ & 18\% & 33\% \\
-Project coverage, correlated errors$^*$ & 91\% & 100\% \\
+Project cov., bound / empirical$^*$ & 91 / 91\% & 100 / 91\% \\
 \bottomrule
 \multicolumn{3}{l}{\footnotesize $^*$Realized errors of 2.5\,km pseudo-projects, validation data.}
 \end{tabular}
 \label{tab:uq}
 \end{table}
-\DIFaddend 
 
-\DIFdelbegin \DIFdel{CQR interval width measures present-day estimation confidence, not
-non-permanence risk (future carbon loss to erosion, disturbance, sea-level rise) -- the quantity buffer pools price; this paper does not
-establish the two correlate. We illustrate,
-without validating, how per-node estimation confidence could sit
-alongside, not replace, a non-permanence buffer, built on }\emph{\DIFdel{global}}
-%DIFAUXCMD
-\DIFdel{CQR intervals per Section~V's recommendation, not the localized (Mondrian) variant it cautions against. A relative interval width is the 90\%-CQR
-(global)width divided by the test set's own median (341.1}\DIFdelend \DIFaddbegin \DIFadd{When node uncertainties were aggregated to 2.5}\DIFaddend \,\DIFdelbegin \DIFdel{t/ha; range
-143.9--552.5}\DIFdelend \DIFaddbegin \DIFadd{km pseudo-projects as VM0033 prescribes (root-sum-of-squares, independent errors), the stated project uncertainty covered the realized aggregate error in 18\% (R1, 11 projects) and 33\% (R2, 45 projects) of cases and implied no deduction.
-Treating errors as fully correlated covered 91\% and 100\% and implied median deductions of 14.6\% and 3.1\%.
+\DIFadd{When node uncertainties were aggregated to 2.5\,km pseudo-projects as VM0033 prescribes (root-sum-of-squares, independent errors), the stated project uncertainty covered the realized aggregate error in 2 of 11 projects in R1 (18\%, exact 95\% interval 2--52\%) and 15 of 45 in R2 (33\%, 20--49\%) and implied no deduction.
+A fully correlated bound covered 91\% and 100\% (median deductions 14.6\% and 3.1}\DIFaddend \%)\DIFdelbegin \DIFdel{, likely because only 6
+spatial superblocks had enough validation nodes ($\geq 30$)for a stable
+local correction. This matches theory: \mbox{%DIFAUXCMD
+\cite{mao2024validmodelfree} }\hskip0pt%DIFAUXCMD
+shows that local
+conformal validity needs calibration points dense enough within each
+local region, an }\emph{\DIFdel{infill asymptotic}} %DIFAUXCMD
+\DIFdel{requirement this AOI's
+validation split plausibly did not satisfy, a density limit, not
+evidence against localization.
+Nor is the pattern isolated to this paper:
+applying Mondrian calibration to real-estate valuation, Hjort }\DIFdelend \DIFaddbegin \DIFadd{, and an empirical project-level conformal calibration on held-out pseudo-projects covered 91\% in both regions.
 }
 
 \subsection{Field soil cores}
 \DIFadd{The 87 mangrove cores of the Coastal Carbon Library \mbox{%DIFAUXCMD
 \cite{ccn2023library} }\hskip0pt%DIFAUXCMD
-were converted to stocks over the top 100}\DIFaddend \,\DIFdelbegin \DIFdel{t/ha).
-A price multiplier is
+were converted to stocks over the top 100\,cm, using a quadratic organic-matter conversion of the form in Craft }\DIFaddend et al.\ \DIFdelbegin \DIFdel{\mbox{%DIFAUXCMD
+\cite{hjort2023spatialavm} }\hskip0pt%DIFAUXCMD
+report "little to no improvement" over global
+in one scenario, cautioning that an apparent gain can instead reflect a
+non-conformity score failing to capture spatial trends.
+Localization
+gains in asset-pricing conformal calibration are setting-dependent, not
+automatic. }%DIFDELCMD < \textbf{Business implication:} %%%
+\DIFdel{global (simpler, the only
+method meeting nominal coverage on test) is defensible for near-term
+deployment; Section~VI's pricing PoC uses global intervals accordingly.
+Both methods still produce test-set widths (318--383}\DIFdelend \DIFaddbegin \DIFadd{\mbox{%DIFAUXCMD
+\cite{craft1991loi} }\hskip0pt%DIFAUXCMD
+fitted on 679 regional samples ($R^2=0.91$), and matched to nodes within 300}\DIFaddend \,\DIFdelbegin \DIFdel{t/ha) several times the label's std.\ dev.\ (87.6}\DIFdelend \DIFaddbegin \DIFadd{m.
+At the 25 sites, the median absolute error was 10.1\% for the ensemble, 11.6\% for the physics-informed GNN, 16.5\% for XGBoost, 14.1\% and 15.1\% for the Maxwell and Radabaugh maps, and 15.0\% for a constant.
+Paired bootstrap 95\% intervals of these differences included zero (ensemble minus Maxwell map $-4.0$ points, $-8.1$ to 8.2), and the Maxwell map ranked sites best (Spearman 0.63; ensemble 0.29).
+The two published maps were uncorrelated at node level ($-0.10$ in R1).
+For the 13 cores sampled to at least 50}\DIFaddend \,\DIFdelbegin \DIFdel{t/ha), wide, not falsely confident.
+}%DIFDELCMD < 
+
+%DIFDELCMD < \section{Pricing Proof-of-Concept}
+%DIFDELCMD < 
+
+%DIFDELCMD < %%%
+\DIFdel{CQR interval width measures present-day estimation confidence, not
+non-permanence risk (future carbon loss to erosion, disturbance,
+sea-level rise) -- the quantity buffer pools price; this paper does not
+establish the two correlate. We illustrate, without validating, how per-node estimation confidence could sit
+alongside, not replace, a non-permanence buffer, built on }\emph{\DIFdel{global}}
+%DIFAUXCMD
+\DIFdel{CQR intervals per Section~V's recommendation, not the localized (Mondrian)variant it cautions against.
+A relative interval width is the }\DIFdelend \DIFaddbegin \DIFadd{cm, field-calibrated intervals covered 85\% to 92\% under leave-one-study-out and implied VM0033 deductions of 22\% to 29\%.
+The label product's own 95\% prediction limits contained all 13 cores, but their median half-width equaled 101\% of the estimate.
+Rescaled to }\DIFaddend 90\DIFdelbegin \DIFdel{\%-CQR
+(global)width divided by the test set's own median (341.1\,t/ha; range
+143.9--552.5\,t/ha). A price multiplier is
 $1 - \alpha(\text{relative width}-1)$, clipped to $[0.5, 1.5]$, with
 $\alpha=1.0$ an arbitrary illustrative sensitivity, not fit to market
-outcome.Table~\ref{tab:pricing} shows five nodes against Plan Vivo
-V5.0's flat 20\% buffer }\DIFdelend \DIFaddbegin \DIFadd{cm, using a quadratic organic-matter conversion of the form in Craft et al}\DIFaddend .\DIFaddbegin \DIFadd{\ \mbox{%DIFAUXCMD
-\cite{craft1991loi} }\hskip0pt%DIFAUXCMD
-fitted on 679 regional samples ($R^2=0.91$), and matched to nodes within 300\,m.
-At the 25 sites, the median absolute error was 10.1\% for the ensemble, 11.6\% for the physics-informed GNN, 16.5\% for XGBoost, 14.1\% and 15.1\% for the Maxwell and Radabaugh maps, and 15.0\% for a constant.
-The Maxwell map ranked sites best (Spearman 0.63; ensemble 0.29).
-The two published maps were uncorrelated at node level ($-0.10$ in R1).
-For the 13 cores sampled to at least 50\,cm, field-calibrated intervals covered 85\% to 92\% under leave-one-study-out and implied VM0033 deductions of 22\% to 29\%.
-The label product's own 95\% prediction limits contained all 13 cores, but their median half-width equaled 101\% of the estimate.
-Rescaled to 90\% under a normal approximation, they would imply a VM0033 deduction of about 65\% in both regions.
+outcome.
+Table~\ref{tab:pricing} shows five nodes against Plan Vivo
+V5.0's flat 20\% buffer.
+}\DIFdelend \DIFaddbegin \DIFadd{\% under a normal approximation, they would imply a VM0033 deduction of about 65\% in both regions.
 }\DIFaddend 
 
 \DIFdelbegin %DIFDELCMD < \begin{table}[htbp]
@@ -899,30 +884,29 @@ Rescaled to 90\% under a normal approximation, they would imply a VM0033 deducti
 \end{figure}
 \DIFaddend 
 
-\DIFdelbegin \DIFdel{Concretely, an issuer selling from both the well- (min-width) and poorly-characterized (max-width) node
+\DIFdelbegin \DIFdel{Concretely, an issuer selling from both the well- (min-width)and poorly-characterized (max-width)node
 above applies the identical 20\% discount today; under
-a confidence-adjusted mechanism, the former prices at a 50\% premium,
-the latter at a 50\% discount, a plausible implication, not a validated
-outcome. $\alpha$ and }\DIFdelend \DIFaddbegin \section{Discussion}
+a confidence-adjusted mechanism, the former prices at a 50\% premium, }\DIFdelend \DIFaddbegin \section{Discussion}
 
-\textbf{The physics-informed GNN and tree ensembles are complementary.} \DIFadd{Alone, }\DIFaddend the \DIFdelbegin \DIFdel{clipping bounds are stated, arbitrary choices.
-}\DIFdelend \DIFaddbegin \DIFadd{physics-informed GNN matched XGBoost in cross-validation (0.41 each), but their mean outperformed every other final candidate in cross-validation (0.47 and 0.55, against at most 0.42 and 0.53) and every model on test (Table~\ref{tab:acc}).
-The GNN contributes neighborhood structure and the hydroperiod prior that the trees do not see, consistent with the geomorphic and tidal controls on mangrove soil carbon reviewed in Section~II, and it was also the most stable graph model across seeds and, once trained on both dates, across seasons.
+\textbf{The physics-informed GNN and tree ensembles are complementary.} \DIFadd{Alone, }\DIFaddend the \DIFdelbegin \DIFdel{latter at a 50\% discount, a plausible implication, not a validated
+outcome.
+$\alpha$ and the clipping bounds are stated, arbitrary choices.
+The flat-buffer value is not arbitrary: it is Plan Vivo V5.0's stated
+buffer, used only as a comparison point (VM0033 instead scores a
+project-specific value via its own risk tool, Section~I}\DIFdelend \DIFaddbegin \DIFadd{physics-informed GNN matched XGBoost in cross-validation (0.41 each), but their mean outperformed every other final candidate in cross-validation (0.47 and 0.55, against at most 0.42 and 0.53) and every model on test (Table~\ref{tab:acc}).
+The GNN adds neighborhood structure and the hydroperiod prior that the trees do not see, and it was the most stable graph model across seeds and, trained on both dates, across seasons.
 The physics prior now acts as a weak constraint rather than a target the model copies.
 }
 
-\textbf{Estimation uncertainty is as large as the buffer the market already holds.} \DIFaddend The \DIFdelbegin \DIFdel{flat-buffer value is not arbitrary: it is Plan Vivo V5.0's stated
-buffer, used only as a comparison point (VM0033 instead scores a
-project-specific value via its own risk tool, Section~I).
-}\DIFdelend \DIFaddbegin \DIFadd{per-node deduction in R1 (12.7\%) is similar to the realized median buffer of issuing blue carbon projects (11.0\%), yet today it is not applied.
-Calibration is what makes the deduction usable, since the label map's uncalibrated limits would withhold about five times as much in R1 (Section~IV-D).
-}\DIFaddend Fig.\DIFdelbegin \DIFdel{~\ref{fig:spatial}
+\textbf{Estimation uncertainty is of the same order as the buffer the market already holds.} \DIFadd{The per-node deduction in R1 (12.7\%) is similar in size to the realized median buffer of issuing blue carbon projects (11.0\%), yet today it is not applied; the similarity is context, not validation, because the two cover different risks.
+Calibration is what makes the deduction usable, since the label map's uncalibrated limits would withhold about five times as much in R1 (Section~IV-D}\DIFaddend ).
+Fig.~\DIFdelbegin \DIFdel{\ref{fig:spatial}
 maps this interval width across the full test set, the spatial pattern
 behind the location-differentiated pricing Table~\ref{tab:pricing}
 illustrates.
-}\DIFdelend \DIFaddbegin \DIFadd{~\ref{fig:map} shows that the deduction concentrates in specific areas, so it is a location-dependent quantity that a flat buffer cannot represent.
+}\DIFdelend \DIFaddbegin \DIFadd{\ref{fig:map} shows that the deduction concentrates in specific areas, so it is a location-dependent quantity that a flat buffer cannot represent.
 Because width does not follow observed mangrove loss, the two discounts measure different risks and belong in separate factors, as in Eq.~\ref{eq:credit}.
-}\textbf{Business implication:} \DIFadd{a registry can adopt the deduction without changing its buffer policy, and an issuer can see in advance which areas carry the largest deduction and where additional field sampling would raise the credited volume most.
+}\textbf{Business implication:} \DIFadd{if validated on registry project data, a registry could adopt the deduction without changing its buffer policy, and an issuer can see in advance which areas carry the largest deduction and where additional field sampling would raise the credited volume most.
 }\DIFaddend 
 
 \DIFdelbegin %DIFDELCMD < \begin{figure}[htbp]
@@ -938,40 +922,34 @@ Because width does not follow observed mangrove loss, the two discounts measure 
 %DIFDELCMD < \end{figure}
 %DIFDELCMD < %%%
 \DIFdelend \DIFaddbegin \textbf{Aggregation under independent errors is the weak point of the registry rule.} \DIFadd{Spatial model errors are correlated, so root-sum-of-squares aggregation shrinks project uncertainty and grants no deduction even where realized errors exceed the allowance.
-A correlation-aware or empirically calibrated aggregation restored nominal coverage.
-The same dependence explains why random validation overstates mapping accuracy and why Mondrian calibration undercovered with only six blocks, both anticipated by the spatial validation and conformal studies in Section~II.
+Both a fully correlated bound and an empirical project-level calibration restored nominal coverage.
 Model-based crediting therefore needs an aggregation rule that accounts for spatial dependence.
 }\DIFaddend 
 
-\DIFaddbegin \textbf{What the intervals can and cannot do.} \DIFadd{Interval width is bounded by accuracy: with test $R^2=0.07$ for the GNN underlying the intervals in R1, at most about 4\% narrowing over the trivial interval is attainable, and in R2 ($R^2=0.58$) the 32\% achieved is close to the 35\% bound.
+\DIFdelbegin %DIFDELCMD < \section{Limitations}
+%DIFDELCMD < %%%
+\DIFdelend \DIFaddbegin \textbf{What the intervals can and cannot do.} \DIFadd{Interval width is bounded by accuracy: with test $R^2=0.07$ for the GNN underlying the intervals in R1, at most about 4\% narrowing over the trivial interval is attainable, and in R2 ($R^2=0.58$) the 32\% achieved is close to the 35\% bound.
 The value in R1 lies in adaptivity and Winkler score, not sharpness.
 Local calibration is required when a model is moved to a new region.
 Field-calibrated deductions exceed label-calibrated ones, a reminder that the label product carries its own error, in line with the fine-scale disagreement between soil carbon maps reported for United States tidal wetlands.
-}
-
-\DIFaddend \section{Limitations}
-\DIFaddbegin \textbf{Labels are a modeled product:} \DIFadd{the training label is a global map that disagrees with a field-calibrated regional map at node level.
-}\textbf{Accuracy in R1 is moderate} \DIFadd{($R^2=0.28$).
-}\textbf{The ensemble was evaluated in a second test read,} \DIFadd{declared and limited to one pre-specified model.
-}\textbf{Single tide gauges} \DIFadd{represent each region, and R2's is about 70\,km away.
-}\textbf{Field cores are sparse} \DIFadd{(13 deep enough for 100\,cm stocks) and may overlap the global map's training data.
-}\textbf{Market outcomes} \DIFadd{were not modeled, since prices and buffers come from published records.
 }\DIFaddend 
 
 \DIFdelbegin %DIFDELCMD < \textbf{Single-date imagery} %%%
-\DIFdel{constrains the physics term to a
-cross-sectional relationship, not an actual $dC/dt$ (not invalidating
-the prior-generalization result, defined relative to that same proxy).
-}%DIFDELCMD < \textbf{No flux/decomposition data} %%%
+\DIFdel{constrains the physics term to a cross-sectional relationship, not an actual $dC/dt$ (not invalidating
+the prior-generalization result, defined relative to that same proxy).}%DIFDELCMD < \textbf{No flux/decomposition data} %%%
 \DIFdel{exists for this AOI; accretion/export
-are proxies (Section~III-E). }%DIFDELCMD < \textbf{Distance-to-gauge is a positional
+are proxies (Section~III-E}\DIFdelend \DIFaddbegin \section{Limitations}
+\textbf{Labels are a modeled product:} \DIFadd{the training label is a global map that disagrees with a field-calibrated regional map at node level.
+}\textbf{Accuracy in R1 is moderate} \DIFadd{($R^2=0.28$}\DIFaddend ).
+\DIFdelbegin %DIFDELCMD < \textbf{Distance-to-gauge is a positional
 %DIFDELCMD < proxy}%%%
-\DIFdel{, not a tidal-energy layer.
-}%DIFDELCMD < \textbf{The prior-generalization result
+\DIFdel{, not a tidal-energy layer. }%DIFDELCMD < \textbf{The prior-generalization result
 %DIFDELCMD < is not independent validation} %%%
-\DIFdel{(Sections~III-F, V): it measures transfer, not physical correctness.
+\DIFdel{(Sections~III-F, V): it measures transfer,
+not physical correctness.
 }%DIFDELCMD < \textbf{CQR excluded the physics loss}%%%
-\DIFdel{, a disclosed scope choice.
+\DIFdel{, a
+disclosed scope choice.
 }%DIFDELCMD < \textbf{Localized (Mondrian) CQR undercovered on
 %DIFDELCMD < test} %%%
 \DIFdel{(Section~IV-C, V), a data-density limit here, not spatial
@@ -980,14 +958,13 @@ calibration generally \mbox{%DIFAUXCMD
 .
 }%DIFDELCMD < \textbf{Single region}%%%
 \DIFdel{; the five-seed check addresses seed variance, not
-regional generalization.
-}%DIFDELCMD < \textbf{The pricing mechanism is illustrative}%%%
+regional generalization. }%DIFDELCMD < \textbf{The pricing mechanism is illustrative}%%%
 \DIFdel{, with an unfit sensitivity parameter and no market validation.
 }%DIFDELCMD < \textbf{The graph has 2{,}520 directed edges (3.92\%) crossing split
 %DIFDELCMD < boundaries} %%%
 \DIFdel{(9.7\% of nodes, 14.2\% of test nodes, are 1-hop neighbors
 across a split); restricting Table~\ref{tab:threeway} to the 1}%DIFDELCMD < {%%%
-\DIFdel{,}%DIFDELCMD < }%%%
+\DIFdel{, }%DIFDELCMD < }%%%
 \DIFdel{782
 non-boundary test nodes gives lower $R^2$ for all three models (linear
 $-0.504$, baseline GNN $-0.447$, physics GNN $-0.494$) but the same
@@ -997,24 +974,28 @@ bias from this leakage.
 %DIFDELCMD < and the pricing mechanism's gaming-risk and registry-adoption questions}
 %DIFDELCMD < %%%
 \DIFdel{remain unaddressed.
-}%DIFDELCMD < 
+}\DIFdelend \DIFaddbegin \textbf{The ensemble was evaluated in a second test read,} \DIFadd{declared and limited to one pre-specified model.
+}\textbf{Single tide gauges} \DIFadd{represent each region, and R2's is about 70\,km away.
+}\textbf{Field cores are sparse} \DIFadd{(13 deep enough for 100\,cm stocks) and may overlap the global map's training data.
+}\textbf{Market outcomes} \DIFadd{were not modeled, since prices and buffers come from published records.
+}\DIFaddend 
 
-%DIFDELCMD < %%%
-\DIFdelend \section{Conclusion}
+\section{Conclusion}
 \DIFdelbegin %DIFDELCMD < 
 
 %DIFDELCMD < %%%
 \DIFdel{A pre-registered, two-stage protocol (validation-only selection, single
-held-out test confirmation) caught two overstated results a single run
-would have missed: an earlier single-seed pilot's headline finding, and a
-theoretically-motivated localized calibration refinement favorable on
-validation-internal evidence alone. What survives (the }\DIFdelend \DIFaddbegin \DIFadd{Calibrated per-node uncertainty from a }\DIFaddend physics-informed \DIFdelbegin \DIFdel{model's smaller but real prior-generalization advantage, }\DIFdelend \DIFaddbegin \DIFadd{GNN and XGBoost ensemble can supply the VM0033 uncertainty deduction.
-Across two regions and two image dates, the ensemble reached test $R^2=0.28$ and 0.60, intervals reached 89\% to 92\% coverage, and the deduction (median 12.7\% in R1) is comparable to the 11.0\% buffers that issuing projects hold.
-The methodology's independent-error aggregation covered only 18\% to 33\% of realized project errors, and against 87 field cores the ensemble's site-level error (10.1\%) was below both published maps and a regional mean.
-Future work will test a correlation-aware aggregation with registry project data, add regions with denser field cores, }\DIFaddend and \DIFdelbegin \DIFdel{honestly
-wide, node-differentiated CQR intervals ) are two separate results, not
+}\DIFdelend \DIFaddbegin \DIFadd{Per-node uncertainty from a physics-informed GNN and XGBoost ensemble, calibrated on }\DIFaddend held-out \DIFdelbegin \DIFdel{test confirmation) caught two overstated results a single run
+would have missed: an earlier single-seed pilot's headline finding, }\DIFdelend \DIFaddbegin \DIFadd{map labels, can supply the VM0033 uncertainty deduction.
+The deduction (median 12.7\% in R1) is of the same order as the 11.0\% buffers that issuing projects hold, with interval coverage of 89\% to 92\% in two regions.
+The methodology's independent-error aggregation covered only 18\% to 33\% of realized project errors, and against 87 field cores the ensemble had the lowest site-level median error (10.1\%), although the margin over published maps was within sampling uncertainty.
+Future work will test a correlation-aware aggregation with registry project data, add regions with denser field cores, }\DIFaddend and \DIFdelbegin \DIFdel{a
+theoretically-motivated localized calibration refinement favorable on validation-internal evidence alone.
+What survives (the physics-informed
+model's smaller but real prior-generalization advantage, and honestly
+wide, node-differentiated CQR intervals) are two separate results, not
 one flowing from the other: the CQR pipeline priced here used data loss
-only , without the physics term.
+only, without the physics term.
 Together they motivate the market-facing
 contribution: an estimation-confidence signal that could complement, not
 replace, flat buffer pools, deployed here on the simpler,
