@@ -1,7 +1,7 @@
 \documentclass[conference]{IEEEtran}
 %DIF LATEXDIFF DIFFERENCE FILE
-%DIF DEL /tmp/main_submitted.tex   Sat Oct 10 20:17:35 2026
-%DIF ADD main.tex                  Sat Oct 10 20:07:46 2026
+%DIF DEL /tmp/main_submitted.tex   Sat Oct 10 21:29:10 2026
+%DIF ADD main.tex                  Sat Oct 10 21:28:48 2026
 \IEEEoverridecommandlockouts
 \usepackage{cite}
 \usepackage{amsmath,amssymb,amsfonts}
@@ -411,7 +411,8 @@ Blue carbon market studies & $\times$ & $\times$ & $\times$ & $\times$ & $\check
 \bottomrule
 \multicolumn{6}{l}{\footnotesize Interval: calibrated per-site interval ($\circ$: reported, not calibrated);}\\
 \multicolumn{6}{l}{\footnotesize Rule: registry deduction; Aggregation: tested on realized errors;}\\
-\multicolumn{6}{l}{\footnotesize Field, Market: checked against cores, registry records.}
+\multicolumn{6}{l}{\footnotesize Field, Market: checked against cores, registry records;}\\
+\multicolumn{6}{l}{\footnotesize EO: earth observation.}
 \end{tabular}
 \label{tab:gap}
 \end{table}
@@ -519,8 +520,7 @@ Baseline and }\DIFdelend \DIFaddbegin \DIFadd{held-out groups).
 The }\DIFaddend physics-informed \DIFdelbegin \DIFdel{variants
 differed only in loss function,
 isolating the physics term's effect. The
-full mass-balance relationship is
-$dC/dt = \text{Accretion} - \text{Export} - \text{Decomposition}$; a
+full mass-balance relationship is $dC/dt = \text{Accretion} - \text{Export} - \text{Decomposition}$; a
 single Sentinel-2 date and no flux-tower data ruled out estimating this
 directly. We imposed a steady-state priorinstead: predicted stock was
 softly encouraged toward an equal-weighted, min-max-normalized (training
@@ -550,7 +550,7 @@ with no fitted coefficients inside the proxy itself:
 $\{0.01, 0.05, 0.1, 0.3, 0.5, 1.0, 2.0\}$, five seeds each, on validation
 only, selecting the value with best mean validation prior-generalization
 correlation within 0.05 of the best mean validation $R^2$.
-This rule selected }\DIFdelend \DIFaddbegin \DIFadd{where $\hat{y}_z$ and $P_z$ are the standardized prediction and prior, }\DIFaddend $\lambda=0.1$ (\DIFdelbegin \DIFdel{mean val.\ $R^2=-0.007$, mean val.\
+This rule selected }\DIFdelend \DIFaddbegin \DIFadd{where MSE is the mean squared error, $\hat{y}_z$ and $P_z$ are the standardized prediction and prior, }\DIFaddend $\lambda=0.1$ (\DIFdelbegin \DIFdel{mean val.\ $R^2=-0.007$, mean val.\
 prior-gen.\ corr.\ $=0.670$), not the ad hoc $\lambda=0.3$ from an
 earlier pilot pass, which the rule did not select (full 7-value table
 in the project's number-source log).
@@ -559,39 +559,42 @@ in the project's number-source log).
 %DIFDELCMD < \subsection{Uncertainty quantification: localized CQR}
 %DIFDELCMD < %%%
 \DIFdel{A quantile-head GraphSAGE (same backbone) was trained with pinball loss
-on the 2.5th, 5th}\DIFdelend \DIFaddbegin \DIFadd{chosen by CV from 0.1}\DIFaddend , \DIFdelbegin \DIFdel{95th, and 97.5th percentiles, data loss only (no
+on the 2.5th, 5th}\DIFdelend \DIFaddbegin \DIFadd{chosen by cross-validation (CV) from 0.1}\DIFaddend , \DIFdelbegin \DIFdel{95th, and 97.5th percentiles, data loss only (no
 physics loss; combining both was future work).
 Two feature sets,
 NDWI (McFeeters, Green/NIR) and NDMI (Gao, NIR/SWIR), were tested as
 additions to base, five seeds each, on validation only, under the same
 tolerance ruleas $\lambda$; neither improved mean validation prior-gen.\
 correlation within tolerance,
-so base was retained (Section~IV-A).}\DIFdelend \DIFaddbegin \DIFadd{0.3 and 1) and $w=0.1$ weight the prior and non-negativity terms.
-The prior $P$ is the mean of min-max scaled tidal inundation frequency (the share of 2025 hourly National Oceanic and Atmospheric Administration (NOAA) water levels above each node's U.S. Geological Survey (USGS) 3DEP lidar elevation, both in NAVD88) and red-edge canopy index (NDRE), reflecting the role of hydroperiod in sediment delivery and carbon preservation.
-The prior acts as a soft domain constraint rather than a governing equation, and it replaced the NDVI and gauge-distance proxy of the earlier version.
-The final candidate set added the unweighted mean of the physics-informed GNN and XGBoost (the ensemble), a stacked variant in which the GNN corrects out-of-fold XGBoost predictions, and a GNN trained on both image dates.
-Table~\ref{tab:acc} lists every candidate with its accuracy.
-}\DIFaddend 
+so base was retained (Section~IV-A).}%DIFDELCMD < 
 
-\DIFdelbegin \DIFdel{Split-conformal calibration used the validation set: the conformity score
+%DIFDELCMD < %%%
+\DIFdel{Split-conformal calibration used the validation set: the conformity score
 $E_i=\max(q_{\text{lo}}(x_i)-y_i,\, y_i-q_{\text{hi}}(x_i))$ was computed
-there, }\DIFdelend \DIFaddbegin \subsection{Uncertainty and crediting}
-\DIFadd{Quantile models (GNN, physics-informed GNN, XGBoost), normalized conformal random forest and a quantile ensemble were calibrated by split conformal prediction on the validation split, either globally or per spatial block (Mondrian, at least 30 calibration nodes per block).
-The trivial interval is the training mean $\pm$ the conformal quantile of $|y-\bar{y}|$ on the same calibration nodes, }\DIFaddend and \DIFaddbegin \DIFadd{deductions are clipped to }[\DIFadd{0, 1}]\DIFadd{.
-For node $i$ with estimate $\hat{y}_i$ and 90\% interval $[l_i,u_i]$, }\DIFaddend the \DIFdelbegin \DIFdel{$\lceil (n+1)(1-\alpha)\rceil/n$ quantile of
+there, }\DIFdelend \DIFaddbegin \DIFadd{0.3 }\DIFaddend and \DIFaddbegin \DIFadd{1) and $w=0.1$ weight the prior and non-negativity terms.
+The prior $P$ is the mean of min-max scaled tidal inundation frequency (the share of 2025 hourly National Oceanic and Atmospheric Administration (NOAA) water levels above each node's U.S. Geological Survey (USGS) 3DEP lidar elevation, both in the NAVD88 vertical datum) and red-edge canopy index (NDRE), reflecting the role of hydroperiod in sediment delivery and carbon preservation.
+The prior acts as a soft domain constraint rather than a governing equation, and it replaced the NDVI and gauge-distance proxy of the earlier version.
+The final candidate set added }\DIFaddend the \DIFdelbegin \DIFdel{$\lceil (n+1)(1-\alpha)\rceil/n$ quantile of
 $\{E_i\}$ adjusted the interval bounds (}\emph{\DIFdel{global}} %DIFAUXCMD
 \DIFdel{calibration, one
 correction for every node). A }\emph{\DIFdel{localized (Mondrian)}} %DIFAUXCMD
 \DIFdel{variant instead
-partitioned validation nodes by spatial superblock (Section~III-B) }\DIFdelend \DIFaddbegin \DIFadd{relative uncertainty $U_i=(u_i-l_i)/(2\hat{y}_i)$ enters the VM0033 rule}\DIFaddend ,
-\DIFdelbegin \DIFdel{computing a separate correction per block ($\geq$30 points, else global
+partitioned validation nodes by spatial superblock (Section~III-B), computing a separate correction per block ($\geq$}\DIFdelend \DIFaddbegin \DIFadd{unweighted mean of the physics-informed GNN and XGBoost (the ensemble), a stacked variant in which the GNN corrects out-of-fold XGBoost predictions, and a GNN trained on both image dates.
+Table~\ref{tab:acc} lists every candidate with its accuracy.
+}
+
+\subsection{Uncertainty and crediting}
+\DIFadd{Quantile models (GNN, physics-informed GNN, XGBoost), normalized conformal random forest and a quantile ensemble were calibrated by split conformal prediction on the validation split, either globally or per spatial block (Mondrian, at least }\DIFaddend 30 \DIFdelbegin \DIFdel{points, else global
 fallback).
 Both, plus a density-weighted variant (Gaussian kernel,
 bandwidth = median nearest-neighbor distance) , were compared on a
 validation-internal holdout (val split 50/50 into calibration/check, never reading test ; Section~IV-B).
 Localized (Mondrian) was carried
 forward to test; global was the comparator, density-weighted a
-non-adopted check}\DIFdelend \DIFaddbegin \begin{equation}
+non-adopted check}\DIFdelend \DIFaddbegin \DIFadd{calibration nodes per block).
+The trivial interval is the training mean $\pm$ the conformal quantile of $|y-\bar{y}|$ on the same calibration nodes, and deductions are clipped to }[\DIFadd{0, 1}]\DIFadd{.
+For node $i$ with estimate $\hat{y}_i$ and 90\% interval $[l_i,u_i]$, the relative uncertainty $U_i=(u_i-l_i)/(2\hat{y}_i)$ enters the VM0033 rule,
+}\begin{equation}
 c_i=\hat{y}_i\,\bigl(1-\max(0,\,U_i-0.20)\bigr)\,(1-b),
 \label{eq:credit}
 \end{equation}
@@ -600,7 +603,7 @@ Interval quality and deductions are summarized in Table~\ref{tab:uq} and mapped 
 }
 
 \subsection{Evaluation protocol}
-\DIFadd{Feature sets, model settings, the physics prior and the interval method were chosen by spatial five-fold cross-validation (CV) on training and validation nodes, using selection rules written and committed before each experiment.
+\DIFadd{Feature sets, model settings, the physics prior and the interval method were chosen by spatial five-fold CV on training and validation nodes, using selection rules written and committed before each experiment.
 The test split was read once for all pre-specified models.
 After that read, one further model (the ensemble) was pre-specified on cross-validation alone and evaluated in a second, declared test read, and its test numbers are marked in Table~\ref{tab:acc}.
 Analyses that followed the first test read (generalization, two-date training, project aggregation, field cores, market data) used validation data or external data only and are reported as exploratory.
@@ -636,8 +639,7 @@ where each is defined.
 (Mondrian) reached 92.2 and 95.6\% (width 305.3 and 358.2}\DIFdelend \,\DIFdelbegin \DIFdel{t}\DIFdelend \DIFaddbegin \DIFadd{C}\DIFaddend /\DIFdelbegin \DIFdel{ha);
 density-weighted reached 81.1 }\DIFdelend \DIFaddbegin \DIFadd{ha), against 0.203 for XGBoost and 0.170 for the physics-informed GNN, whose seed SD (0.054) was a quarter of the plain GNN's (0.236).
 A constant training mean scored $-0.11$, and the location-only model $-0.79$ despite a cross-validated $R^2$ of 0.42, so location alone did not transfer to unseen blocks.
-In R2 all non-linear models scored between 0.56 }\DIFaddend and \DIFdelbegin \DIFdel{84.7\% (width 220.2 }\DIFdelend \DIFaddbegin \DIFadd{0.60.
-On interior test nodes at least two hops from any other split, the ensemble kept $R^2=0.19$ (R1) }\DIFaddend and \DIFdelbegin \DIFdel{241.5\,t/ha),
+On interior test nodes at least two hops from any other split, the ensemble kept $R^2=0.19$ (R1) }\DIFaddend and \DIFdelbegin \DIFdel{84.7\% (width 220.2 and 241.5\,t/ha),
 narrower but visibly undercovering both levels.
 }%DIFDELCMD < 
 
@@ -715,7 +717,7 @@ Global met or exceeded nominal coverage at both levels; localized
 (Mondrian) }\DIFdelend \DIFaddbegin \begin{figure*}[t]
 \centering
 \includegraphics[width=0.97\linewidth]{figures/rev_fig1_results.pdf}
-\caption{(a) $R^2$ by model (R1 CV with fold range; test mean $\pm$ SD over 3 seeds). (b) Ensemble generalization. (c) 90\% Winkler score on test; dashed: trivial interval; labels: coverage (\%). CQR: conformalized quantile regression; NCP: normalized conformal; Ens-Q: quantile ensemble.}
+\caption{(a) $R^2$ by model (R1 CV with fold range; test mean $\pm$ SD over 3 seeds). (b) Ensemble generalization. (c) 90\% Winkler score on test; dashed: trivial interval; labels: coverage (\%). RF: random forest; Phys-GNN: physics-informed GNN; CQR: conformalized quantile regression; NCP: normalized conformal; Ens-Q: quantile ensemble.}
 \label{fig:results}
 \end{figure*}
 
@@ -913,11 +915,10 @@ The flat-buffer value is not arbitrary: it is Plan Vivo V5.0's stated
 buffer, used only as a comparison point (VM0033 instead scores a
 project-specific value via its own risk tool, Section~I}\DIFdelend \DIFaddbegin \DIFadd{physics-informed GNN matched XGBoost in cross-validation (0.41 each), but their mean outperformed every other final candidate in cross-validation (0.47 and 0.55, against at most 0.42 and 0.53) and every model on test (Table~\ref{tab:acc}).
 The GNN adds neighborhood structure and the hydroperiod prior that the trees do not see, and it was the most stable graph model across seeds and, trained on both dates, across seasons.
-The physics prior now acts as a weak constraint rather than a target the model copies.
 }
 
 \textbf{Estimation uncertainty is of the same order as the buffer the market already holds.} \DIFadd{The per-node deduction in R1 (12.7\%) is similar in size to the realized median buffer of issuing blue carbon projects (11.0\%), yet today it is not applied.
-The similarity is context, not validation, because the two cover different risks.
+The similarity is context, not validation.
 Calibration is what makes the deduction usable, since the label map's uncalibrated limits would withhold about five times as much in R1 (Section~IV-D}\DIFaddend ).
 Fig.~\DIFdelbegin \DIFdel{[removed]
 maps this interval width across the full test set, the spatial pattern

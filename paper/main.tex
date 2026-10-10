@@ -102,7 +102,8 @@ Blue carbon market studies & $\times$ & $\times$ & $\times$ & $\times$ & $\check
 \bottomrule
 \multicolumn{6}{l}{\footnotesize Interval: calibrated per-site interval ($\circ$: reported, not calibrated);}\\
 \multicolumn{6}{l}{\footnotesize Rule: registry deduction; Aggregation: tested on realized errors;}\\
-\multicolumn{6}{l}{\footnotesize Field, Market: checked against cores, registry records.}
+\multicolumn{6}{l}{\footnotesize Field, Market: checked against cores, registry records;}\\
+\multicolumn{6}{l}{\footnotesize EO: earth observation.}
 \end{tabular}
 \label{tab:gap}
 \end{table}
@@ -138,8 +139,8 @@ The physics-informed variant adds a steady-state prior,
 \mathcal{L}=\mathrm{MSE}(\hat{y},y)+\lambda\,\mathrm{MSE}(\hat{y}_z,P_z)+w\,\overline{\mathrm{ReLU}(-\hat{y})^2},
 \label{eq:loss}
 \end{equation}
-where $\hat{y}_z$ and $P_z$ are the standardized prediction and prior, $\lambda=0.1$ (chosen by CV from 0.1, 0.3 and 1) and $w=0.1$ weight the prior and non-negativity terms.
-The prior $P$ is the mean of min-max scaled tidal inundation frequency (the share of 2025 hourly National Oceanic and Atmospheric Administration (NOAA) water levels above each node's U.S. Geological Survey (USGS) 3DEP lidar elevation, both in NAVD88) and red-edge canopy index (NDRE), reflecting the role of hydroperiod in sediment delivery and carbon preservation.
+where MSE is the mean squared error, $\hat{y}_z$ and $P_z$ are the standardized prediction and prior, $\lambda=0.1$ (chosen by cross-validation (CV) from 0.1, 0.3 and 1) and $w=0.1$ weight the prior and non-negativity terms.
+The prior $P$ is the mean of min-max scaled tidal inundation frequency (the share of 2025 hourly National Oceanic and Atmospheric Administration (NOAA) water levels above each node's U.S. Geological Survey (USGS) 3DEP lidar elevation, both in the NAVD88 vertical datum) and red-edge canopy index (NDRE), reflecting the role of hydroperiod in sediment delivery and carbon preservation.
 The prior acts as a soft domain constraint rather than a governing equation, and it replaced the NDVI and gauge-distance proxy of the earlier version.
 The final candidate set added the unweighted mean of the physics-informed GNN and XGBoost (the ensemble), a stacked variant in which the GNN corrects out-of-fold XGBoost predictions, and a GNN trained on both image dates.
 Table~\ref{tab:acc} lists every candidate with its accuracy.
@@ -156,7 +157,7 @@ where $b$ is the registry's non-permanence buffer, applied unchanged.
 Interval quality and deductions are summarized in Table~\ref{tab:uq} and mapped per node in Fig.~\ref{fig:map}.
 
 \subsection{Evaluation protocol}
-Feature sets, model settings, the physics prior and the interval method were chosen by spatial five-fold cross-validation (CV) on training and validation nodes, using selection rules written and committed before each experiment.
+Feature sets, model settings, the physics prior and the interval method were chosen by spatial five-fold CV on training and validation nodes, using selection rules written and committed before each experiment.
 The test split was read once for all pre-specified models.
 After that read, one further model (the ensemble) was pre-specified on cross-validation alone and evaluated in a second, declared test read, and its test numbers are marked in Table~\ref{tab:acc}.
 Analyses that followed the first test read (generalization, two-date training, project aggregation, field cores, market data) used validation data or external data only and are reported as exploratory.
@@ -170,7 +171,6 @@ This section reports measurements only; their interpretation is deferred to Sect
 Table~\ref{tab:acc} and Fig.~\ref{fig:results}(a) report accuracy.
 In R1 the ensemble reached test $R^2=0.277\pm0.035$ (mean $\pm$ standard deviation (SD) over three seeds; mean absolute error (MAE) 58.1\,t\,C/ha), against 0.203 for XGBoost and 0.170 for the physics-informed GNN, whose seed SD (0.054) was a quarter of the plain GNN's (0.236).
 A constant training mean scored $-0.11$, and the location-only model $-0.79$ despite a cross-validated $R^2$ of 0.42, so location alone did not transfer to unseen blocks.
-In R2 all non-linear models scored between 0.56 and 0.60.
 On interior test nodes at least two hops from any other split, the ensemble kept $R^2=0.19$ (R1) and 0.58 (R2).
 With all other settings fixed, correcting the image georeferencing alone raised the GNN's cross-validated $R^2$ from 0.17 to 0.26, and adding the prior raised it from 0.39 to 0.41, within one standard error (0.03).
 The physics prior's correlation with the predictions it constrains was 0.14 on R1 test nodes, against 0.76 for the earlier proxy.
@@ -201,7 +201,7 @@ Ensemble (GNN+XGBoost) & \textbf{0.47} & \textbf{0.28}$^\dagger$ & \textbf{0.60}
 \begin{figure*}[t]
 \centering
 \includegraphics[width=0.97\linewidth]{figures/rev_fig1_results.pdf}
-\caption{(a) $R^2$ by model (R1 CV with fold range; test mean $\pm$ SD over 3 seeds). (b) Ensemble generalization. (c) 90\% Winkler score on test; dashed: trivial interval; labels: coverage (\%). CQR: conformalized quantile regression; NCP: normalized conformal; Ens-Q: quantile ensemble.}
+\caption{(a) $R^2$ by model (R1 CV with fold range; test mean $\pm$ SD over 3 seeds). (b) Ensemble generalization. (c) 90\% Winkler score on test; dashed: trivial interval; labels: coverage (\%). RF: random forest; Phys-GNN: physics-informed GNN; CQR: conformalized quantile regression; NCP: normalized conformal; Ens-Q: quantile ensemble.}
 \label{fig:results}
 \end{figure*}
 
@@ -265,10 +265,9 @@ Rescaled to 90\% under a normal approximation, they would imply a VM0033 deducti
 
 \textbf{The physics-informed GNN and tree ensembles are complementary.} Alone, the physics-informed GNN matched XGBoost in cross-validation (0.41 each), but their mean outperformed every other final candidate in cross-validation (0.47 and 0.55, against at most 0.42 and 0.53) and every model on test (Table~\ref{tab:acc}).
 The GNN adds neighborhood structure and the hydroperiod prior that the trees do not see, and it was the most stable graph model across seeds and, trained on both dates, across seasons.
-The physics prior now acts as a weak constraint rather than a target the model copies.
 
 \textbf{Estimation uncertainty is of the same order as the buffer the market already holds.} The per-node deduction in R1 (12.7\%) is similar in size to the realized median buffer of issuing blue carbon projects (11.0\%), yet today it is not applied.
-The similarity is context, not validation, because the two cover different risks.
+The similarity is context, not validation.
 Calibration is what makes the deduction usable, since the label map's uncalibrated limits would withhold about five times as much in R1 (Section~IV-D).
 Fig.~\ref{fig:map} shows that the deduction concentrates in specific areas, so it is a location-dependent quantity that a flat buffer cannot represent.
 Because width does not follow observed mangrove loss, the two discounts measure different risks and belong in separate factors, as in Eq.~\ref{eq:credit}.

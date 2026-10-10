@@ -64,10 +64,10 @@ def main():
     xs = (0.012, 0.3525, 0.693)
     y1, y2 = 0.615, 0.195
 
-    step(ax, 1, xs[0], y1, w, h, "Inputs", "Sentinel-2, 2 dates\nlidar + NOAA tides\nSOC label (Maxwell)", BLUE)
+    step(ax, 1, xs[0], y1, w, h, "Inputs", "Sentinel-2, 2 dates\nlidar + tide gauges\nsoil carbon label", BLUE)
     step(ax, 2, xs[1], y1, w, h, "Spatial graph", "150 m nodes\n10,124 and 22,326\nno cross-split edge", BLUE)
-    step(ax, 3, xs[2], y1, w, h, "Models", "Phys-GNN (Eq. 1)\nand XGBoost,\nensemble by CV", BLUE)
-    step(ax, 4, xs[2], y2, w, h, "90% intervals", "conformalized\nquantile regression,\ncalibrated on val.", PINK)
+    step(ax, 3, xs[2], y1, w, h, "Models", "Phys-GNN (Eq. 1)\nand XGBoost, mean\nchosen on validation", BLUE)
+    step(ax, 4, xs[2], y2, w, h, "90% intervals", "conformalized\nquantile regression,\nvalidation-calibrated", PINK)
     step(ax, 5, xs[1], y2, w, h, "VM0033 rule", "$U_i=(u_i-l_i)/2\\hat y_i$\ndeduction\n$\\max(0,\\,U_i-0.2)$", PINK)
     step(ax, 6, xs[0], y2, w, h, "Credited stock", "$\\times\\,(1-b)$\nregistry buffer\nunchanged", PINK)
 
