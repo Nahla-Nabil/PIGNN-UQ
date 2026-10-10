@@ -1,7 +1,7 @@
 \documentclass[conference]{IEEEtran}
 %DIF LATEXDIFF DIFFERENCE FILE
-%DIF DEL /tmp/main_submitted.tex   Sat Oct 10 20:03:27 2026
-%DIF ADD main.tex                  Sat Oct 10 20:03:07 2026
+%DIF DEL /tmp/main_submitted.tex   Sat Oct 10 20:08:08 2026
+%DIF ADD main.tex                  Sat Oct 10 20:07:46 2026
 \IEEEoverridecommandlockouts
 \usepackage{cite}
 \usepackage{amsmath,amssymb,amsfonts}
@@ -185,7 +185,8 @@ much smaller margin than an earlier single-seed pilot suggested.
 Global
 CQR calibration reached 91.1\% /96.4\% coverage at 90\%/}\DIFdelend \DIFaddbegin \DIFadd{0.28 and 0.60 (declared second test read), against 0.20 and 0.59 for XGBoost.
 The intervals covered 91.5\% and 89.1\% of test nodes, and their width tracked absolute error (Spearman 0.54 in the first region).
-The registry rule withheld a median 12.7\% and 2.1\% of credits per node, of the same order as the 11.0\% median buffer of the seven issuing blue carbon projects; the label map's own uncalibrated intervals would withhold about 65\%.
+The registry rule withheld a median 12.7\% and 2.1\% of credits per node, of the same order as the 11.0\% median buffer of the seven issuing blue carbon projects.
+The label map's own uncalibrated intervals would withhold about 65\%.
 The methodology's independent-error aggregation covered only 18\% and 33\% of realized project-level errors (upper }\DIFaddend 95\DIFdelbegin \DIFdel{\% nominal; a
 spatially localized (Mondrian) variant undercovered more on test (83.4\% , 92.4\% ), a genuine negative result consistent with
 spatial-conformal theory's local-density requirement. A pricing
@@ -196,7 +197,8 @@ Point-prediction accuracy remains weak throughout; the contribution is
 the pre-registered protocol itself, which caught both a single-run
 estimate and a calibration refinement overstating their reliability, not
 validated point accuracy or a validated pricing model.
-}\DIFdelend \DIFaddbegin \DIFadd{\% bounds 52\% and 49\%); empirical project-level calibration covered 91\%.
+}\DIFdelend \DIFaddbegin \DIFadd{\% bounds 52\% and 49\%).
+Empirical project-level calibration covered 91\%.
 Against 87 soil cores at 25 sites, the ensemble had the lowest median error (10.1\%, against 14.1\% to 15.1\% for two published maps and a regional mean), though within sampling uncertainty.
 These results motivate registry-scale tests of crediting rules that keep estimation uncertainty separate from non-permanence risk and aggregate it under spatially correlated errors.
 }\DIFaddend \end{abstract}
@@ -228,7 +230,8 @@ but no existing work pairs that calibrated uncertainty with a physics-informed s
 mechanism, or tests whether a calibration strategy (global versus
 spatially localized) holds under one region's calibration-density
 constraints, the narrower gap this paper addresses (Section~II surveys
-each literature in full). This paper }\DIFdelend \DIFaddbegin \DIFadd{, and a separate deduction applies when the 90\% confidence interval of the estimate exceeds 20\% of its value \mbox{%DIFAUXCMD
+each literature in full). This paper }\DIFdelend \DIFaddbegin \DIFadd{.
+A separate deduction applies when the 90\% confidence interval of the estimate exceeds 20\% of its value \mbox{%DIFAUXCMD
 \cite[p.~64]{verra_vm0033}}\hskip0pt%DIFAUXCMD
 .
 The buffer share comes from a risk assessment and does not depend on how well the carbon stock itself was estimated.
@@ -459,17 +462,23 @@ Node features \DIFdelbegin \DIFdel{were NDVI, raw B04/B08/B11 reflectance, }\DIF
 \cite{drusch2012sentinel2} }\hskip0pt%DIFAUXCMD
 for 6 February 2026 and, with cloud masking, for 15 August 2026, together with elevation }\DIFaddend and distance to the tide gauge\DIFdelbegin \DIFdel{; the label
 was mean SOC (t}\DIFdelend \DIFaddbegin \DIFadd{.
-While revising this work, the Sentinel-2 clip of the earlier version was found shifted 9.18}\DIFaddend \,\DIFdelbegin \DIFdel{C/ha, 0--100\,cm) . An initial contiguous-band split
-gave negative test $R^2$ for every model family, since the held-out band straddled a real regional carbon-density gradient
-(Radabaugh et al.'s sub-regional figures range $265.1\pm43.2$ to $409\pm104.4$\,Mg\,C\,ha$^{-1}$ \mbox{%DIFAUXCMD
+While revising this work, the Sentinel-2 clip of the earlier version was found shifted 9.18}\DIFaddend \,\DIFdelbegin \DIFdel{C/ha, 0--100\,cm) }\DIFdelend \DIFaddbegin \DIFadd{km north (mean normalized difference vegetation index (NDVI) of mangrove nodes 0.003).
+The shift was reproduced on correctly referenced imagery (correlation 0.91 to 0.97), and all features were rebuilt (mean NDVI 0.46)}\DIFaddend .
+\DIFdelbegin \DIFdel{An initial contiguous-band split
+gave negative test $R^2$ for every model family, since the
+held-out band straddled a real regional carbon-density gradient
+(Radabaugh et al.'s sub-regional figures range $265.1\pm43.2$ to $409\pm104.4$}\DIFdelend \DIFaddbegin 
+
+\DIFadd{Splits are spatial: fine cells of about 2.5}\DIFaddend \,\DIFdelbegin \DIFdel{Mg\,C\,ha$^{-1}$ \mbox{%DIFAUXCMD
 \cite{radabaugh2023bluecarbon}}\hskip0pt%DIFAUXCMD
 ). We
 replaced this with an $8\times8$ checkerboard grid of spatial superblocks
-($\sim$6\,km each, far larger than the 150\,m node spacing), assigned by
+($\sim$}\DIFdelend \DIFaddbegin \DIFadd{km are assigned whole to training, validation or test (R1: }\DIFaddend 6\DIFdelbegin \DIFdel{\,km each, far larger than the 150\,m node spacing), assigned by
 cumulative node count rather than superblock count, since mangrove nodes
-concentrate in a thin coastal fringe}\DIFdelend \DIFaddbegin \DIFadd{km north (mean normalized difference vegetation index (NDVI) of mangrove nodes 0.003); the shift was reproduced on correctly referenced imagery (correlation 0.91 to 0.97), and all features were rebuilt (mean NDVI 0.46)}\DIFaddend .
+concentrate in a thin coastal fringe.
+}%DIFDELCMD < 
 
-\DIFdelbegin %DIFDELCMD < \subsection{Test-set protocol and pre-registered selection}
+%DIFDELCMD < \subsection{Test-set protocol and pre-registered selection}
 %DIFDELCMD < %%%
 \DIFdel{An early version of this evaluation used one fixed split, directly
 comparing test-set metrics across model variants to decide the paper's
@@ -479,17 +488,18 @@ experiment below: a fresh validation /test block was carved from
 superblocks never individually inspected for a decision (only touched via
 gradient updates); the previously-inspected split was folded into the new
 training pool, since training on previously-seen data does not leak, but
-evaluating on it again would. The corrected split is }\DIFdelend \DIFaddbegin \DIFadd{Splits are spatial: fine cells of about 2.5\,km are assigned whole to training, validation or test (R1: }\DIFaddend 6\DIFdelbegin %DIFDELCMD < {%%%
+evaluating on it again would. The corrected split is 6}%DIFDELCMD < {%%%
 \DIFdel{,}%DIFDELCMD < }%%%
 \DIFdelend \DIFaddbegin \DIFadd{,}\DIFaddend 465\DIFdelbegin \DIFdel{train }\DIFdelend /1\DIFdelbegin %DIFDELCMD < {%%%
 \DIFdel{,}%DIFDELCMD < }%%%
 \DIFdelend \DIFaddbegin \DIFadd{,}\DIFaddend 583\DIFdelbegin \DIFdel{validation }\DIFdelend /2\DIFdelbegin %DIFDELCMD < {%%%
 \DIFdel{,}%DIFDELCMD < }%%%
-\DIFdelend \DIFaddbegin \DIFadd{,}\DIFaddend 076 \DIFdelbegin \DIFdel{test nodes(label means 427.9/421.2/399.4\,t/ha,AOI mean 421.0). Every later selection decision (physics-loss
+\DIFdelend \DIFaddbegin \DIFadd{,}\DIFaddend 076 \DIFdelbegin \DIFdel{test nodes(label means 427.9/421.2/399.4\,t/ha,AOI mean 421.0}\DIFdelend \DIFaddbegin \DIFadd{nodes; R2: 14,499/3,351/4,476}\DIFaddend ).
+Every \DIFdelbegin \DIFdel{later selection decision (physics-loss
 weight, feature set, calibration method) was made on validation only,
 by rules fixed beforehand, confirmed once on test
 (Section~IV): a pre-registered "tested $X$, selected $Y$" claim this
-protocol makes defensible, surfacing a genuine instability a fixed split could not reveal}\DIFdelend \DIFaddbegin \DIFadd{nodes; R2: 14,499/3,351/4,476), and every model is trained and evaluated on subgraphs induced by one split, so no edge crosses a split boundary}\DIFaddend .
+protocol makes defensible, surfacing a genuine instability a fixed split could not reveal}\DIFdelend \DIFaddbegin \DIFadd{model is trained and evaluated on subgraphs induced by one split, so no edge crosses a split boundary}\DIFaddend .
 
 \DIFdelbegin %DIFDELCMD < \subsection{Architecture and physics-informed loss}
 %DIFDELCMD < %%%
@@ -551,7 +561,8 @@ NDWI (McFeeters, Green/NIR) and NDMI (Gao, NIR/SWIR), were tested as
 additions to base, five seeds each, on validation only, under the same
 tolerance ruleas $\lambda$; neither improved mean validation prior-gen.\
 correlation within tolerance,
-so base was retained (Section~IV-A).}\DIFdelend \DIFaddbegin \DIFadd{0.3 and 1) and $w=0.1$ weight the prior and non-negativity terms, and $P$ is the mean of min-max scaled tidal inundation frequency (the share of 2025 hourly National Oceanic and Atmospheric Administration (NOAA) water levels above each node's U.S. Geological Survey (USGS) 3DEP lidar elevation, both in NAVD88) and red-edge canopy index (NDRE), reflecting the role of hydroperiod in sediment delivery and carbon preservation.
+so base was retained (Section~IV-A).}\DIFdelend \DIFaddbegin \DIFadd{0.3 and 1) and $w=0.1$ weight the prior and non-negativity terms.
+The prior $P$ is the mean of min-max scaled tidal inundation frequency (the share of 2025 hourly National Oceanic and Atmospheric Administration (NOAA) water levels above each node's U.S. Geological Survey (USGS) 3DEP lidar elevation, both in NAVD88) and red-edge canopy index (NDRE), reflecting the role of hydroperiod in sediment delivery and carbon preservation.
 The prior acts as a soft domain constraint rather than a governing equation, and it replaced the NDVI and gauge-distance proxy of the earlier version.
 The final candidate set added the unweighted mean of the physics-informed GNN and XGBoost (the ensemble), a stacked variant in which the GNN corrects out-of-fold XGBoost predictions, and a GNN trained on both image dates.
 Table~\ref{tab:acc} lists every candidate with its accuracy.
@@ -798,7 +809,8 @@ Project cov., bound / empirical$^*$ & 91 / 91\% & 100 / 91\% \\
 \label{tab:uq}
 \end{table}
 
-\DIFadd{When node uncertainties were aggregated to 2.5\,km pseudo-projects as VM0033 prescribes (root-sum-of-squares, independent errors), the stated project uncertainty covered the realized aggregate error in 2 of 11 projects in R1 (18\%, exact 95\% interval 2--52\%) and 15 of 45 in R2 (33\%, 20--49\%) and implied no deduction.
+\DIFadd{When node uncertainties were aggregated to 2.5\,km pseudo-projects as VM0033 prescribes (root-sum-of-squares, independent errors), the stated project uncertainty covered the realized aggregate error in only 2 of 11 projects in R1 (18\%, exact 95\% interval 2--52\%) and 15 of 45 in R2 (33\%, 20--49\%).
+It implied no deduction.
 A fully correlated bound covered 91\% and 100\% (median deductions 14.6\% and 3.1}\DIFaddend \%)\DIFdelbegin \DIFdel{, likely because only 6
 spatial superblocks had enough validation nodes ($\geq 30$)for a stable
 local correction. This matches theory: \mbox{%DIFAUXCMD
@@ -899,7 +911,8 @@ The GNN adds neighborhood structure and the hydroperiod prior that the trees do 
 The physics prior now acts as a weak constraint rather than a target the model copies.
 }
 
-\textbf{Estimation uncertainty is of the same order as the buffer the market already holds.} \DIFadd{The per-node deduction in R1 (12.7\%) is similar in size to the realized median buffer of issuing blue carbon projects (11.0\%), yet today it is not applied; the similarity is context, not validation, because the two cover different risks.
+\textbf{Estimation uncertainty is of the same order as the buffer the market already holds.} \DIFadd{The per-node deduction in R1 (12.7\%) is similar in size to the realized median buffer of issuing blue carbon projects (11.0\%), yet today it is not applied.
+The similarity is context, not validation, because the two cover different risks.
 Calibration is what makes the deduction usable, since the label map's uncalibrated limits would withhold about five times as much in R1 (Section~IV-D}\DIFaddend ).
 Fig.~\DIFdelbegin \DIFdel{[removed]
 maps this interval width across the full test set, the spatial pattern
