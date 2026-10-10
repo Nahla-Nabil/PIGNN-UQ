@@ -17,6 +17,7 @@ matplotlib.rcParams["pdf.fonttype"] = 42  # TrueType, not Type 3 (IEEE PDF eXpre
 matplotlib.rcParams["ps.fonttype"] = 42
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
+from matplotlib.ticker import FuncFormatter, MaxNLocator
 import numpy as np
 import pandas as pd
 
@@ -62,19 +63,24 @@ def main():
     for rk in ("r1", "r2"):
         data[rk] = node_intervals(rk, sel, uq_sel)
         vmax = max(vmax, np.percentile(data[rk][1].deduction_vm0033, 98))
-    for ax, rk, title in zip(axes, ("r1", "r2"), ("R1 Ten Thousand Is.", "R2 Everglades coast")):
+    for ax, rk, title in zip(axes, ("r1", "r2"), ("(a) R1 Ten Thousand Is.", "(b) R2 Everglades")):
         df, t = data[rk]
-        ax.scatter(df.lon, df.lat, s=0.15, color="#4D4D4D", alpha=0.10, linewidths=0, rasterized=True)
+        ax.scatter(df.lon, df.lat, s=0.2, color="#8A8F99", alpha=0.18, linewidths=0, rasterized=True)
         sc = ax.scatter(t.lon, t.lat, c=100 * t.deduction_vm0033, s=0.6, marker="s", cmap=CMAP,
                         vmin=0, vmax=100 * vmax, linewidths=0, rasterized=True)
         ax.set_aspect("equal")
-        ax.set_title(title, fontsize=6.5)
-        ax.tick_params(labelsize=5)
+        ax.set_title(title, fontsize=6.8, weight="bold", color="#1F3F8F", pad=3, loc="left")
+        ax.tick_params(labelsize=6, length=2, pad=1.5)
+        TK = {"r1": ([-81.8, -81.6, -81.4], [26.0, 26.1, 26.2, 26.3]), "r2": ([-81.2, -81.0], [25.3, 25.4, 25.5, 25.6])}
+        ax.set_xticks(TK[rk][0])
+        ax.set_yticks(TK[rk][1])
+        ax.xaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{abs(v):.1f}\u00b0W"))
+        ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:.1f}\u00b0N"))
         for sp in ("top", "right"):
             ax.spines[sp].set_visible(False)
     cb = fig.colorbar(sc, ax=axes, fraction=0.035, pad=0.02)
-    cb.set_label("VM0033 deduction (%)", fontsize=6)
-    cb.ax.tick_params(labelsize=5)
+    cb.set_label("VM0033 deduction (%)", fontsize=6.8)
+    cb.ax.tick_params(labelsize=6, length=2)
     fig.savefig(OUT, bbox_inches="tight", pad_inches=0.02, dpi=300)
     fig.savefig(OUT.with_suffix(".png"), bbox_inches="tight", dpi=200)
     for rk in data:
