@@ -72,9 +72,9 @@ Table~\ref{tab:gap} positions this contribution against prior work.
 Physics-informed networks penalize violations of governing equations \cite{raissi2019pinn}, and graph formulations have carried such constraints into flood forecasting \cite{taghizadeh2025floodpignn}.
 GraphSAGE \cite{hamilton2017graphsage} learns from node neighborhoods inductively, which suits spatial grids split into separate regions.
 
-\textbf{Mangrove carbon mapping.} Most mangrove carbon studies regress field or map values on spectral indices with random forests or boosted trees \cite{roy2024mangroveasiapacific}.
+\textbf{Mangrove carbon mapping.} Mangrove carbon studies mostly fit linear models to remote-sensing predictors, with random forests and gradient boosting increasingly common \cite{roy2024mangroveasiapacific}.
 Global soil carbon products are themselves machine-learning outputs \cite{sanderman2018map}, whereas regional maps such as the southwest Florida map of Radabaugh et al.\ are calibrated on local field cores.
-Geomorphic setting and tidal regime control mangrove soil carbon \cite{rovai2018controls,krauss2014sealevel}, and soil carbon maps can disagree substantially at fine scales \cite{holmquist2018tidal}.
+Geomorphic setting and tidal regime control mangrove soil carbon \cite{rovai2018controls,krauss2014sealevel}, and soil carbon maps can depart substantially from core data \cite{holmquist2018tidal}.
 Random cross-validation overstates accuracy on such data, so spatial blocking is required \cite{roberts2017cv,ploton2020spatial}.
 
 \textbf{Uncertainty quantification.} Split conformal prediction gives finite-sample coverage under exchangeability \cite{lei2018conformal}, and conformalized quantile regression adapts the interval width to each input \cite{romano2019cqr} and has been applied to earth observation \cite{eo_conformal2024}.
@@ -212,7 +212,7 @@ Mondrian calibration covered 87.9\% in R1, where only six validation blocks were
 Applied per node, the VM0033 rule withheld a median 12.7\% (R1) and 2.1\% (R2) of credits.
 Across all five interval methods, credited stock stayed within 0.84 to 0.90 (R1) and 0.95 to 0.98 (R2) of the buffer-only amount.
 As an illustrative standing-stock exposure, not credit issuance, the deducted share over the 2,076 R1 test nodes (about 4,700\,ha) equals 0.71 million t\,CO$_2$e, or US\$19.2 million at the 2022 and 2023 average credit price (Section~II).
-This is an upper bound, because credits are issued on stock changes rather than on standing stock.
+Credits are issued on stock changes, so this is an upper bound.
 Interval width did not track mangrove loss between 2010 and 2020 (Spearman $-0.06$ in both regions).
 Among the seven blue carbon projects with issued credits (6.62 million), the median buffer was 11.0\% and 73.5\% of credits had been retired (registry records, Section~II).
 
@@ -243,15 +243,14 @@ A fully correlated bound covered 91\% and 100\% (median deductions 14.6\% and 3.
 The 87 mangrove cores of the Coastal Carbon Library \cite{ccn2023library} were converted to stocks over the top 100\,cm, using a quadratic organic-matter conversion of the form in Craft et al.\ \cite{craft1991loi} fitted on 679 regional samples ($R^2=0.91$), and matched to nodes within 300\,m.
 At the 25 sites, the median absolute error was 10.1\% for the ensemble, 11.6\% for the physics-informed GNN, 16.5\% for XGBoost, 14.1\% and 15.1\% for the Maxwell and Radabaugh maps, and 15.0\% for a constant.
 Paired bootstrap 95\% intervals of these differences included zero (ensemble minus Maxwell map $-4.0$ points, $-8.1$ to 8.2), and the Maxwell map ranked sites best (Spearman 0.63; ensemble 0.29).
-The two published maps were uncorrelated at node level ($-0.10$ in R1).
 For the 13 cores sampled to at least 50\,cm, field-calibrated intervals covered 85\% to 92\% under leave-one-study-out and implied VM0033 deductions of 22\% to 29\%.
 The label product's own 95\% prediction limits contained all 13 cores, but their median half-width equaled 101\% of the estimate.
 Rescaled to 90\% under a normal approximation, they would imply a VM0033 deduction of about 65\% in both regions.
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.98\linewidth]{figures/rev_fig2_deduction_map.pdf}
-\caption{Per-node VM0033 deduction (Eq.~\ref{eq:credit}) on test nodes; gray: training and validation nodes.}
+\includegraphics[width=0.9\linewidth]{figures/rev_fig2_deduction_map.pdf}
+\caption{Per-node VM0033 deduction (Eq.~\ref{eq:credit}) on test nodes; gray: other splits.}
 \label{fig:map}
 \end{figure}
 
@@ -273,16 +272,15 @@ Model-based crediting therefore needs an aggregation rule that accounts for spat
 
 \textbf{What the intervals can and cannot do.} Interval width is bounded by accuracy: with test $R^2=0.07$ for the GNN underlying the intervals in R1, at most about 4\% narrowing over the trivial interval is attainable, and in R2 ($R^2=0.58$) the 32\% achieved is close to the 35\% bound.
 The value in R1 lies in adaptivity and Winkler score, not sharpness.
-Local calibration is required when a model is moved to a new region.
-Field-calibrated deductions exceed label-calibrated ones, a reminder that the label product carries its own error, in line with the fine-scale disagreement between soil carbon maps reported for United States tidal wetlands.
+Field-calibrated deductions exceed label-calibrated ones, a reminder that the label product carries its own error, in line with the departure of soil carbon maps from core data reported for United States tidal wetlands.
 
 \section{Limitations}
-\textbf{Labels are a modeled product:} the training label is a global map that disagrees with a field-calibrated regional map at node level.
+\textbf{Labels are a modeled product:} the training label is a global map that disagrees with a field-calibrated regional map at node level (correlation $-0.10$ in R1).
 \textbf{Accuracy in R1 is moderate} ($R^2=0.28$).
 \textbf{The ensemble was evaluated in a second test read,} declared and limited to one pre-specified model.
 \textbf{Single tide gauges} represent each region, and R2's is about 70\,km away.
 \textbf{Field cores are sparse} (13 deep enough for 100\,cm stocks) and may overlap the global map's training data.
-\textbf{Market outcomes} were not modeled, since prices and buffers come from published records.
+\textbf{Market outcomes} were not modeled.
 
 \section{Conclusion}
 Per-node uncertainty from a physics-informed GNN and XGBoost ensemble, calibrated on held-out map labels, can supply the VM0033 uncertainty deduction.
