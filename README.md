@@ -9,6 +9,7 @@
 [![Conference](https://img.shields.io/badge/ICDABI%202026-DATA'26-3B6FB6?style=for-the-badge)](#)
 [![IEEE](https://img.shields.io/badge/IEEE-Conference%20Paper-E8749A?style=for-the-badge)](#)
 [![Paper](https://img.shields.io/badge/Paper-PDF-F2C14E?style=for-the-badge)](paper/main.pdf)
+[![Solo](https://img.shields.io/badge/Research-Single%20author-5BAA7A?style=for-the-badge)](#)
 
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.13-EE4C2C?logo=pytorch&logoColor=white)](https://pytorch.org/)
@@ -42,7 +43,7 @@
 | [Key results](#key-results) | [Pipeline](#pipeline) | [Accuracy](#accuracy) | [Reproduce](#reproducing-the-results) |
 | [Paper files](#paper-files) | [Data](#study-regions-and-data) | [Intervals and crediting](#intervals-and-crediting) | [Repository layout](#repository-layout) |
 | [Tech stack](#tech-stack) | [Evaluation protocol](#evaluation-protocol) | [Field validation](#field-validation) | [Changes from v1](#changes-from-the-first-version) |
-| | | [What the results do not show](#what-the-results-do-not-show) | |
+| [Conference talk](#conference-talk) | | [What the results do not show](#what-the-results-do-not-show) | |
 
 ---
 
@@ -74,6 +75,23 @@
 | [`paper/main.pdf`](paper/main.pdf) | Revised paper, 5 pages, IEEE conference format |
 | [`paper/main_changes.pdf`](paper/main_changes.pdf) | Changes from the first version (added text in blue, removed text in red) |
 | [`paper/revision_preregistration.md`](paper/revision_preregistration.md) | Selection rules, deviations D1 to D9, addenda A to H |
+
+## Conference talk
+
+Presented at ICDABI 2026 (DATA'26), track *AI for Business & Industrial Data* (live talk, about
+17 minutes). Besides the paper figures, the talk adds one figure built from the study's own
+out-of-fold errors (spatial cross-validation on training and validation nodes; no test labels):
+
+<p align="center">
+  <img src="paper/figures/talk_correlated_errors.png" alt="Real project errors versus the independent-error level" width="820">
+</p>
+
+In one 2.5 km pseudo-project of R1 (259 nodes), the observed ensemble errors add up to a project
+error of 5.5%; with the same error sizes but independent signs, as the VM0033 aggregation rule
+assumes, they cancel to 0.4%. Across the 52 R1 pseudo-projects with at least 30 nodes, the actual
+project error was a median **3.7 times** the independent-error level, and above it in 92% of
+projects (`scripts/make_talk_fig_correlated_errors.py`, `results/talk_correlated_errors.json`).
+This is an exploratory analysis that supports, and is not reported in, the paper.
 
 ## Tech stack
 
@@ -262,7 +280,8 @@ calibration nodes.
   specific areas, which a flat buffer cannot represent.
 - **Project level:** VM0033's independent-error aggregation covered 2 of 11 pseudo-projects in R1
   (18%, exact 95% interval 2 to 52%) and 15 of 45 in R2 (33%, 20 to 49%). A fully correlated bound
-  covered 91% and 100%, and an empirical project-level calibration 91% in both regions.
+  covered 91% and 100%, and an empirical project-level calibration 91% in both regions. The
+  reason is visible in the data: neighbouring errors share a sign (see [Conference talk](#conference-talk)).
 - Interval width does not track mangrove loss between 2010 and 2020 (Spearman about -0.06), so
   the uncertainty deduction and the non-permanence buffer stay separate.
 - As an illustrative standing-stock exposure, not credit issuance, the R1 deducted share equals
@@ -350,6 +369,7 @@ python scripts/run_rev_h_intervals_on_results.py
 python scripts/make_rev_fig0_framework.py
 python scripts/make_rev_fig1.py
 python scripts/make_rev_fig2_map.py
+python scripts/make_talk_fig_correlated_errors.py
 ```
 
 Seeds are fixed in every script (models 1 to 3, CV folds 20261007, region-2 split 20261009,
@@ -385,6 +405,7 @@ blue-carbon-pinn-gnn/
 │   ├── run_rev_f_market_vrod.py       market-practice check
 │   ├── run_rev_g_label_pi.py          label-map intervals against field cores
 │   ├── run_rev_h_intervals_on_results.py  confidence intervals for reported numbers
+│   ├── make_talk_fig_correlated_errors.py  talk figure from real out-of-fold errors
 │   └── make_rev_fig*.py               figures
 ├── paper/                       main.tex, main.pdf, main_changes.pdf, references.bib,
 │                                figures/, revision_preregistration.md
