@@ -1,0 +1,12 @@
+{
+  "blocks": 52,
+  "median_ratio": 3.672463906299032,
+  "share_ratio_above_1": 0.9230769230769231,
+  "example_block": 15,
+  "example": {
+    "n": 259.0,
+    "actual": 0.055141123457618776,
+    "independent": 0.012516341984803173,
+    "ratio": 4.405530267914448
+  }
+}
